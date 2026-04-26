@@ -609,7 +609,6 @@ section h2 {
 .corr-bar .label {
   color: var(--ink-2);
   font-family: var(--sans);
-  text-transform: capitalize;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

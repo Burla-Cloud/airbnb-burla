@@ -36,7 +36,7 @@ const HYPOTHESIS_META = {
   },
   tv_too_high: {
     title: "TV mounted high vs demand",
-    buckets: { "False": "TV at normal height", "True": "TV mounted too high" },
+    buckets: { "False": "Normal height", "True": "Mounted too high" },
   },
 };
 
