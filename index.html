@@ -4,15 +4,15 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>1.1 million Airbnbs, looked at all at once · Burla</title>
-<meta name="description" content="Every public Airbnb listing in 116 cities, 1.4M photos, 50M reviews. CLIP, YOLOv8, and Claude Haiku in parallel on Burla. 10.8 hours of wall time." />
+<meta name="description" content="Every public Airbnb listing in Inside Airbnb's open dump, 1.4M photos, 50M reviews. CLIP, YOLOv8, and Claude Haiku in parallel on Burla. 10.8 hours of wall time." />
 <meta property="og:title" content="1.1 million Airbnbs, looked at all at once" />
-<meta property="og:description" content="Every public Airbnb listing in 116 cities, scored on Burla in 10.8 hours." />
+<meta property="og:description" content="Every public Airbnb listing in Inside Airbnb's open dump, scored on Burla in 10.8 hours." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<link rel="stylesheet" href="style.css?v=2" />
+<link rel="stylesheet" href="style.css?v=4" />
 </head>
 <body>
 
@@ -30,44 +30,48 @@
 </nav>
 
 <header class="hero">
-  <div class="hero__inner">
-    <p class="eyebrow"><span class="dot"></span> Burla demo · April 2026</p>
-    <h1>1.1&nbsp;million Airbnbs,<br/>looked at <em>all at once</em>.</h1>
-    <p class="lede">
-      Every public Airbnb listing in Inside Airbnb's open data dump,
-      <strong>1.4M photos</strong> we could pull from public listing pages, and
-      every one of <strong>50M reviews</strong>. CLIP, YOLOv8, and Claude Haiku
-      in parallel on Burla, in <strong>10.8 hours</strong> of wall time.
-    </p>
-    <div class="stats-card">
-      <div class="stats" id="stats-banner">
-        <div class="stat"><span class="num" data-stat="n_listings">--</span><span class="label">listings</span></div>
-        <div class="stat"><span class="num" data-stat="n_photo_manifest_rows">--</span><span class="label">photos scraped</span></div>
-        <div class="stat"><span class="num" data-stat="n_cpu_images">--</span><span class="label">CLIP-scored</span></div>
-        <div class="stat"><span class="num" data-stat="n_reviews">--</span><span class="label">reviews scored</span></div>
-        <div class="stat"><span class="num" data-stat="peak_workers">--</span><span class="label">peak workers</span></div>
-        <div class="stat"><span class="num" data-stat="n_gpu_images">--</span><span class="label">GPU detections</span></div>
-        <div class="stat"><span class="num" data-stat="wall_time_hours">--</span><span class="label">hours wall</span></div>
-        <div class="stat"><span class="num" data-stat="estimated_cost_usd_dollar">--</span><span class="label">total spend</span></div>
-      </div>
-    </div>
-    <p class="meta-line">
-      Public Inside Airbnb dumps for the listings + reviews. Photo URLs scraped
-      from public listing pages. <a href="#correlations">Correlations</a> use
-      bootstrap 95% CIs with n &ge; 100 per bucket. Demand proxy is
-      reviews_per_month, not actual bookings.
-    </p>
+  <div class="hero__eyebrow">
+    <span class="live"></span>
+    Burla demo · April 2026
   </div>
+  <h1>1.1 million Airbnbs,<br/>looked at <span class="accent">all at once</span>.</h1>
+  <p class="lede">
+    Every public Airbnb listing in Inside Airbnb's open data dump,
+    <strong>1.4M photos</strong> we could pull from public listing pages, and
+    every one of <strong>50M reviews</strong>. CLIP, YOLOv8, and Claude Haiku
+    running in parallel on Burla, in <strong>10.8 hours</strong> of wall time.
+  </p>
+
+  <div class="stats-card">
+    <div class="stats" id="stats-banner">
+      <div class="stat"><span class="num" data-stat="n_listings">--</span><span class="label">Listings</span></div>
+      <div class="stat"><span class="num" data-stat="n_photo_manifest_rows">--</span><span class="label">Photos scraped</span></div>
+      <div class="stat"><span class="num" data-stat="n_cpu_images">--</span><span class="label">CLIP-scored</span></div>
+      <div class="stat"><span class="num" data-stat="n_reviews">--</span><span class="label">Reviews scored</span></div>
+      <div class="stat"><span class="num" data-stat="peak_workers">--</span><span class="label">Peak workers</span></div>
+      <div class="stat"><span class="num" data-stat="n_gpu_images">--</span><span class="label">GPU detections</span></div>
+      <div class="stat"><span class="num" data-stat="wall_time_hours">--</span><span class="label">Hours wall</span></div>
+      <div class="stat"><span class="num" data-stat="estimated_cost_usd_dollar">--</span><span class="label">Total spend</span></div>
+    </div>
+  </div>
+
+  <p class="meta-line">
+    Public Inside Airbnb dumps for the listings and reviews. Photo URLs scraped
+    from public listing pages. <a href="#correlations">Correlations</a> use
+    bootstrap 95% CIs with n &ge; 100 per bucket. Demand proxy is
+    reviews_per_month, not actual bookings.
+  </p>
 </header>
 
-<section class="map-section compact">
+<section class="map-section">
   <div class="section__head">
-    <p class="section__kicker">The atlas</p>
-    <h2>Every flagged listing on a map</h2>
-    <p class="section-lede">
-      Each dot is a listing flagged by one of the photo detectors below,
-      color-coded by category. Drag, zoom, click for the listing.
-    </p>
+    <div>
+      <h2>Every flagged listing on a map</h2>
+      <p class="section-lede">
+        Each dot is a listing flagged by one of the photo detectors below,
+        color-coded by category. Drag, zoom, click for the listing.
+      </p>
+    </div>
   </div>
   <div class="map-frame">
     <div id="map" aria-label="World map of flagged Airbnb listings"></div>
@@ -75,73 +79,84 @@
   <div class="legend" id="map-legend"></div>
 </section>
 
-<div class="divider"></div>
-
 <section id="worst-tv" class="grid-section">
   <div class="section__head">
-    <p class="section__kicker">Photo finding · 01</p>
-    <h2>Worst TV placements in 1.1M Airbnbs</h2>
-    <p class="section-lede">
-      YOLO confirmed a TV in the upper half of the photo and CLIP also flagged
-      it as "TV mounted above a fireplace." The top 50.
-    </p>
+    <div>
+      <h2>Worst TV placements in 1.1M Airbnbs</h2>
+      <p class="section-lede">
+        YOLO confirmed a TV in the upper half of the photo and CLIP also flagged
+        it as &ldquo;TV mounted above a fireplace.&rdquo; Top 50.
+      </p>
+    </div>
+    <span class="section__count">50 listings</span>
   </div>
   <div class="grid" data-section="worst_tv_placements"></div>
 </section>
 
-<section id="messiest" class="grid-section alt">
-  <div class="section__head">
-    <p class="section__kicker">Photo finding · 02</p>
-    <h2>Messiest photos a host actually posted</h2>
-    <p class="section-lede">
-      Top 50 by CLIP score against "a messy cluttered room with stuff
-      everywhere." We are not naming the listings.
-    </p>
-  </div>
-  <div class="grid" data-section="messiest_listings"></div>
-</section>
+<div class="alt-bg">
+  <section id="messiest" class="grid-section alt-inner">
+    <div class="section__head">
+      <div>
+        <h2>Messiest photos a host actually posted</h2>
+        <p class="section-lede">
+          Top 50 by CLIP score against &ldquo;a messy cluttered room with stuff
+          everywhere.&rdquo; We are not naming the listings.
+        </p>
+      </div>
+      <span class="section__count">50 listings</span>
+    </div>
+    <div class="grid" data-section="messiest_listings"></div>
+  </section>
+</div>
 
 <section id="mirrors" class="grid-section">
   <div class="section__head">
-    <p class="section__kicker">Photo finding · 03</p>
-    <h2>Hosts caught in their own mirrors</h2>
-    <p class="section-lede">
-      CLIP score against "a photographer reflected in a mirror taking a photo."
-      Top 50 across the whole index.
-    </p>
+    <div>
+      <h2>Hosts caught in their own mirrors</h2>
+      <p class="section-lede">
+        CLIP score against &ldquo;a photographer reflected in a mirror taking a
+        photo.&rdquo; Top 50 across the whole index.
+      </p>
+    </div>
+    <span class="section__count">50 listings</span>
   </div>
   <div class="grid" data-section="mirror_selfies"></div>
 </section>
 
-<section id="plants" class="grid-section alt">
-  <div class="section__head">
-    <p class="section__kicker">Photo finding · 04</p>
-    <h2>The most plant-maximalist Airbnbs</h2>
-    <p class="section-lede">
-      CLIP "room full of houseplants" combined with YOLOv8 potted-plant counts.
-      Top 30.
-    </p>
-  </div>
-  <div class="grid" data-section="plant_maximalists"></div>
-</section>
+<div class="alt-bg">
+  <section id="plants" class="grid-section alt-inner">
+    <div class="section__head">
+      <div>
+        <h2>The most plant-maximalist Airbnbs</h2>
+        <p class="section-lede">
+          CLIP &ldquo;room full of houseplants&rdquo; combined with YOLOv8
+          potted-plant counts. Top 30.
+        </p>
+      </div>
+      <span class="section__count">30 listings</span>
+    </div>
+    <div class="grid" data-section="plant_maximalists"></div>
+  </section>
+</div>
 
 <section id="reviews" class="cards-section">
   <div class="section__head">
-    <p class="section__kicker">Review finding</p>
-    <h2>Funniest reviews from 50 million</h2>
-    <p class="section-lede">
-      A 3-tier funnel: regex on every review, embedding cluster on the top
-      200k, Claude Haiku on the top 10k. The survivors:
-    </p>
+    <div>
+      <h2>Funniest reviews from 50 million</h2>
+      <p class="section-lede">
+        A 3-tier funnel: regex on every review, embedding cluster on the top
+        200k, Claude Haiku on the top 10k. The survivors:
+      </p>
+    </div>
   </div>
   <div class="card-grid" data-section="funniest_reviews"></div>
 </section>
 
-<section class="method">
-  <div class="method__inner">
+<section class="method-section">
+  <div class="method">
     <div>
       <h2>How it ran</h2>
-      <p class="method__lede">
+      <p>
         Burla ships a Python function plus its imports to a fleet of containers
         running the standard <code>python:3.12</code> image. The orchestrator
         sees them as a single iterator. The shared filesystem at
@@ -149,13 +164,13 @@
         from every worker, which is what makes this kind of slice-and-merge
         pipeline cheap.
       </p>
-      <p class="method__lede">
+      <p>
         Full writeup is on
         <a href="https://github.com/Burla-Cloud/airbnb-burla/blob/main/WRITEUP.md">GitHub</a>;
         Burla's docs are at <a href="https://docs.burla.dev">docs.burla.dev</a>.
       </p>
     </div>
-    <pre class="code"><span class="c"># photo_id -> (clip_score for "messy cluttered room", ...)</span>
+    <pre class="code-block"><span class="c"># photo_id -&gt; (clip_score for "messy cluttered room", ...)</span>
 <span class="k">from</span> burla <span class="k">import</span> remote_parallel_map
 
 <span class="k">def</span> <span class="f">score_batch</span>(args: ScoreArgs) -&gt; list[dict]:
@@ -178,13 +193,14 @@ results = remote_parallel_map(
 
 <section id="correlations" class="corr-section">
   <div class="section__head">
-    <p class="section__kicker">Statistical findings</p>
-    <h2>What held up under bootstrap, and what did not</h2>
-    <p class="section-lede">
-      Median demand proxy per bucket with bootstrap 95% confidence intervals
-      (1000 resamples, n &ge; 100 per bucket required). A finding is rejected
-      if any pair of bucket CIs overlaps. Two of four hypotheses survived.
-    </p>
+    <div>
+      <h2>What held up under bootstrap, and what did not</h2>
+      <p class="section-lede">
+        Median demand proxy per bucket with bootstrap 95% confidence intervals
+        (1000 resamples, n &ge; 100 per bucket). A finding is rejected if any
+        pair of bucket CIs overlaps. Two of four hypotheses survived.
+      </p>
+    </div>
   </div>
   <div id="corr-list"></div>
 </section>
@@ -202,6 +218,6 @@ results = remote_parallel_map(
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="app.js?v=2" defer></script>
+<script src="app.js?v=4" defer></script>
 </body>
 </html>
