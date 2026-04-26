@@ -1,0 +1,11 @@
+{
+  "sample_n": 1000,
+  "n_seen": 1000,
+  "n_ok": 980,
+  "n_failed": 20,
+  "elapsed_seconds": 540.3868868350983,
+  "projected_full_rows": 1406718,
+  "projected_full_minutes": 12669.53267791493,
+  "projected_full_usd_estimate": 25.339065355829863,
+  "completed_at": 1777199403.321578
+}

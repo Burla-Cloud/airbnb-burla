@@ -1,0 +1,10 @@
+{
+  "n_listings": 1097241,
+  "n_photo_manifest_rows": 1406718,
+  "n_cpu_images": 1243339,
+  "n_gpu_images": 48122,
+  "n_reviews": 50686612,
+  "wall_time_hours": 10.841765268776152,
+  "estimated_cost_usd": 360.51169999999996,
+  "peak_workers": 1000
+}

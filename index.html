@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>1.1M Airbnbs on Burla</title>
+<meta name="description" content="1.1M Airbnb listings, 1.4M photos, 50M reviews, scored on Burla in 11 hours for $360." />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero__inner">
+    <p class="eyebrow">scored on Burla</p>
+    <h1>1.1 million Airbnbs, looked at all at once.</h1>
+    <p class="lede">
+      Every public Airbnb listing in Inside Airbnb's open data dump (~1.1M
+      listings across 116 cities), every photo URL we could pull from the
+      public listing pages, every one of 50M reviews. CLIP, YOLOv8, and Claude
+      Haiku on top of it all, run in parallel on Burla in 11 hours of wall
+      time for about $360.
+    </p>
+    <div class="stats" id="stats-banner">
+      <div class="stat"><span class="num" data-stat="n_listings">--</span><span class="label">listings</span></div>
+      <div class="stat"><span class="num" data-stat="n_photo_manifest_rows">--</span><span class="label">photos scraped</span></div>
+      <div class="stat"><span class="num" data-stat="n_cpu_images">--</span><span class="label">images CLIP-scored</span></div>
+      <div class="stat"><span class="num" data-stat="n_gpu_images">--</span><span class="label">images run on A100</span></div>
+      <div class="stat"><span class="num" data-stat="n_reviews">--</span><span class="label">reviews scored</span></div>
+      <div class="stat"><span class="num" data-stat="peak_workers">--</span><span class="label">peak Burla workers</span></div>
+      <div class="stat"><span class="num" data-stat="wall_time_hours">--</span><span class="label">hours wall</span></div>
+      <div class="stat"><span class="num" data-stat="estimated_cost_usd_dollar">--</span><span class="label">spend</span></div>
+    </div>
+    <p class="meta">
+      Public Inside Airbnb dumps for the listings + reviews. Photo URLs scraped
+      from public listing pages. <a href="#correlations">Correlations</a> use
+      bootstrap 95% CIs, sample size required >=100 per bucket. Demand proxy is
+      Inside Airbnb's reviews_per_month, not actual bookings.
+    </p>
+  </div>
+</header>
+
+<section class="map-section">
+  <h2>Every flagged listing on a map</h2>
+  <p class="section-lede">
+    Each dot is one listing flagged by one of the seven detectors below.
+    Color-coded by category. Drag, zoom, click a dot for the listing.
+  </p>
+  <div id="map" aria-label="World map of flagged Airbnb listings"></div>
+  <div class="legend" id="map-legend"></div>
+</section>
+
+<section id="worst-tv" class="grid-section">
+  <h2>Worst TV placements in 1.1M Airbnbs</h2>
+  <p class="section-lede">YOLO confirmed a TV in the upper half of the photo, CLIP also flagged it as "TV mounted above a fireplace." Top 50.</p>
+  <div class="grid" data-section="worst_tv_placements"></div>
+</section>
+
+<section id="messiest" class="grid-section">
+  <h2>Messiest photos a host actually posted</h2>
+  <p class="section-lede">Top 50 by CLIP score against "a messy cluttered room with stuff everywhere." (We are not naming these listings.)</p>
+  <div class="grid" data-section="messiest_listings"></div>
+</section>
+
+<section id="mirrors" class="grid-section">
+  <h2>Hosts caught in their own mirrors</h2>
+  <p class="section-lede">CLIP score against "a photographer reflected in a mirror taking a photo." Top 50.</p>
+  <div class="grid" data-section="mirror_selfies"></div>
+</section>
+
+<section id="plants" class="grid-section">
+  <h2>The most plant-maximalist Airbnbs</h2>
+  <p class="section-lede">CLIP "room full of houseplants" + YOLOv8 potted plant counts. Top 30.</p>
+  <div class="grid" data-section="plant_maximalists"></div>
+</section>
+
+<section id="cleaning-fees" class="table-section">
+  <h2>Cleaning fees that exceed the nightly rate</h2>
+  <p class="section-lede">Top 100 listings ranked by cleaning_fee / nightly_price.</p>
+  <div class="table-wrap">
+    <table class="fee-table" aria-label="Cleaning fees that exceed the nightly rate">
+      <thead><tr>
+        <th>City</th><th>Nightly</th><th>Cleaning</th><th>Ratio</th><th>Listing</th>
+      </tr></thead>
+      <tbody data-section="insane_cleaning_fees"></tbody>
+    </table>
+  </div>
+</section>
+
+<section id="reviews" class="cards-section">
+  <h2>Funniest reviews from 50M</h2>
+  <p class="section-lede">3-tier funnel: heuristic on every review, embedding cluster on top 200k, Claude Haiku on top 10k.</p>
+  <div class="card-grid" data-section="funniest_reviews"></div>
+</section>
+
+<section id="correlations" class="corr-section">
+  <h2>What held up under bootstrap (and what did not)</h2>
+  <p class="section-lede">
+    Median demand proxy per bucket, with bootstrap 95% confidence intervals
+    (1000 resamples, n &gt;= 100 per bucket required). A finding is rejected
+    if any pair of bucket CIs overlaps.
+  </p>
+  <div id="corr-list"></div>
+</section>
+
+<footer>
+  <p>
+    Built on <a href="https://docs.burla.dev">Burla</a>. Code:
+    <a href="https://github.com/Burla-Cloud/airbnb-burla">github.com/Burla-Cloud/airbnb-burla</a>.
+    Caveats: demand proxy is reviews_per_month, not actual bookings. Photo
+    coverage is whatever public listing pages returned without anti-bot
+    blocking. Public Inside Airbnb data, no API access.
+  </p>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="app.js" defer></script>
+</body>
+</html>

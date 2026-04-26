@@ -1,0 +1,145 @@
+{
+  "title": "5 hypotheses, bootstrapped 95% CIs",
+  "hypotheses": [
+    {
+      "hypothesis": "brightness_quartile",
+      "verdict": "accepted",
+      "reason": "",
+      "buckets": [
+        {
+          "bucket": "q1",
+          "n": 240454,
+          "median": 0.29,
+          "ci_low": 0.28,
+          "ci_high": 0.29
+        },
+        {
+          "bucket": "q2",
+          "n": 240453,
+          "median": 0.37,
+          "ci_low": 0.37,
+          "ci_high": 0.38
+        },
+        {
+          "bucket": "q3",
+          "n": 240453,
+          "median": 0.49,
+          "ci_low": 0.48,
+          "ci_high": 0.49
+        },
+        {
+          "bucket": "q4",
+          "n": 240454,
+          "median": 0.65,
+          "ci_low": 0.64,
+          "ci_high": 0.66
+        }
+      ]
+    },
+    {
+      "hypothesis": "cleaning_fee_ratio_bucket",
+      "verdict": "rejected",
+      "reason": "single bucket",
+      "buckets": [
+        {
+          "bucket": "single",
+          "n": 654932,
+          "median": 0.6,
+          "ci_low": 0.6,
+          "ci_high": 0.61
+        }
+      ]
+    },
+    {
+      "hypothesis": "messiness_quartile",
+      "verdict": "rejected",
+      "reason": "overlapping CIs across all bucket pairs",
+      "buckets": [
+        {
+          "bucket": "q1",
+          "n": 240419,
+          "median": 0.35,
+          "ci_low": 0.34,
+          "ci_high": 0.35
+        },
+        {
+          "bucket": "q2",
+          "n": 240419,
+          "median": 0.52,
+          "ci_low": 0.51,
+          "ci_high": 0.52
+        },
+        {
+          "bucket": "q3",
+          "n": 240419,
+          "median": 0.56,
+          "ci_low": 0.56,
+          "ci_high": 0.57
+        },
+        {
+          "bucket": "q4",
+          "n": 240419,
+          "median": 0.34,
+          "ci_low": 0.34,
+          "ci_high": 0.35
+        }
+      ]
+    },
+    {
+      "hypothesis": "plant_count_bucket",
+      "verdict": "rejected",
+      "reason": "overlapping CIs across all bucket pairs",
+      "buckets": [
+        {
+          "bucket": "0",
+          "n": 1091715,
+          "median": 0.44,
+          "ci_low": 0.44,
+          "ci_high": 0.44
+        },
+        {
+          "bucket": "1",
+          "n": 2478,
+          "median": 0.36,
+          "ci_low": 0.31,
+          "ci_high": 0.41
+        },
+        {
+          "bucket": "2-3",
+          "n": 2033,
+          "median": 0.32,
+          "ci_low": 0.29,
+          "ci_high": 0.37
+        },
+        {
+          "bucket": "4+",
+          "n": 1015,
+          "median": 0.28,
+          "ci_low": 0.23,
+          "ci_high": 0.34
+        }
+      ]
+    },
+    {
+      "hypothesis": "tv_too_high",
+      "verdict": "accepted",
+      "reason": "",
+      "buckets": [
+        {
+          "bucket": "False",
+          "n": 389,
+          "median": 0.16,
+          "ci_low": 0.11,
+          "ci_high": 0.22
+        },
+        {
+          "bucket": "True",
+          "n": 3725,
+          "median": 0.36,
+          "ci_low": 0.32,
+          "ci_high": 0.4
+        }
+      ]
+    }
+  ]
+}

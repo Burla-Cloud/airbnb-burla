@@ -1,0 +1,1686 @@
+{
+  "title": "Every flagged Airbnb in the demo, on a Leaflet map",
+  "n": 280,
+  "points": [
+    {
+      "type": "worst_tv_placements",
+      "lat": 55.69901,
+      "lng": 12.55765,
+      "listing_id": 48099546
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 50.08605108845615,
+      "lng": 14.417267404496672,
+      "listing_id": 707223226372177272
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 39.54723,
+      "lng": 3.18703,
+      "listing_id": 3029803
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 41.76956,
+      "lng": -87.57354,
+      "listing_id": 22320384
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 40.70459,
+      "lng": -73.8646,
+      "listing_id": 41569497
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 51.4889,
+      "lng": -0.20699,
+      "listing_id": 1474648566644174507
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 40.70439,
+      "lng": -73.86589,
+      "listing_id": 41637835
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": -22.89836,
+      "lng": -43.3024,
+      "listing_id": 1323409621120609089
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": -22.89806,
+      "lng": -43.30442,
+      "listing_id": 1323413461541768919
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 40.78675,
+      "lng": -73.97075,
+      "listing_id": 41588820
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 32.74103344401229,
+      "lng": -117.12343197315931,
+      "listing_id": 655997326675643344
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 51.59498,
+      "lng": -0.0018,
+      "listing_id": 1299420090630154517
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 40.81144,
+      "lng": -73.94568,
+      "listing_id": 1260236683261653180
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 40.63205,
+      "lng": -74.09133,
+      "listing_id": 41614248
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 40.73459,
+      "lng": -74.0044,
+      "listing_id": 19943440
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 32.73915,
+      "lng": -117.16687,
+      "listing_id": 630461178169966391
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 34.00502722241842,
+      "lng": -118.4749260940688,
+      "listing_id": 1402385710220282907
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 32.87611,
+      "lng": -96.76646,
+      "listing_id": 53677550
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 51.60544084984716,
+      "lng": 0.0085374515097663,
+      "listing_id": 1079600076357162785
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 26.126405,
+      "lng": -80.12178689999999,
+      "listing_id": 1351526243450611347
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 55.70762537995402,
+      "lng": 12.53482139647349,
+      "listing_id": 1033376967263941526
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": -22.97755,
+      "lng": -43.19174,
+      "listing_id": 23996565
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 40.91495,
+      "lng": 29.30352,
+      "listing_id": 830439566567769781
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 34.14291,
+      "lng": -118.26364,
+      "listing_id": 1530705296628183854
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 32.7567097,
+      "lng": -96.8240672,
+      "listing_id": 1027674836083047546
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 32.68642,
+      "lng": -117.04974,
+      "listing_id": 576737791546026754
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 33.98824,
+      "lng": -118.34748,
+      "listing_id": 721229901587790299
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 49.23523,
+      "lng": -123.11211,
+      "listing_id": 37321660
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 39.55266,
+      "lng": 2.70182,
+      "listing_id": 1144273895977673667
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 50.07777,
+      "lng": 14.43075,
+      "listing_id": 674342426327688508
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 40.76047,
+      "lng": -73.99333,
+      "listing_id": 1533377985850678157
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 39.55266,
+      "lng": 2.70182,
+      "listing_id": 1144273895977673667
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 33.9842,
+      "lng": -118.45765,
+      "listing_id": 1534574309518490149
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": -34.57602,
+      "lng": -58.43548,
+      "listing_id": 34568389
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 32.721489,
+      "lng": -117.12912,
+      "listing_id": 627149030443054810
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 34.10312,
+      "lng": -118.35806,
+      "listing_id": 1330568249119858857
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 32.72559,
+      "lng": -117.13268,
+      "listing_id": 629029642091835277
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 36.12685,
+      "lng": -115.16761,
+      "listing_id": 35914675
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 44.85596,
+      "lng": -0.5734,
+      "listing_id": 22042823
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 41.9101,
+      "lng": 12.46503,
+      "listing_id": 48122302
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 40.70341,
+      "lng": -73.82744,
+      "listing_id": 41349499
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 51.56386,
+      "lng": 0.03844,
+      "listing_id": 53074261
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 53.38924,
+      "lng": -2.26331,
+      "listing_id": 1499450610804947479
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 51.59918,
+      "lng": -0.1219,
+      "listing_id": 22593110
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 40.64445,
+      "lng": -73.92539,
+      "listing_id": 1270373232572829349
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 51.50030279841213,
+      "lng": 0.0666269041245695,
+      "listing_id": 1485339409146488728
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 51.42404,
+      "lng": -0.16716,
+      "listing_id": 53841628
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 51.55794,
+      "lng": -0.10334,
+      "listing_id": 34426652
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 37.96400885858781,
+      "lng": 23.72882019728422,
+      "listing_id": 807916218727960291
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 36.7282876,
+      "lng": -4.4131653,
+      "listing_id": 1110895965696867793
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 51.5395,
+      "lng": -0.19971,
+      "listing_id": 16283956
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 52.55194,
+      "lng": 13.378,
+      "listing_id": 11865663
+    },
+    {
+      "type": "messiest_listings",
+      "lat": -37.793,
+      "lng": 144.84968,
+      "listing_id": 18229983
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 40.68647,
+      "lng": -73.92494,
+      "listing_id": 7761394
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 52.51477,
+      "lng": 13.49821,
+      "listing_id": 22368037
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 40.6926,
+      "lng": -73.90614,
+      "listing_id": 40916964
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 51.47503,
+      "lng": -0.09172,
+      "listing_id": 23991020
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 51.51785,
+      "lng": -0.0641,
+      "listing_id": 19480361
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 40.86635,
+      "lng": -73.92253,
+      "listing_id": 32013622
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 51.54252,
+      "lng": -0.20349,
+      "listing_id": 18832841
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 48.88526,
+      "lng": 2.33451,
+      "listing_id": 14883801
+    },
+    {
+      "type": "messiest_listings",
+      "lat": -22.9803,
+      "lng": -43.19053,
+      "listing_id": 40731174
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 51.48887,
+      "lng": -0.08868,
+      "listing_id": 13644646
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 34.07116,
+      "lng": -118.45335,
+      "listing_id": 7526789
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 40.81934,
+      "lng": -73.95229,
+      "listing_id": 19363356
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 40.75104,
+      "lng": -73.93771,
+      "listing_id": 18961150
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 51.57577,
+      "lng": -0.08697,
+      "listing_id": 7120651
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 48.89153,
+      "lng": 2.31881,
+      "listing_id": 1102156919482377257
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 48.86957,
+      "lng": 2.35005,
+      "listing_id": 8177313
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 48.8813829,
+      "lng": 2.3657693,
+      "listing_id": 884165349221573955
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 48.20892,
+      "lng": 16.35225,
+      "listing_id": 43927429
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 48.89420330870215,
+      "lng": 2.344680097950356,
+      "listing_id": 983407522428169587
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 40.7479,
+      "lng": -73.88179,
+      "listing_id": 41871626
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 40.71627,
+      "lng": -73.99435,
+      "listing_id": 2310008
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 51.56245,
+      "lng": -0.06489,
+      "listing_id": 9664197
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 25.11643,
+      "lng": 121.51279,
+      "listing_id": 822368684647628774
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 41.036576127374175,
+      "lng": 28.975049369037155,
+      "listing_id": 945067544140406179
+    },
+    {
+      "type": "messiest_listings",
+      "lat": -34.5524663,
+      "lng": -58.4643969,
+      "listing_id": 1587726033301558004
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 40.69253,
+      "lng": -73.94681,
+      "listing_id": 4822557
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 40.82471,
+      "lng": -73.94233,
+      "listing_id": 7545751
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 40.79813,
+      "lng": -73.97022,
+      "listing_id": 39423751
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 48.17055,
+      "lng": 16.38015,
+      "listing_id": 14227029
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 51.47429646775202,
+      "lng": -0.1747154405285242,
+      "listing_id": 833935021767092432
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 51.54001,
+      "lng": -0.06734,
+      "listing_id": 31990374
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 51.52345,
+      "lng": -0.09332,
+      "listing_id": 14001692
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 51.58844,
+      "lng": -0.12348,
+      "listing_id": 38282807
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 51.52849,
+      "lng": -0.07074,
+      "listing_id": 17935825
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 48.89398,
+      "lng": 2.33993,
+      "listing_id": 34795429
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 51.42271,
+      "lng": -0.13822,
+      "listing_id": 16335292
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 51.53381,
+      "lng": -0.1347,
+      "listing_id": 11947819
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 40.735,
+      "lng": -74.00271,
+      "listing_id": 37146175
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 48.87376,
+      "lng": 2.35343,
+      "listing_id": 6308076
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 40.81792,
+      "lng": -73.93789,
+      "listing_id": 40986283
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 40.84918,
+      "lng": -73.93472,
+      "listing_id": 6302996
+    },
+    {
+      "type": "messiest_listings",
+      "lat": -33.89738,
+      "lng": 151.19955,
+      "listing_id": 39932671
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 55.69567,
+      "lng": 12.54668,
+      "listing_id": 902603102863289513
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 40.67546,
+      "lng": -73.93034,
+      "listing_id": 40403226
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 51.58069,
+      "lng": -0.1236,
+      "listing_id": 987014010405216740
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 41.94343,
+      "lng": -87.73007,
+      "listing_id": 781892187390860266
+    },
+    {
+      "type": "messiest_listings",
+      "lat": 51.55018,
+      "lng": -0.06493,
+      "listing_id": 7553565
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 51.46522383159959,
+      "lng": -0.0189612374075708,
+      "listing_id": 1104915907475833618
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 51.54001,
+      "lng": -0.06734,
+      "listing_id": 31990374
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 51.54631,
+      "lng": -0.08266,
+      "listing_id": 31329900
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 41.89533019432732,
+      "lng": 12.504227244083722,
+      "listing_id": 1164968644972600381
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 41.031594313606846,
+      "lng": 28.97206959720394,
+      "listing_id": 743128454696444174
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 40.60634294108247,
+      "lng": -74.13984009122109,
+      "listing_id": 40699072
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": -37.82761,
+      "lng": 144.95969,
+      "listing_id": 26361659
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": -34.57818,
+      "lng": -58.4227,
+      "listing_id": 40668865
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 40.70439,
+      "lng": -73.86589,
+      "listing_id": 41637835
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 48.85489,
+      "lng": 2.27887,
+      "listing_id": 969327131433012280
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 38.047980701566615,
+      "lng": 13.002471551299095,
+      "listing_id": 1149119104050153503
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 50.10164,
+      "lng": 14.45467,
+      "listing_id": 775125162350114242
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": -34.5909206,
+      "lng": -58.4253502,
+      "listing_id": 1187825563029261854
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 48.8668,
+      "lng": 2.36119,
+      "listing_id": 18579664
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": -34.57782,
+      "lng": -58.42405,
+      "listing_id": 977655804420168554
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 37.5022,
+      "lng": 15.08666,
+      "listing_id": 36292058
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 48.82370179999999,
+      "lng": 2.3294497,
+      "listing_id": 1023766870459046622
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 51.41087,
+      "lng": -0.21489,
+      "listing_id": 19701933
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 48.89083,
+      "lng": 2.3412,
+      "listing_id": 20987676
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 40.73823,
+      "lng": -73.80753,
+      "listing_id": 36064099
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 55.68582,
+      "lng": 12.5313,
+      "listing_id": 15118238
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 40.74829,
+      "lng": -73.98801,
+      "listing_id": 40405170
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 32.83384,
+      "lng": -117.20186,
+      "listing_id": 553573640424380788
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 40.74501,
+      "lng": -73.99436,
+      "listing_id": 1244250404861933619
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 40.74504,
+      "lng": -73.99429,
+      "listing_id": 1244250558089359943
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 51.4627655,
+      "lng": -0.0476442,
+      "listing_id": 1234615390342728625
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 37.38765,
+      "lng": 24.39831,
+      "listing_id": 44302352
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 55.70725,
+      "lng": 12.5574,
+      "listing_id": 30172275
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 40.58782,
+      "lng": -73.9573,
+      "listing_id": 6892731
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 48.88683985811793,
+      "lng": 2.333089999742482,
+      "listing_id": 945007215677892976
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 40.86138,
+      "lng": 14.26491,
+      "listing_id": 819635240055733093
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 48.879227,
+      "lng": 2.3664465,
+      "listing_id": 849710260888657548
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 48.84305,
+      "lng": 2.35267,
+      "listing_id": 1139710364824484432
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 55.6858,
+      "lng": 12.58216,
+      "listing_id": 49786810
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 46.25749,
+      "lng": 10.58743,
+      "listing_id": 41541317
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 51.46134,
+      "lng": -0.11817,
+      "listing_id": 31337220
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 38.56738,
+      "lng": 14.57018,
+      "listing_id": 878060872507894247
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": -33.8373964,
+      "lng": 151.2082838,
+      "listing_id": 781306545114016138
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 51.48836,
+      "lng": -0.1096,
+      "listing_id": 1218342
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": -37.856148,
+      "lng": 144.9662368,
+      "listing_id": 840943512677566216
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 48.89136077944615,
+      "lng": 2.343275469231488,
+      "listing_id": 1087111315077995715
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 40.72059,
+      "lng": -73.96182,
+      "listing_id": 40761556
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 37.31108420751173,
+      "lng": 13.581526279449465,
+      "listing_id": 805204500841912546
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 48.86008,
+      "lng": 2.28527,
+      "listing_id": 990297843645998273
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 51.53075,
+      "lng": -0.092,
+      "listing_id": 31619001
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": -41.6047,
+      "lng": 147.21736,
+      "listing_id": 18692675
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 51.51990053841215,
+      "lng": -0.2119910708862216,
+      "listing_id": 4094586
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 35.3658999,
+      "lng": 24.4840475,
+      "listing_id": 887602779647100090
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 45.42698,
+      "lng": 12.36046,
+      "listing_id": 776996
+    },
+    {
+      "type": "mirror_selfies",
+      "lat": 52.49815,
+      "lng": 13.3457,
+      "listing_id": 1197652925808283147
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 40.69326,
+      "lng": -73.91241,
+      "listing_id": 1232950687599154027
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 48.18504,
+      "lng": 16.36083,
+      "listing_id": 36253738
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 19.39561,
+      "lng": -99.15013,
+      "listing_id": 2546210
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": -37.8122584,
+      "lng": 145.0752961,
+      "listing_id": 26763614
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 40.69479,
+      "lng": -73.96424,
+      "listing_id": 16779831
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 48.23443,
+      "lng": 16.36257,
+      "listing_id": 13248193
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 51.47968762509252,
+      "lng": -0.0332039450032512,
+      "listing_id": 1148484410342994970
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": -28.52667,
+      "lng": 153.54577,
+      "listing_id": 53483835
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 51.49008,
+      "lng": -0.21034,
+      "listing_id": 21902533
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 40.72059,
+      "lng": -73.96182,
+      "listing_id": 40761556
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 32.74753,
+      "lng": -117.14763,
+      "listing_id": 643255838175444672
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 51.51751,
+      "lng": -0.30374,
+      "listing_id": 635394864060804196
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 51.51642623008109,
+      "lng": -0.3035563230514526,
+      "listing_id": 870041285279913383
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 48.85593,
+      "lng": 2.36878,
+      "listing_id": 2172645
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 40.74284,
+      "lng": -73.85263,
+      "listing_id": 39257912
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 51.56119,
+      "lng": -0.06071,
+      "listing_id": 36257700
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 40.76117319840985,
+      "lng": -73.98823762750831,
+      "listing_id": 1406727512633488474
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 19.4145575,
+      "lng": -99.176148,
+      "listing_id": 1105537328624884873
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 48.86951,
+      "lng": 2.37389,
+      "listing_id": 5544962
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 59.91386,
+      "lng": 10.76521,
+      "listing_id": 1186837617769621117
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 49.23228957745432,
+      "lng": -123.06554759506292,
+      "listing_id": 656052900229080988
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 40.68963,
+      "lng": -73.93174,
+      "listing_id": 41353712
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 40.8477647,
+      "lng": 14.2538113,
+      "listing_id": 1197027623518351642
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 40.7202,
+      "lng": -73.98284,
+      "listing_id": 9925760
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 19.35712,
+      "lng": -99.17786,
+      "listing_id": 31036813
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 51.55367,
+      "lng": -0.24854,
+      "listing_id": 21497355
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 34.06725,
+      "lng": -118.4025,
+      "listing_id": 13732842
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": -34.5881,
+      "lng": -58.42344,
+      "listing_id": 17978165
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": -34.5881,
+      "lng": -58.42344,
+      "listing_id": 17958398
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 40.70732,
+      "lng": -73.95188,
+      "listing_id": 39633382
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.36893,
+      "lng": 152.88534,
+      "listing_id": 71825
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -31.96903,
+      "lng": 152.50838,
+      "listing_id": 325891
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -31.96723,
+      "lng": 152.50814,
+      "listing_id": 325913
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.74711,
+      "lng": 152.9948,
+      "listing_id": 534462
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.24756,
+      "lng": 152.51427,
+      "listing_id": 737655
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.247334,
+      "lng": 152.514402,
+      "listing_id": 738621
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.008526,
+      "lng": 151.900818,
+      "listing_id": 756889
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.80909,
+      "lng": 152.44042,
+      "listing_id": 759197
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.44145,
+      "lng": 152.89598,
+      "listing_id": 767030
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.45387,
+      "lng": 152.89347,
+      "listing_id": 877862
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.477,
+      "lng": 153.00113,
+      "listing_id": 909050
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.37832,
+      "lng": 152.5124,
+      "listing_id": 915248
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.07868,
+      "lng": 153.20129,
+      "listing_id": 915460
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.29973,
+      "lng": 153.12228,
+      "listing_id": 931662
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.37244,
+      "lng": 153.10111,
+      "listing_id": 1074357
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.49528,
+      "lng": 153.01814,
+      "listing_id": 1087566
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -31.44908,
+      "lng": 152.92804,
+      "listing_id": 1142327
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.38553,
+      "lng": 152.50307,
+      "listing_id": 1160234
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -31.46773,
+      "lng": 152.92862,
+      "listing_id": 1214068
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.172409,
+      "lng": 153.187637,
+      "listing_id": 1256809
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.37171,
+      "lng": 153.10201,
+      "listing_id": 1295445
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.58888,
+      "lng": 153.01076,
+      "listing_id": 1347516
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.4375,
+      "lng": 152.89211,
+      "listing_id": 1387959
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.1905,
+      "lng": 152.53487,
+      "listing_id": 1530298
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.17865,
+      "lng": 152.51544,
+      "listing_id": 1530420
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.18741,
+      "lng": 152.5114,
+      "listing_id": 1530428
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.66549,
+      "lng": 152.09392,
+      "listing_id": 1641927
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.32756,
+      "lng": 152.48446,
+      "listing_id": 1666999
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.67028,
+      "lng": 152.09139,
+      "listing_id": 1833766
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -31.4538,
+      "lng": 152.92274,
+      "listing_id": 1845161
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -31.64088,
+      "lng": 152.83438,
+      "listing_id": 1861612
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.45796,
+      "lng": 152.89555,
+      "listing_id": 1861903
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.38286,
+      "lng": 152.49584,
+      "listing_id": 1877281
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -31.99048,
+      "lng": 151.70536,
+      "listing_id": 1925934
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.33697,
+      "lng": 152.54231,
+      "listing_id": 1949265
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.749132626077188,
+      "lng": 152.99997259130137,
+      "listing_id": 2017458
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -31.47035,
+      "lng": 152.93044,
+      "listing_id": 2033057
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.45127,
+      "lng": 152.89261,
+      "listing_id": 2052592
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.06997,
+      "lng": 152.54397,
+      "listing_id": 2124340
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.38651,
+      "lng": 152.44475,
+      "listing_id": 2228721
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.36842,
+      "lng": 152.473,
+      "listing_id": 2368063
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -31.29363822937012,
+      "lng": 152.69419860839844,
+      "listing_id": 2442555
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.24903,
+      "lng": 152.51569,
+      "listing_id": 2455241
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.05837,
+      "lng": 152.54371,
+      "listing_id": 2467858
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.30899,
+      "lng": 153.10791,
+      "listing_id": 2566764
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.303686141967773,
+      "lng": 153.11691284179688,
+      "listing_id": 2748786
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.00542,
+      "lng": 151.90103,
+      "listing_id": 2772436
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.75706,
+      "lng": 152.97667,
+      "listing_id": 2858581
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -31.84362,
+      "lng": 152.74457,
+      "listing_id": 2893945
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -29.98258,
+      "lng": 153.2256,
+      "listing_id": 3021053
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.352543,
+      "lng": 152.335846,
+      "listing_id": 3085438
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.07867,
+      "lng": 153.20064,
+      "listing_id": 3095878
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.27789,
+      "lng": 153.1301,
+      "listing_id": 3492599
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -31.44544,
+      "lng": 152.91799,
+      "listing_id": 3534505
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.64266,
+      "lng": 153.00877,
+      "listing_id": 3617932
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.55977,
+      "lng": 153.00607,
+      "listing_id": 3678281
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.1718,
+      "lng": 153.18979,
+      "listing_id": 3768946
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.033,
+      "lng": 153.19575,
+      "listing_id": 3863984
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.44441,
+      "lng": 152.89203,
+      "listing_id": 3952363
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.12697,
+      "lng": 152.48429,
+      "listing_id": 4034138
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.14233,
+      "lng": 153.18533,
+      "listing_id": 4048509
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.33686,
+      "lng": 152.54097,
+      "listing_id": 4164431
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.31731,
+      "lng": 152.49056,
+      "listing_id": 4187024
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -31.622995376586918,
+      "lng": 152.2504425048828,
+      "listing_id": 4199639
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.453962326049805,
+      "lng": 153.01034545898438,
+      "listing_id": 4204700
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.30612,
+      "lng": 153.13734,
+      "listing_id": 4226760
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.66846,
+      "lng": 152.17756,
+      "listing_id": 4252706
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.37599563598633,
+      "lng": 152.49569702148438,
+      "listing_id": 4258039
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.74821,
+      "lng": 152.99834,
+      "listing_id": 4287946
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -31.45657,
+      "lng": 152.93033,
+      "listing_id": 4344595
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.2493,
+      "lng": 152.51451,
+      "listing_id": 4396499
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -29.98434,
+      "lng": 153.22858,
+      "listing_id": 4458613
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.679105,
+      "lng": 152.164317,
+      "listing_id": 4550928
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.34864,
+      "lng": 152.53482,
+      "listing_id": 4560077
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.18293,
+      "lng": 152.4958,
+      "listing_id": 4695034
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.3467,
+      "lng": 152.53458,
+      "listing_id": 4796025
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.34806,
+      "lng": 152.53508,
+      "listing_id": 4811176
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.07429,
+      "lng": 153.2006,
+      "listing_id": 4816653
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.32752,
+      "lng": 153.05851,
+      "listing_id": 4822214
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -31.27366,
+      "lng": 152.96299,
+      "listing_id": 4834965
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.34558,
+      "lng": 152.5374,
+      "listing_id": 4880923
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.45316,
+      "lng": 152.89534,
+      "listing_id": 4987201
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.46096,
+      "lng": 152.89948,
+      "listing_id": 5005819
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.74574,
+      "lng": 152.99214,
+      "listing_id": 5050979
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.36087,
+      "lng": 152.46793,
+      "listing_id": 5069047
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.31663,
+      "lng": 152.49052,
+      "listing_id": 5104587
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.46096,
+      "lng": 152.89948,
+      "listing_id": 5105679
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.46096,
+      "lng": 152.89948,
+      "listing_id": 5106002
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.46096,
+      "lng": 152.89948,
+      "listing_id": 5106275
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -31.45657,
+      "lng": 152.93033,
+      "listing_id": 5126068
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.483,
+      "lng": 152.88141,
+      "listing_id": 5138759
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -31.93843,
+      "lng": 152.42826,
+      "listing_id": 5231576
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -31.19037,
+      "lng": 152.97881,
+      "listing_id": 5290203
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.37532,
+      "lng": 153.08099,
+      "listing_id": 5309777
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -31.27044,
+      "lng": 152.96283,
+      "listing_id": 5311184
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.11765,
+      "lng": 152.27267,
+      "listing_id": 5340740
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -32.1796875,
+      "lng": 152.51580810546875,
+      "listing_id": 5424975
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.45744,
+      "lng": 153.01178,
+      "listing_id": 5550943
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.3283,
+      "lng": 153.05712,
+      "listing_id": 5584206
+    },
+    {
+      "type": "insane_cleaning_fees",
+      "lat": -30.75756,
+      "lng": 152.97995,
+      "listing_id": 5593833
+    }
+  ]
+}
