@@ -52,26 +52,41 @@ function fmt(n) {
 const ACRONYMS = new Set([
   // Country / region
   "DC", "USA", "UK", "MSA", "NYC", "DR", "BC", "QC", "NSW", "VIC", "QLD", "UAE", "EU",
-  // US states (Inside Airbnb often emits city slugs that include state abbreviations)
+  // US states (Inside Airbnb sometimes emits city slugs that include state abbreviations)
   "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN",
   "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV",
   "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN",
   "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY",
 ]);
 
+// Prepositions / articles that should stay lowercase in the middle of a name
+// ("Rio de Janeiro", "Isla de la Juventud", etc.). These conflict with some
+// US state abbreviations (DE, LA, IN, OR), which is why titleCase below only
+// applies the acronym rule in the *last* token position.
+const PREPOSITIONS = new Set([
+  "of", "and", "the", "in", "on", "at", "to",
+  "de", "del", "la", "le", "los", "las", "y",
+  "do", "da", "dos", "das",
+  "von", "van", "der", "den",
+  "el", "il", "li",
+]);
+
 function titleCase(s) {
   if (!s) return "";
-  return String(s)
-    .split(/[\s\-_]+/)
-    .filter(Boolean)
-    .map((w) => {
-      const up = w.toUpperCase();
-      if (ACRONYMS.has(up)) return up;
-      const lo = w.toLowerCase();
-      if (["of", "and", "the", "in", "on", "de", "la", "le", "y", "del"].includes(lo)) return lo;
-      return lo.charAt(0).toUpperCase() + lo.slice(1);
-    })
-    .join(" ");
+  const words = String(s).split(/[\s\-_]+/).filter(Boolean);
+  return words.map((w, i) => {
+    const lo = w.toLowerCase();
+    const up = w.toUpperCase();
+    const isLast = i === words.length - 1;
+    // Last token: prefer state/country abbreviation over preposition
+    // (so "wilmington-de" -> "Wilmington DE", "indianapolis-in" -> "Indianapolis IN").
+    if (isLast && ACRONYMS.has(up)) return up;
+    // Middle token: preposition wins over acronym
+    // (so "rio-de-janeiro" -> "Rio de Janeiro", not "Rio DE Janeiro").
+    if (i > 0 && PREPOSITIONS.has(lo)) return lo;
+    if (ACRONYMS.has(up)) return up;
+    return lo.charAt(0).toUpperCase() + lo.slice(1);
+  }).join(" ");
 }
 
 function placeLabel(it) {
