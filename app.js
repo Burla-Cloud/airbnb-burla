@@ -3,21 +3,41 @@
 const DATA_BASE = "./data";
 
 const SECTION_COLORS = {
-  worst_tv_placements: "#ff5a5f",
-  messiest_listings: "#f9a826",
-  mirror_selfies: "#9c5dff",
-  plant_maximalists: "#3ddc97",
-  insane_cleaning_fees: "#00a699",
-  funniest_reviews: "#5fa8ff",
+  worst_tv_placements: "#E0533A",
+  messiest_listings:   "#B97A1E",
+  mirror_selfies:      "#7C5CC9",
+  plant_maximalists:   "#0E6E5C",
 };
 
 const SECTION_LABELS = {
   worst_tv_placements: "Worst TV placements",
-  messiest_listings: "Messiest listings",
-  mirror_selfies: "Mirror selfies",
-  plant_maximalists: "Plant maximalists",
-  insane_cleaning_fees: "Insane cleaning fees",
-  funniest_reviews: "Funniest reviews",
+  messiest_listings:   "Messiest listings",
+  mirror_selfies:      "Mirror selfies",
+  plant_maximalists:   "Plant maximalists",
+};
+
+// Human-readable hypothesis titles + bucket labels for the correlations grid.
+const HYPOTHESIS_META = {
+  brightness_quartile: {
+    title: "Brighter photos earn more demand",
+    buckets: { q1: "Darkest", q2: "Q2", q3: "Q3", q4: "Brightest" },
+  },
+  cleaning_fee_ratio_bucket: {
+    title: "Cleaning-fee ratio vs demand",
+    buckets: { single: "All listings" },
+  },
+  messiness_quartile: {
+    title: "Messier photos vs demand",
+    buckets: { q1: "Tidiest", q2: "Q2", q3: "Q3", q4: "Messiest" },
+  },
+  plant_count_bucket: {
+    title: "More houseplants vs demand",
+    buckets: { "0": "0 plants", "1": "1 plant", "2-3": "2-3 plants", "4+": "4+ plants" },
+  },
+  tv_too_high: {
+    title: "TV mounted high vs demand",
+    buckets: { "False": "TV at normal height", "True": "TV mounted too high" },
+  },
 };
 
 function fmt(n) {
@@ -27,6 +47,46 @@ function fmt(n) {
   if (n >= 1_000) return (n / 1_000).toFixed(1) + "K";
   if (n >= 100) return Math.round(n).toString();
   return n.toFixed(1);
+}
+
+const ACRONYMS = new Set([
+  "DC", "USA", "UK", "MSA", "NYC", "LA", "SF", "DR", "BC", "QC", "NSW", "VIC", "QLD",
+  "UAE", "EU"
+]);
+
+function titleCase(s) {
+  if (!s) return "";
+  return String(s)
+    .split(/[\s\-_]+/)
+    .filter(Boolean)
+    .map((w) => {
+      const up = w.toUpperCase();
+      if (ACRONYMS.has(up)) return up;
+      const lo = w.toLowerCase();
+      if (["of", "and", "the", "in", "on", "de", "la", "le", "y", "del"].includes(lo)) return lo;
+      return lo.charAt(0).toUpperCase() + lo.slice(1);
+    })
+    .join(" ");
+}
+
+function placeLabel(it) {
+  const cleanCity = (it.city || "").trim();
+  const cleanCountry = (it.country || "").trim();
+  // The pipeline emits literal "nan" strings when source values were missing.
+  const c = /^nan$/i.test(cleanCity) ? "" : titleCase(cleanCity);
+  const co = /^nan$/i.test(cleanCountry) ? "" : titleCase(cleanCountry);
+  if (c && co) return `${c}, ${co}`;
+  return c || co || "";
+}
+
+function cleanReviewText(s) {
+  if (!s) return "";
+  return String(s)
+    .replace(/<br\s*\/?\s*>/gi, " ")
+    .replace(/<\/?p>/gi, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 async function loadJSON(name) {
@@ -65,8 +125,7 @@ function paintGrid(sectionId, payload) {
   const grid = document.querySelector(`[data-section="${sectionId}"]`);
   if (!grid || !payload || !payload.items) return;
   grid.innerHTML = "";
-  const items = payload.items;
-  for (const it of items) {
+  for (const it of payload.items) {
     const a = document.createElement("a");
     a.className = "item";
     a.href = it.listing_url || "#";
@@ -74,45 +133,23 @@ function paintGrid(sectionId, payload) {
     a.rel = "noopener";
     const thumb = document.createElement("div");
     thumb.className = "thumb";
-    if (it.image_url) {
-      thumb.style.backgroundImage = `url("${it.image_url}")`;
-      thumb.style.backgroundSize = "cover";
-      thumb.style.backgroundPosition = "center";
-    } else if (it.thumbnail_url) {
-      thumb.style.backgroundImage = `url("${it.thumbnail_url}")`;
-      thumb.style.backgroundSize = "cover";
-      thumb.style.backgroundPosition = "center";
+    const img = it.image_url || it.thumbnail_url;
+    if (img) {
+      thumb.style.backgroundImage = `url("${img}")`;
     }
     a.appendChild(thumb);
     const meta = document.createElement("div");
     meta.className = "meta";
     const city = document.createElement("span");
     city.className = "city";
-    city.textContent = `${it.city || "--"}${it.country ? ", " + it.country : ""}`;
+    city.textContent = placeLabel(it);
     const score = document.createElement("span");
     score.className = "score";
-    score.textContent = `score ${(it.score || 0).toFixed(2)}`;
+    score.textContent = (it.score || 0).toFixed(2);
     meta.appendChild(city);
     meta.appendChild(score);
     a.appendChild(meta);
     grid.appendChild(a);
-  }
-}
-
-function paintFeesTable(payload) {
-  const tbody = document.querySelector('[data-section="insane_cleaning_fees"]');
-  if (!tbody || !payload || !payload.items) return;
-  tbody.innerHTML = "";
-  for (const it of payload.items.slice(0, 100)) {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td><span class="city">${it.city || "--"}${it.country ? ", " + it.country : ""}</span></td>
-      <td>$${Math.round(it.price)}</td>
-      <td>$${Math.round(it.cleaning_fee)}</td>
-      <td class="ratio">${it.fee_ratio.toFixed(1)}x</td>
-      <td><a href="${it.listing_url || "#"}" target="_blank" rel="noopener">listing</a></td>
-    `;
-    tbody.appendChild(tr);
   }
 }
 
@@ -126,13 +163,19 @@ function paintReviews(payload) {
     const headline = it.one_line && it.one_line.length
       ? it.one_line
       : (it.category || "Funniest review");
-    const cat = it.category || "";
+    const cat = (it.category || "").replace(/_/g, " ");
+    const place = placeLabel(it);
+    const date = it.date ? new Date(it.date).toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "";
+    const datePlace = [place, date].filter(Boolean).join(" · ");
+    const cleanComment = cleanReviewText(it.comment || "");
+    const trimmed = cleanComment.slice(0, 460);
+    const more = cleanComment.length > 460;
     card.innerHTML = `
       <h3 class="one-line">${escapeHTML(headline)}</h3>
-      <p class="quote">"${escapeHTML((it.comment || "").slice(0, 480))}${(it.comment || "").length > 480 ? "..." : ""}"</p>
+      <p class="quote">${escapeHTML(trimmed)}${more ? "&hellip;" : ""}</p>
       <div class="footer-line">
         <span class="category">${escapeHTML(cat)}</span>
-        <span>${it.city || ""}${it.country ? ", " + it.country : ""} · ${it.date || ""}</span>
+        <span>${escapeHTML(datePlace)}</span>
       </div>
     `;
     root.appendChild(card);
@@ -143,11 +186,22 @@ function paintCorrelations(payload) {
   const root = document.getElementById("corr-list");
   if (!root || !payload || !payload.hypotheses) return;
   root.innerHTML = "";
-  for (const h of payload.hypotheses) {
+  const sorted = [...payload.hypotheses].sort((a, b) => {
+    const av = a.verdict === "accepted" ? 0 : 1;
+    const bv = b.verdict === "accepted" ? 0 : 1;
+    return av - bv;
+  });
+  for (const h of sorted) {
     const block = document.createElement("section");
-    block.className = "corr";
+    block.className = "corr" + (h.verdict === "accepted" ? " accepted-corr" : "");
     const buckets = h.buckets || [];
     if (!buckets.length) continue;
+    const meta = HYPOTHESIS_META[h.hypothesis] || {};
+    const title = meta.title || titleCase(h.hypothesis);
+    const labelFor = (raw) => {
+      if (meta.buckets && meta.buckets[String(raw)] != null) return meta.buckets[String(raw)];
+      return titleCase(String(raw).replace(/_/g, " "));
+    };
     const allLow = Math.min(...buckets.map((b) => b.ci_low));
     const allHigh = Math.max(...buckets.map((b) => b.ci_high));
     const span = Math.max(1e-6, allHigh - allLow);
@@ -157,7 +211,7 @@ function paintCorrelations(payload) {
       const med = ((b.median - allLow) / span) * 100;
       return `
         <div class="corr-bar">
-          <span class="label">${escapeHTML(b.bucket)}</span>
+          <span class="label">${escapeHTML(labelFor(b.bucket))}</span>
           <span class="ci-track">
             <span class="ci-fill" style="left:${left}%; width:${Math.max(width, 0.5)}%"></span>
             <span class="ci-median" style="left:${med}%"></span>
@@ -166,10 +220,11 @@ function paintCorrelations(payload) {
         </div>
       `;
     }).join("");
+    const verdictLabel = h.verdict === "accepted" ? "Accepted" : "Rejected";
     block.innerHTML = `
       <h3>
-        <span>${escapeHTML(h.hypothesis)}</span>
-        <span class="verdict ${h.verdict}">${escapeHTML(h.verdict)}</span>
+        <span>${escapeHTML(title)}</span>
+        <span class="verdict ${h.verdict}">${verdictLabel}</span>
       </h3>
       ${h.reason ? `<p class="reason">${escapeHTML(h.reason)}</p>` : ""}
       <div class="corr-bars">${bars}</div>
@@ -181,23 +236,32 @@ function paintCorrelations(payload) {
 function paintMap(payload) {
   if (!payload || !payload.points || !payload.points.length) return;
   if (typeof L === "undefined") return;
-  const map = L.map("map", { worldCopyJump: true, scrollWheelZoom: false }).setView([20, 0], 2);
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+  const map = L.map("map", {
+    worldCopyJump: true,
+    scrollWheelZoom: false,
+    attributionControl: true,
+    zoomControl: true,
+  }).setView([30, 10], 2);
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png", {
     attribution: '&copy; OpenStreetMap &copy; CARTO',
     subdomains: "abcd",
     maxZoom: 18,
   }).addTo(map);
   for (const p of payload.points) {
     if (typeof p.lat !== "number" || typeof p.lng !== "number") continue;
-    const color = SECTION_COLORS[p.type] || "#cccccc";
+    if (!SECTION_COLORS[p.type]) continue; // skip categories we no longer surface
+    const color = SECTION_COLORS[p.type];
     L.circleMarker([p.lat, p.lng], {
-      radius: 4,
-      color,
+      radius: 5,
+      color: color,
       fillColor: color,
-      fillOpacity: 0.7,
+      fillOpacity: 0.85,
       weight: 1,
+      opacity: 0.95,
     })
-      .bindPopup(`<b>${SECTION_LABELS[p.type] || p.type}</b><br/>listing #${p.listing_id}`)
+      .bindPopup(
+        `<strong>${SECTION_LABELS[p.type] || p.type}</strong><br/>listing #${p.listing_id}`
+      )
       .addTo(map);
   }
   const legend = document.getElementById("map-legend");
@@ -211,8 +275,19 @@ function paintMap(payload) {
   }
 }
 
+function setupNav() {
+  const nav = document.getElementById("nav");
+  if (!nav) return;
+  const onScroll = () => {
+    if (window.scrollY > 4) nav.classList.add("is-scrolled");
+    else nav.classList.remove("is-scrolled");
+  };
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+}
+
 function escapeHTML(s) {
-  return String(s || "")
+  return String(s == null ? "" : s)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
@@ -220,14 +295,14 @@ function escapeHTML(s) {
 }
 
 (async function main() {
-  const [stats, tv, messy, mirror, plants, fees, reviews, corr, world] =
+  setupNav();
+  const [stats, tv, messy, mirror, plants, reviews, corr, world] =
     await Promise.all([
       loadJSON("homepage_stats"),
       loadJSON("worst_tv_placements"),
       loadJSON("messiest_listings"),
       loadJSON("mirror_selfies"),
       loadJSON("plant_maximalists"),
-      loadJSON("insane_cleaning_fees"),
       loadJSON("funniest_reviews"),
       loadJSON("correlations"),
       loadJSON("world_map"),
@@ -238,7 +313,6 @@ function escapeHTML(s) {
   paintGrid("messiest_listings", messy);
   paintGrid("mirror_selfies", mirror);
   paintGrid("plant_maximalists", plants);
-  paintFeesTable(fees);
   paintReviews(reviews);
   paintCorrelations(corr);
   paintMap(world);
