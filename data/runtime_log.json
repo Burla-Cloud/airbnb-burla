@@ -1,6 +1,6 @@
 {
-  "wall_time_hours": 10.841765268776152,
-  "estimated_cost_usd": 360.51169999999996,
+  "wall_time_hours": 10.87465774152014,
+  "estimated_cost_usd": 360.5433,
   "peak_workers": 1000,
   "stages": [
     {
@@ -578,7 +578,21 @@
       "n_failed": 0,
       "notes": {},
       "estimated_usd": 0.0209
+    },
+    {
+      "stage": "s06_artifacts",
+      "started_at": 1777241859.439521,
+      "ended_at": 1777241977.852423,
+      "wall_seconds": 118.41290187835693,
+      "n_workers": 1,
+      "func_cpu": 16,
+      "func_gpu": null,
+      "n_inputs": 1,
+      "n_succeeded": 1,
+      "n_failed": 0,
+      "notes": {},
+      "estimated_usd": 0.0316
     }
   ],
-  "completed_at": 1777236465.8356411
+  "completed_at": 1777241977.8564749
 }

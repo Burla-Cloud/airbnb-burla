@@ -171,20 +171,6 @@
       "potted_plant_count": 9.0
     },
     {
-      "listing_id": 870041285279913383,
-      "city": "London",
-      "country": "united-kingdom",
-      "name": "Double en suite room 2 in convenient apartment",
-      "score": 0.32198724150657654,
-      "image_url": "https://a0.muscache.com/pictures/miso/Hosting-635394864060804196/original/5ffad93b-f1d7-45f6-862b-750e14ece73a.jpeg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/miso/Hosting-635394864060804196/original/5ffad93b-f1d7-45f6-862b-750e14ece73a.jpeg",
-      "listing_url": "https://www.airbnb.com/rooms/870041285279913383",
-      "demand_proxy": 0.0,
-      "lat": 51.51642623008109,
-      "lng": -0.3035563230514526,
-      "potted_plant_count": 9.0
-    },
-    {
       "listing_id": 2172645,
       "city": "Paris",
       "country": "france",
@@ -421,6 +407,20 @@
       "lat": 40.70732,
       "lng": -73.95188,
       "potted_plant_count": 6.0
+    },
+    {
+      "listing_id": 14005070,
+      "city": "Florence",
+      "country": "italy",
+      "name": "CasaDaria - 3bd apartment station walking distance",
+      "score": 0.3171493709087372,
+      "image_url": "https://a0.muscache.com/pictures/625df2d7-23d7-4af5-80f2-5189469b0ca0.jpg",
+      "thumbnail_url": "https://a0.muscache.com/pictures/625df2d7-23d7-4af5-80f2-5189469b0ca0.jpg",
+      "listing_url": "https://www.airbnb.com/rooms/14005070",
+      "demand_proxy": 1.14,
+      "lat": 43.77858,
+      "lng": 11.25239,
+      "potted_plant_count": 0.0
     }
   ]
 }

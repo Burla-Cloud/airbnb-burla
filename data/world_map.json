@@ -1,6 +1,6 @@
 {
   "title": "Every flagged Airbnb in the demo, on a Leaflet map",
-  "n": 280,
+  "n": 254,
   "points": [
     {
       "type": "worst_tv_placements",
@@ -49,12 +49,6 @@
       "lat": -22.89836,
       "lng": -43.3024,
       "listing_id": 1323409621120609089
-    },
-    {
-      "type": "worst_tv_placements",
-      "lat": -22.89806,
-      "lng": -43.30442,
-      "listing_id": 1323413461541768919
     },
     {
       "type": "worst_tv_placements",
@@ -190,12 +184,6 @@
     },
     {
       "type": "worst_tv_placements",
-      "lat": 39.55266,
-      "lng": 2.70182,
-      "listing_id": 1144273895977673667
-    },
-    {
-      "type": "worst_tv_placements",
       "lat": 33.9842,
       "lng": -118.45765,
       "listing_id": 1534574309518490149
@@ -301,6 +289,18 @@
       "lat": 36.7282876,
       "lng": -4.4131653,
       "listing_id": 1110895965696867793
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 43.37378,
+      "lng": -1.75704,
+      "listing_id": 12499475
+    },
+    {
+      "type": "worst_tv_placements",
+      "lat": 34.15737,
+      "lng": -118.69556,
+      "listing_id": 1467780885688833195
     },
     {
       "type": "messiest_listings",
@@ -747,162 +747,6 @@
       "listing_id": 1244250404861933619
     },
     {
-      "type": "mirror_selfies",
-      "lat": 40.74504,
-      "lng": -73.99429,
-      "listing_id": 1244250558089359943
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": 51.4627655,
-      "lng": -0.0476442,
-      "listing_id": 1234615390342728625
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": 37.38765,
-      "lng": 24.39831,
-      "listing_id": 44302352
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": 55.70725,
-      "lng": 12.5574,
-      "listing_id": 30172275
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": 40.58782,
-      "lng": -73.9573,
-      "listing_id": 6892731
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": 48.88683985811793,
-      "lng": 2.333089999742482,
-      "listing_id": 945007215677892976
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": 40.86138,
-      "lng": 14.26491,
-      "listing_id": 819635240055733093
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": 48.879227,
-      "lng": 2.3664465,
-      "listing_id": 849710260888657548
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": 48.84305,
-      "lng": 2.35267,
-      "listing_id": 1139710364824484432
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": 55.6858,
-      "lng": 12.58216,
-      "listing_id": 49786810
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": 46.25749,
-      "lng": 10.58743,
-      "listing_id": 41541317
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": 51.46134,
-      "lng": -0.11817,
-      "listing_id": 31337220
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": 38.56738,
-      "lng": 14.57018,
-      "listing_id": 878060872507894247
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": -33.8373964,
-      "lng": 151.2082838,
-      "listing_id": 781306545114016138
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": 51.48836,
-      "lng": -0.1096,
-      "listing_id": 1218342
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": -37.856148,
-      "lng": 144.9662368,
-      "listing_id": 840943512677566216
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": 48.89136077944615,
-      "lng": 2.343275469231488,
-      "listing_id": 1087111315077995715
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": 40.72059,
-      "lng": -73.96182,
-      "listing_id": 40761556
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": 37.31108420751173,
-      "lng": 13.581526279449465,
-      "listing_id": 805204500841912546
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": 48.86008,
-      "lng": 2.28527,
-      "listing_id": 990297843645998273
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": 51.53075,
-      "lng": -0.092,
-      "listing_id": 31619001
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": -41.6047,
-      "lng": 147.21736,
-      "listing_id": 18692675
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": 51.51990053841215,
-      "lng": -0.2119910708862216,
-      "listing_id": 4094586
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": 35.3658999,
-      "lng": 24.4840475,
-      "listing_id": 887602779647100090
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": 45.42698,
-      "lng": 12.36046,
-      "listing_id": 776996
-    },
-    {
-      "type": "mirror_selfies",
-      "lat": 52.49815,
-      "lng": 13.3457,
-      "listing_id": 1197652925808283147
-    },
-    {
       "type": "plant_maximalists",
       "lat": 40.69326,
       "lng": -73.91241,
@@ -973,12 +817,6 @@
       "lat": 51.51751,
       "lng": -0.30374,
       "listing_id": 635394864060804196
-    },
-    {
-      "type": "plant_maximalists",
-      "lat": 51.51642623008109,
-      "lng": -0.3035563230514526,
-      "listing_id": 870041285279913383
     },
     {
       "type": "plant_maximalists",
@@ -1081,6 +919,12 @@
       "lat": 40.70732,
       "lng": -73.95188,
       "listing_id": 39633382
+    },
+    {
+      "type": "plant_maximalists",
+      "lat": 43.77858,
+      "lng": 11.25239,
+      "listing_id": 14005070
     },
     {
       "type": "insane_cleaning_fees",

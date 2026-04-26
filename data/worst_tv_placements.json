@@ -115,20 +115,6 @@
       "tv_bbox": "[659.6347045898438, 345.39703369140625, 1079.2796630859375, 714.2567138671875]"
     },
     {
-      "listing_id": 1323413461541768919,
-      "city": "Rio De Janeiro",
-      "country": "brazil",
-      "name": "quarto duplo, proximo Engenhão",
-      "score": 0.3359433710575104,
-      "image_url": "https://a0.muscache.com/im/pictures/BnbProperty/BnbProperty-1516536547715494914/original/13313403-7ea2-4128-a982-2608f0874f54.jpeg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/83f69727-db7f-4a49-b994-083789f8a4c9.jpg",
-      "listing_url": "https://www.airbnb.com/rooms/1323413461541768919",
-      "demand_proxy": 0.21,
-      "lat": -22.89806,
-      "lng": -43.30442,
-      "tv_bbox": "[659.6347045898438, 345.39703369140625, 1079.2796630859375, 714.2567138671875]"
-    },
-    {
       "listing_id": 41588820,
       "city": "New York City",
       "country": "united-states",
@@ -300,7 +286,7 @@
       "listing_id": 23996565,
       "city": "Rio De Janeiro",
       "country": "brazil",
-      "name": "Aconchegante apartamento em Copacabana-Praia/metrô",
+      "name": "Aconchegante apartamento em Copacabana-Praia/metr\u00f4",
       "score": 0.3253119885921478,
       "image_url": "https://a0.muscache.com/pictures/d8599893-dea6-4041-84ed-d0ac9d6a0050.jpg",
       "thumbnail_url": "https://a0.muscache.com/pictures/d8599893-dea6-4041-84ed-d0ac9d6a0050.jpg",
@@ -426,7 +412,7 @@
       "listing_id": 1533377985850678157,
       "city": "New York City",
       "country": "united-states",
-      "name": "Bright Studio near Times Square – 30+ Nights",
+      "name": "Bright Studio near Times Square \u2013 30+ Nights",
       "score": 0.32287365198135376,
       "image_url": "https://a0.muscache.com/pictures/hosting/Hosting-1533377985850678157/original/b3d4ec23-3f03-469d-9cc4-0d9314a17b42.jpeg",
       "thumbnail_url": "https://a0.muscache.com/pictures/hosting/Hosting-1533377985850678157/original/b3d4ec23-3f03-469d-9cc4-0d9314a17b42.jpeg",
@@ -435,20 +421,6 @@
       "lat": 40.76047,
       "lng": -73.99333,
       "tv_bbox": "[676.6287231445312, 1343.638427734375, 3521.85546875, 2997.92041015625]"
-    },
-    {
-      "listing_id": 1144273895977673667,
-      "city": "Mallorca",
-      "country": "spain",
-      "name": "Casona Fan low cost lujo",
-      "score": 0.3226812779903412,
-      "image_url": "https://a0.muscache.com/im/pictures/hosting/Hosting-1144273895977673667/original/f94463d7-df89-4d2f-bc99-ea7aae1ef0e7.jpeg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/hosting/Hosting-1144273895977673667/original/b83edf9c-84df-4a5a-9649-12d82768353e.jpeg",
-      "listing_url": "https://www.airbnb.com/rooms/1144273895977673667",
-      "demand_proxy": 4.65,
-      "lat": 39.55266,
-      "lng": 2.70182,
-      "tv_bbox": "[277.072998046875, 42.49934768676758, 1016.4992065429688, 688.69189453125]"
     },
     {
       "listing_id": 1534574309518490149,
@@ -692,7 +664,7 @@
       "listing_id": 1110895965696867793,
       "city": "Malaga",
       "country": "spain",
-      "name": "Alojamiento Victoria 3 Málaga",
+      "name": "Alojamiento Victoria 3 M\u00e1laga",
       "score": 0.31312182545661926,
       "image_url": "https://a0.muscache.com/pictures/hosting/Hosting-1110895965696867793/original/7f53e334-0c37-444a-b803-7800f784044b.jpeg",
       "thumbnail_url": "https://a0.muscache.com/pictures/hosting/Hosting-1110895965696867793/original/7f53e334-0c37-444a-b803-7800f784044b.jpeg",
@@ -701,6 +673,34 @@
       "lat": 36.7282876,
       "lng": -4.4131653,
       "tv_bbox": "[528.4578247070312, 747.0780029296875, 948.004150390625, 1047.3248291015625]"
+    },
+    {
+      "listing_id": 12499475,
+      "city": "Pays Basque",
+      "country": "france",
+      "name": "Cerca de la playa, piscina climatizada.",
+      "score": 0.31306326389312744,
+      "image_url": "https://a0.muscache.com/pictures/hosting/Hosting-12499475/original/38f4d76d-25de-40ce-ba61-13c36095a709.jpeg",
+      "thumbnail_url": "https://a0.muscache.com/pictures/hosting/Hosting-12499475/original/38f4d76d-25de-40ce-ba61-13c36095a709.jpeg",
+      "listing_url": "https://www.airbnb.com/rooms/12499475",
+      "demand_proxy": 1.5,
+      "lat": 43.37378,
+      "lng": -1.75704,
+      "tv_bbox": "[177.64559936523438, 602.4201049804688, 594.14208984375, 875.7678833007812]"
+    },
+    {
+      "listing_id": 1467780885688833195,
+      "city": "Los Angeles",
+      "country": "united-states",
+      "name": "Designer Home",
+      "score": 0.31297701597213745,
+      "image_url": "https://a0.muscache.com/pictures/hosting/Hosting-1467780885688833195/original/00f0f9dd-0e7e-42f4-b766-59e7753ad63f.jpeg",
+      "thumbnail_url": "https://a0.muscache.com/pictures/hosting/Hosting-1467780885688833195/original/00f0f9dd-0e7e-42f4-b766-59e7753ad63f.jpeg",
+      "listing_url": "https://www.airbnb.com/rooms/1467780885688833195",
+      "demand_proxy": 0.0,
+      "lat": 34.15737,
+      "lng": -118.69556,
+      "tv_bbox": "[633.4058227539062, 294.3082580566406, 989.534912109375, 502.5692138671875]"
     }
   ]
 }

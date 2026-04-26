@@ -12,8 +12,16 @@ const SECTION_COLORS = {
 const SECTION_LABELS = {
   worst_tv_placements: "Worst TV placements",
   messiest_listings:   "Messiest listings",
-  mirror_selfies:      "Mirror selfies",
+  mirror_selfies:      "Mirror moments",
   plant_maximalists:   "Plant maximalists",
+};
+
+// Per-section CLIP prompt copy for the modal "How it was scored" line.
+const SCORE_PROMPTS = {
+  worst_tv_placements: 'CLIP score against "a TV mounted high on the wall above a fireplace"',
+  messiest_listings:   'CLIP score against "a messy cluttered room with stuff everywhere"',
+  mirror_selfies:      'CLIP score against "a photographer reflected in a mirror taking a photo"',
+  plant_maximalists:   'CLIP score against "a room full of houseplants"',
 };
 
 // Human-readable hypothesis titles + bucket labels for the correlations grid.
@@ -50,19 +58,13 @@ function fmt(n) {
 }
 
 const ACRONYMS = new Set([
-  // Country / region
   "DC", "USA", "UK", "MSA", "NYC", "DR", "BC", "QC", "NSW", "VIC", "QLD", "UAE", "EU",
-  // US states (Inside Airbnb sometimes emits city slugs that include state abbreviations)
   "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN",
   "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV",
   "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN",
   "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY",
 ]);
 
-// Prepositions / articles that should stay lowercase in the middle of a name
-// ("Rio de Janeiro", "Isla de la Juventud", etc.). These conflict with some
-// US state abbreviations (DE, LA, IN, OR), which is why titleCase below only
-// applies the acronym rule in the *last* token position.
 const PREPOSITIONS = new Set([
   "of", "and", "the", "in", "on", "at", "to",
   "de", "del", "la", "le", "los", "las", "y",
@@ -78,11 +80,7 @@ function titleCase(s) {
     const lo = w.toLowerCase();
     const up = w.toUpperCase();
     const isLast = i === words.length - 1;
-    // Last token: prefer state/country abbreviation over preposition
-    // (so "wilmington-de" -> "Wilmington DE", "indianapolis-in" -> "Indianapolis IN").
     if (isLast && ACRONYMS.has(up)) return up;
-    // Middle token: preposition wins over acronym
-    // (so "rio-de-janeiro" -> "Rio de Janeiro", not "Rio DE Janeiro").
     if (i > 0 && PREPOSITIONS.has(lo)) return lo;
     if (ACRONYMS.has(up)) return up;
     return lo.charAt(0).toUpperCase() + lo.slice(1);
@@ -92,7 +90,6 @@ function titleCase(s) {
 function placeLabel(it) {
   const cleanCity = (it.city || "").trim();
   const cleanCountry = (it.country || "").trim();
-  // The pipeline emits literal "nan" strings when source values were missing.
   const c = /^nan$/i.test(cleanCity) ? "" : titleCase(cleanCity);
   const co = /^nan$/i.test(cleanCountry) ? "" : titleCase(cleanCountry);
   if (c && co) return `${c}, ${co}`;
@@ -109,6 +106,14 @@ function cleanReviewText(s) {
     .trim();
 }
 
+function escapeHTML(s) {
+  return String(s == null ? "" : s)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
 async function loadJSON(name) {
   try {
     const r = await fetch(`${DATA_BASE}/${name}.json`, { cache: "no-store" });
@@ -117,6 +122,25 @@ async function loadJSON(name) {
   } catch (e) {
     return null;
   }
+}
+
+// Dedupe an items array by listing_id first, then by image url. Both can yield
+// duplicates: same listing surfaces twice if the upstream pipeline left dupes,
+// and same hero photo surfaces across multi-listing hosts.
+function dedupeItems(items) {
+  const out = [];
+  const seenListings = new Set();
+  const seenImages = new Set();
+  for (const it of items || []) {
+    const lid = it.listing_id != null ? String(it.listing_id) : "";
+    const img = (it.image_url || it.thumbnail_url || "").trim();
+    if (lid && seenListings.has(lid)) continue;
+    if (img && seenImages.has(img)) continue;
+    if (lid) seenListings.add(lid);
+    if (img) seenImages.add(img);
+    out.push(it);
+  }
+  return out;
 }
 
 function paintStats(stats) {
@@ -143,33 +167,45 @@ function paintStats(stats) {
 
 function paintGrid(sectionId, payload) {
   const grid = document.querySelector(`[data-section="${sectionId}"]`);
-  if (!grid || !payload || !payload.items) return;
+  if (!grid || !payload) return;
+  const items = dedupeItems(payload.items || []);
   grid.innerHTML = "";
-  for (const it of payload.items) {
-    const a = document.createElement("a");
-    a.className = "item";
-    a.href = it.listing_url || "#";
-    a.target = "_blank";
-    a.rel = "noopener";
+  for (const it of items) {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "item";
+    card.setAttribute("aria-label",
+      `Open ${placeLabel(it) || "listing"} in lightbox`);
     const thumb = document.createElement("div");
     thumb.className = "thumb";
     const img = it.image_url || it.thumbnail_url;
-    if (img) {
-      thumb.style.backgroundImage = `url("${img}")`;
-    }
-    a.appendChild(thumb);
+    if (img) thumb.style.backgroundImage = `url("${img}")`;
+    const overlay = document.createElement("span");
+    overlay.className = "thumb__overlay";
+    overlay.innerHTML =
+      `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="15 3 21 3 21 9"></polyline>
+        <polyline points="9 21 3 21 3 15"></polyline>
+        <line x1="21" y1="3" x2="14" y2="10"></line>
+        <line x1="3" y1="21" x2="10" y2="14"></line>
+      </svg>
+      <span>Expand</span>`;
+    thumb.appendChild(overlay);
+    card.appendChild(thumb);
     const meta = document.createElement("div");
     meta.className = "meta";
     const city = document.createElement("span");
     city.className = "city";
-    city.textContent = placeLabel(it);
-    const score = document.createElement("span");
-    score.className = "score";
-    score.textContent = (it.score || 0).toFixed(2);
+    city.textContent = placeLabel(it) || "Unknown";
     meta.appendChild(city);
-    meta.appendChild(score);
-    a.appendChild(meta);
-    grid.appendChild(a);
+    card.appendChild(meta);
+    card.addEventListener("click", () => openPhotoModal(it, sectionId));
+    grid.appendChild(card);
+  }
+  // Update the count chip (if the section has one) to match dedup count.
+  const head = grid.parentElement && grid.parentElement.querySelector(".section__count");
+  if (head) {
+    head.textContent = `${items.length} listing${items.length === 1 ? "" : "s"}`;
   }
 }
 
@@ -178,18 +214,22 @@ function paintReviews(payload) {
   if (!root || !payload || !payload.items) return;
   root.innerHTML = "";
   for (const it of payload.items) {
-    const card = document.createElement("article");
+    const card = document.createElement("button");
+    card.type = "button";
     card.className = "card";
+    card.setAttribute("aria-label", "Open full review");
     const headline = it.one_line && it.one_line.length
       ? it.one_line
       : (it.category || "Funniest review");
     const cat = (it.category || "").replace(/_/g, " ");
     const place = placeLabel(it);
-    const date = it.date ? new Date(it.date).toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "";
-    const datePlace = [place, date].filter(Boolean).join(" · ");
+    const date = it.date
+      ? new Date(it.date).toLocaleDateString("en-US", { month: "short", year: "numeric" })
+      : "";
+    const datePlace = [place, date].filter(Boolean).join(" \u00b7 ");
     const cleanComment = cleanReviewText(it.comment || "");
-    const trimmed = cleanComment.slice(0, 460);
-    const more = cleanComment.length > 460;
+    const trimmed = cleanComment.slice(0, 320);
+    const more = cleanComment.length > 320;
     card.innerHTML = `
       <h3 class="one-line">${escapeHTML(headline)}</h3>
       <p class="quote">${escapeHTML(trimmed)}${more ? "&hellip;" : ""}</p>
@@ -197,7 +237,9 @@ function paintReviews(payload) {
         <span class="category">${escapeHTML(cat)}</span>
         <span>${escapeHTML(datePlace)}</span>
       </div>
+      <span class="card__cta">Read full review &rarr;</span>
     `;
+    card.addEventListener("click", () => openReviewModal(it));
     root.appendChild(card);
   }
 }
@@ -216,9 +258,6 @@ function paintCorrelations(payload) {
     block.className = "corr" + (h.verdict === "accepted" ? " accepted-corr" : "");
     const buckets = h.buckets || [];
     if (!buckets.length) continue;
-    // Skip degenerate hypotheses where the source field couldn't be split into
-    // multiple buckets (e.g. cleaning-fee ratio collapses to a single bucket
-    // because the raw price/fee fields are mostly null in Inside Airbnb dumps).
     if (buckets.length < 2) continue;
     const meta = HYPOTHESIS_META[h.hypothesis] || {};
     const title = meta.title || titleCase(h.hypothesis);
@@ -267,13 +306,13 @@ function paintMap(payload) {
     zoomControl: true,
   }).setView([30, 10], 2);
   L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png", {
-    attribution: '&copy; OpenStreetMap &copy; CARTO',
+    attribution: "&copy; OpenStreetMap &copy; CARTO",
     subdomains: "abcd",
     maxZoom: 18,
   }).addTo(map);
   for (const p of payload.points) {
     if (typeof p.lat !== "number" || typeof p.lng !== "number") continue;
-    if (!SECTION_COLORS[p.type]) continue; // skip categories we no longer surface
+    if (!SECTION_COLORS[p.type]) continue;
     const color = SECTION_COLORS[p.type];
     L.circleMarker([p.lat, p.lng], {
       radius: 5,
@@ -310,16 +349,150 @@ function setupNav() {
   window.addEventListener("scroll", onScroll, { passive: true });
 }
 
-function escapeHTML(s) {
-  return String(s == null ? "" : s)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
+// ============================================================================
+// Modal infrastructure
+// ============================================================================
+
+let _modalEl = null;
+let _restoreFocusEl = null;
+
+function ensureModalEl() {
+  if (_modalEl) return _modalEl;
+  const m = document.createElement("div");
+  m.className = "modal";
+  m.setAttribute("aria-hidden", "true");
+  m.setAttribute("role", "dialog");
+  m.setAttribute("aria-modal", "true");
+  m.innerHTML = `
+    <div class="modal__backdrop" data-modal-close></div>
+    <div class="modal__panel" role="document">
+      <button type="button" class="modal__close" data-modal-close aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <div class="modal__body"></div>
+    </div>
+  `;
+  document.body.appendChild(m);
+  m.addEventListener("click", (e) => {
+    if (e.target.closest("[data-modal-close]")) closeModal();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && m.classList.contains("is-open")) closeModal();
+  });
+  _modalEl = m;
+  return m;
+}
+
+function openModal(html) {
+  const m = ensureModalEl();
+  m.querySelector(".modal__body").innerHTML = html;
+  m.classList.add("is-open");
+  m.setAttribute("aria-hidden", "false");
+  document.body.classList.add("no-scroll");
+  _restoreFocusEl = document.activeElement;
+  m.querySelector(".modal__close").focus();
+}
+
+function closeModal() {
+  if (!_modalEl) return;
+  _modalEl.classList.remove("is-open");
+  _modalEl.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("no-scroll");
+  if (_restoreFocusEl && typeof _restoreFocusEl.focus === "function") {
+    _restoreFocusEl.focus();
+  }
+}
+
+function openPhotoModal(it, sectionId) {
+  const img = it.image_url || it.thumbnail_url || "";
+  const place = placeLabel(it) || "Unknown location";
+  const sectionLabel = SECTION_LABELS[sectionId] || "";
+  const promptCopy = SCORE_PROMPTS[sectionId] || "";
+  const score = (typeof it.score === "number") ? it.score.toFixed(3) : null;
+  const listingUrl = it.listing_url || "";
+  const html = `
+    <figure class="modal__figure">
+      <img src="${escapeHTML(img)}" alt="${escapeHTML(place)} photo" />
+    </figure>
+    <div class="modal__caption">
+      <div class="modal__caption-top">
+        <div>
+          <div class="modal__eyebrow">${escapeHTML(sectionLabel)}</div>
+          <h3 class="modal__title">${escapeHTML(place)}</h3>
+          ${it.name ? `<p class="modal__sub">${escapeHTML(it.name)}</p>` : ""}
+        </div>
+        ${listingUrl
+          ? `<a class="modal__cta" href="${escapeHTML(listingUrl)}" target="_blank" rel="noopener">
+              View on Airbnb
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+                <path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"></path>
+              </svg>
+             </a>`
+          : ""}
+      </div>
+      ${score
+        ? `<div class="modal__score">
+            <span class="modal__score-num">${escapeHTML(score)}</span>
+            <span class="modal__score-text">
+              ${escapeHTML(promptCopy)}.
+              Higher means a closer cosine match. Top-1% of all photos in the index.
+            </span>
+          </div>`
+        : ""}
+    </div>
+  `;
+  openModal(html);
+}
+
+function openReviewModal(it) {
+  const headline = it.one_line && it.one_line.length
+    ? it.one_line
+    : (it.category || "Funniest review");
+  const cat = (it.category || "").replace(/_/g, " ");
+  const place = placeLabel(it);
+  const date = it.date
+    ? new Date(it.date).toLocaleDateString("en-US",
+        { year: "numeric", month: "long", day: "numeric" })
+    : "";
+  const datePlace = [place, date].filter(Boolean).join(" \u00b7 ");
+  // Prefer the full untruncated comment if the upstream pipeline included one.
+  const fullText = cleanReviewText(it.comment_full || it.comment || "");
+  const listingUrl = it.listing_url || "";
+  const truncated = !it.comment_full && (it.comment || "").length >= 600;
+  const html = `
+    <div class="review-modal">
+      <div class="modal__eyebrow">${escapeHTML(cat || "Funniest reviews")}</div>
+      <h3 class="modal__title">${escapeHTML(headline)}</h3>
+      <p class="modal__sub">${escapeHTML(datePlace)}</p>
+      <div class="review-modal__body">
+        <p>${escapeHTML(fullText)}</p>
+        ${truncated
+          ? `<p class="review-modal__note">Inside Airbnb capped this comment at 600 characters; that is the full text we have.</p>`
+          : ""}
+      </div>
+      ${listingUrl
+        ? `<a class="modal__cta" href="${escapeHTML(listingUrl)}" target="_blank" rel="noopener">
+            View listing on Airbnb
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+              <path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"></path>
+            </svg>
+           </a>`
+        : ""}
+    </div>
+  `;
+  openModal(html);
 }
 
 (async function main() {
   setupNav();
+  ensureModalEl();
   const [stats, tv, messy, mirror, plants, reviews, corr, world] =
     await Promise.all([
       loadJSON("homepage_stats"),
