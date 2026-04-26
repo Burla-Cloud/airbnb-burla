@@ -50,8 +50,13 @@ function fmt(n) {
 }
 
 const ACRONYMS = new Set([
-  "DC", "USA", "UK", "MSA", "NYC", "LA", "SF", "DR", "BC", "QC", "NSW", "VIC", "QLD",
-  "UAE", "EU"
+  // Country / region
+  "DC", "USA", "UK", "MSA", "NYC", "DR", "BC", "QC", "NSW", "VIC", "QLD", "UAE", "EU",
+  // US states (Inside Airbnb often emits city slugs that include state abbreviations)
+  "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN",
+  "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV",
+  "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN",
+  "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY",
 ]);
 
 function titleCase(s) {
@@ -196,6 +201,10 @@ function paintCorrelations(payload) {
     block.className = "corr" + (h.verdict === "accepted" ? " accepted-corr" : "");
     const buckets = h.buckets || [];
     if (!buckets.length) continue;
+    // Skip degenerate hypotheses where the source field couldn't be split into
+    // multiple buckets (e.g. cleaning-fee ratio collapses to a single bucket
+    // because the raw price/fee fields are mostly null in Inside Airbnb dumps).
+    if (buckets.length < 2) continue;
     const meta = HYPOTHESIS_META[h.hypothesis] || {};
     const title = meta.title || titleCase(h.hypothesis);
     const labelFor = (raw) => {
