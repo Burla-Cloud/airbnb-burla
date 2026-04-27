@@ -800,6 +800,7 @@ section {
   align-items: stretch;
 }
 .corr {
+  position: relative;
   background: var(--bg);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -809,6 +810,18 @@ section {
   min-width: 0;
   transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
+.corr::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 18px;
+  bottom: 18px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--line);
+}
+.corr.accepted-corr::before { background: var(--teal); }
+.corr:not(.accepted-corr)::before { background: var(--ink-3); opacity: 0.35; }
 .corr:hover {
   border-color: var(--line-2);
   box-shadow: var(--shadow-1);
