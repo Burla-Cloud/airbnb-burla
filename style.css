@@ -784,7 +784,6 @@ section {
   padding: 26px 28px 24px;
   display: flex;
   flex-direction: column;
-  min-height: 260px;
   transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 .corr:hover {
