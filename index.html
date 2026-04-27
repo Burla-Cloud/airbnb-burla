@@ -12,7 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<link rel="stylesheet" href="style.css?v=8" />
+<link rel="stylesheet" href="style.css?v=9" />
 </head>
 <body>
 
@@ -224,10 +224,41 @@ results = remote_parallel_map(
     <div>
       <h2>What held up under bootstrap, and what did not</h2>
       <p class="section-lede">
-        Median demand proxy per bucket with bootstrap 95% confidence intervals
-        (1000 resamples, n &ge; 100 per bucket). A finding is rejected if any
-        pair of bucket CIs overlaps. Two of four hypotheses survived.
+        Each card sorts every listing into buckets, then plots the median
+        demand proxy for each bucket along with a bootstrap 95% confidence
+        interval. We accept a hypothesis only when no two bucket intervals
+        overlap. Two of four survived.
       </p>
+    </div>
+  </div>
+  <div class="corr-key">
+    <div class="corr-key__row">
+      <span class="corr-key__bar" aria-hidden="true">
+        <span class="corr-key__bar-fill"></span>
+        <span class="corr-key__bar-median"></span>
+      </span>
+      <span class="corr-key__text">
+        <strong>The bar</strong> is the bootstrap 95% confidence interval for
+        the median demand proxy in that bucket. The vertical tick is the
+        median itself.
+      </span>
+    </div>
+    <div class="corr-key__row">
+      <span class="corr-key__pill">n = 240.5K</span>
+      <span class="corr-key__text">
+        <strong>n</strong> is the number of listings that landed in that
+        bucket. K = 1,000, M = 1,000,000. More listings means a tighter
+        interval.
+      </span>
+    </div>
+    <div class="corr-key__row">
+      <span class="corr-key__verdict accepted">ACCEPTED</span>
+      <span class="corr-key__verdict rejected">REJECTED</span>
+      <span class="corr-key__text">
+        <strong>Accepted</strong> when every pair of bucket intervals is
+        clearly separate. <strong>Rejected</strong> when any two overlap, so
+        we cannot tell the buckets apart.
+      </span>
     </div>
   </div>
   <div id="corr-list"></div>
@@ -246,6 +277,6 @@ results = remote_parallel_map(
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="app.js?v=8" defer></script>
+<script src="app.js?v=9" defer></script>
 </body>
 </html>

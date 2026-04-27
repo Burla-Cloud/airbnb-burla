@@ -310,10 +310,26 @@ function paintMap(payload) {
     subdomains: "abcd",
     maxZoom: 18,
   }).addTo(map);
+
+  const layers = {};
+  for (const k of Object.keys(SECTION_COLORS)) {
+    layers[k] = L.layerGroup().addTo(map);
+  }
+  const escAttr = (s) => String(s || "").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+
   for (const p of payload.points) {
     if (typeof p.lat !== "number" || typeof p.lng !== "number") continue;
     if (!SECTION_COLORS[p.type]) continue;
     const color = SECTION_COLORS[p.type];
+    const lid = p.listing_id != null ? String(p.listing_id) : "";
+    const url = p.listing_url || (lid ? `https://www.airbnb.com/rooms/${lid}` : "");
+    const popupHTML = `
+      <strong>${SECTION_LABELS[p.type] || p.type}</strong>
+      <br/>
+      ${url
+        ? `<a href="${escAttr(url)}" target="_blank" rel="noopener noreferrer">Open listing #${escAttr(lid)} on Airbnb &nearr;</a>`
+        : `listing #${escAttr(lid)}`}
+    `;
     L.circleMarker([p.lat, p.lng], {
       radius: 5,
       color: color,
@@ -322,20 +338,63 @@ function paintMap(payload) {
       weight: 1,
       opacity: 0.95,
     })
-      .bindPopup(
-        `<strong>${SECTION_LABELS[p.type] || p.type}</strong><br/>listing #${p.listing_id}`
-      )
-      .addTo(map);
+      .bindPopup(popupHTML)
+      .addTo(layers[p.type]);
   }
+
   const legend = document.getElementById("map-legend");
-  if (legend) {
-    legend.innerHTML = Object.entries(SECTION_COLORS)
-      .map(
-        ([k, c]) =>
-          `<span><span class="swatch" style="background:${c}"></span>${SECTION_LABELS[k]}</span>`
-      )
-      .join("");
-  }
+  if (!legend) return;
+
+  const activeFilters = new Set(Object.keys(SECTION_COLORS));
+  legend.innerHTML = Object.entries(SECTION_COLORS)
+    .map(
+      ([k, c]) =>
+        `<button type="button" class="legend-chip is-active" data-key="${k}" aria-pressed="true">
+          <span class="swatch" style="background:${c}"></span>
+          <span class="legend-label">${SECTION_LABELS[k]}</span>
+        </button>`
+    )
+    .join("") + `<button type="button" class="legend-reset" data-action="reset">Reset</button>`;
+
+  const updateChip = (chip, active) => {
+    chip.classList.toggle("is-active", active);
+    chip.setAttribute("aria-pressed", active ? "true" : "false");
+  };
+
+  legend.addEventListener("click", (ev) => {
+    const target = ev.target.closest("[data-key], [data-action]");
+    if (!target) return;
+    if (target.dataset.action === "reset") {
+      for (const k of Object.keys(SECTION_COLORS)) {
+        if (!activeFilters.has(k)) {
+          activeFilters.add(k);
+          map.addLayer(layers[k]);
+        }
+        const chip = legend.querySelector(`[data-key="${k}"]`);
+        if (chip) updateChip(chip, true);
+      }
+      return;
+    }
+    const key = target.dataset.key;
+    if (!key || !layers[key]) return;
+    if (activeFilters.has(key)) {
+      activeFilters.delete(key);
+      map.removeLayer(layers[key]);
+      updateChip(target, false);
+    } else {
+      activeFilters.add(key);
+      map.addLayer(layers[key]);
+      updateChip(target, true);
+    }
+    if (activeFilters.size === 0) {
+      for (const k of Object.keys(SECTION_COLORS)) {
+        activeFilters.add(k);
+        map.addLayer(layers[k]);
+        const chip = legend.querySelector(`[data-key="${k}"]`);
+        if (chip) updateChip(chip, true);
+      }
+    }
+  });
 }
 
 function setupNav() {
