@@ -5,14 +5,12 @@ const DATA_BASE = "./data";
 const SECTION_COLORS = {
   worst_tv_placements: "#E0533A",
   messiest_listings:   "#B97A1E",
-  mirror_selfies:      "#7C5CC9",
   plant_maximalists:   "#0E6E5C",
 };
 
 const SECTION_LABELS = {
   worst_tv_placements: "Worst TV placements",
   messiest_listings:   "Messiest listings",
-  mirror_selfies:      "Mirror moments",
   plant_maximalists:   "Plant maximalists",
 };
 
@@ -20,7 +18,6 @@ const SECTION_LABELS = {
 const SCORE_PROMPTS = {
   worst_tv_placements: 'CLIP score against "a TV mounted high on the wall above a fireplace"',
   messiest_listings:   'CLIP score against "a messy cluttered room with stuff everywhere"',
-  mirror_selfies:      'CLIP score against "a photographer reflected in a mirror taking a photo"',
   plant_maximalists:   'CLIP score against "a room full of houseplants"',
 };
 
@@ -552,12 +549,11 @@ function openReviewModal(it) {
 (async function main() {
   setupNav();
   ensureModalEl();
-  const [stats, tv, messy, mirror, plants, reviews, corr, world] =
+  const [stats, tv, messy, plants, reviews, corr, world] =
     await Promise.all([
       loadJSON("homepage_stats"),
       loadJSON("worst_tv_placements"),
       loadJSON("messiest_listings"),
-      loadJSON("mirror_selfies"),
       loadJSON("plant_maximalists"),
       loadJSON("funniest_reviews"),
       loadJSON("correlations"),
@@ -567,7 +563,6 @@ function openReviewModal(it) {
   paintStats(stats);
   paintGrid("worst_tv_placements", tv);
   paintGrid("messiest_listings", messy);
-  paintGrid("mirror_selfies", mirror);
   paintGrid("plant_maximalists", plants);
   paintReviews(reviews);
   paintCorrelations(corr);

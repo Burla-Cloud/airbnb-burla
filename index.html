@@ -12,7 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<link rel="stylesheet" href="style.css?v=10" />
+<link rel="stylesheet" href="style.css?v=11" />
 </head>
 <body>
 
@@ -112,21 +112,6 @@
   </section>
 </div>
 
-<section id="mirrors" class="grid-section">
-  <div class="section__head">
-    <div>
-      <h2>When the mirror became the main character</h2>
-      <p class="section-lede">
-        Top CLIP matches against &ldquo;a photographer reflected in a mirror
-        taking a photo.&rdquo; A real-estate listing should not need this many
-        mirror compositions. Some are hosts in the act, some are well-staged.
-      </p>
-    </div>
-    <span class="section__count">--</span>
-  </div>
-  <div class="grid" data-section="mirror_selfies"></div>
-</section>
-
 <div class="alt-bg">
   <section id="plants" class="grid-section alt-inner">
     <div class="section__head">
@@ -222,45 +207,53 @@ results = remote_parallel_map(
 <section id="correlations" class="corr-section">
   <div class="section__head">
     <div>
-      <h2>What held up under bootstrap, and what did not</h2>
+      <h2>Does any of this actually predict bookings?</h2>
       <p class="section-lede">
-        Each card sorts every listing into buckets, then plots the median
-        demand proxy for each bucket along with a bootstrap 95% confidence
-        interval. We accept a hypothesis only when no two bucket intervals
-        overlap. Two of four survived.
+        For each idea below, we sort all 1.1M listings into a few groups
+        (like &ldquo;darkest photos&rdquo; vs &ldquo;brightest photos&rdquo;)
+        and check whether the more popular ones really do land in one group.
+        Two of four ideas held up. Two did not.
       </p>
     </div>
   </div>
+
   <div class="corr-key">
-    <div class="corr-key__row">
-      <span class="corr-key__bar" aria-hidden="true">
-        <span class="corr-key__bar-fill"></span>
-        <span class="corr-key__bar-median"></span>
-      </span>
-      <span class="corr-key__text">
-        <strong>The bar</strong> is the bootstrap 95% confidence interval for
-        the median demand proxy in that bucket. The vertical tick is the
-        median itself.
-      </span>
-    </div>
-    <div class="corr-key__row">
-      <span class="corr-key__pill">n = 240.5K</span>
-      <span class="corr-key__text">
-        <strong>n</strong> is the number of listings that landed in that
-        bucket. K = 1,000, M = 1,000,000. More listings means a tighter
-        interval.
-      </span>
-    </div>
-    <div class="corr-key__row">
-      <span class="corr-key__verdict accepted">ACCEPTED</span>
-      <span class="corr-key__verdict rejected">REJECTED</span>
-      <span class="corr-key__text">
-        <strong>Accepted</strong> when every pair of bucket intervals is
-        clearly separate. <strong>Rejected</strong> when any two overlap, so
-        we cannot tell the buckets apart.
-      </span>
+    <h3 class="corr-key__title">How to read these cards</h3>
+    <div class="corr-key__items">
+      <div class="corr-key__row">
+        <span class="corr-key__bar" aria-hidden="true">
+          <span class="corr-key__bar-fill"></span>
+          <span class="corr-key__bar-median"></span>
+        </span>
+        <span class="corr-key__text">
+          <strong>The bar</strong> shows how popular the average listing in a
+          group is. The tick is our best guess. The wider band is the range
+          we are confident covers the real number.
+        </span>
+      </div>
+      <div class="corr-key__row">
+        <span class="corr-key__pill">n = 240.5K</span>
+        <span class="corr-key__text">
+          <strong>n</strong> is how many listings ended up in that group.
+          240.5K means 240,500. Bigger groups give us tighter, more
+          trustworthy bars.
+        </span>
+      </div>
+      <div class="corr-key__row">
+        <span class="corr-key__verdicts">
+          <span class="corr-key__verdict accepted">ACCEPTED</span>
+          <span class="corr-key__verdict rejected">REJECTED</span>
+        </span>
+        <span class="corr-key__text">
+          <strong>Accepted</strong> means the bars in the card are clearly
+          separated, so the groups really are different.
+          <strong>Rejected</strong> means the bars overlap, so we cannot tell
+          the groups apart.
+        </span>
+      </div>
     </div>
   </div>
+
   <div id="corr-list"></div>
 </section>
 
@@ -277,6 +270,6 @@ results = remote_parallel_map(
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="app.js?v=10" defer></script>
+<script src="app.js?v=11" defer></script>
 </body>
 </html>
