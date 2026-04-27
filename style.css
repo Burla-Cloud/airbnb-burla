@@ -685,12 +685,19 @@ section {
 
 /* ---------------- Correlations ---------------- */
 .corr-section { padding-bottom: 96px; }
+.corr-section .section__head,
+.corr-section .corr-key,
+.corr-section #corr-list {
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+}
 .corr-key {
   background: var(--bg-2);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 22px 28px 24px;
-  margin: 0 0 28px;
+  padding: 24px 28px 26px;
+  margin-bottom: 28px;
 }
 .corr-key__title {
   margin: 0 0 14px;
@@ -707,10 +714,10 @@ section {
 }
 .corr-key__row {
   display: grid;
-  grid-template-columns: 130px 1fr;
+  grid-template-columns: 110px 1fr;
   align-items: start;
-  gap: 16px;
-  font-size: 13.5px;
+  gap: 14px;
+  font-size: 13px;
   line-height: 1.55;
   color: var(--ink-2);
   min-width: 0;
@@ -788,18 +795,18 @@ section {
 
 #corr-list {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
-  max-width: 760px;
-  margin: 0 auto;
+  align-items: stretch;
 }
 .corr {
   background: var(--bg);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 26px 28px 24px;
+  padding: 24px 26px 22px;
   display: flex;
   flex-direction: column;
+  min-width: 0;
   transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 .corr:hover {
@@ -854,10 +861,10 @@ section {
 }
 .corr-bar {
   display: grid;
-  grid-template-columns: 160px 1fr 70px;
+  grid-template-columns: 130px minmax(0, 1fr) 56px;
   align-items: center;
-  gap: 18px;
-  font-size: 13.5px;
+  gap: 14px;
+  font-size: 13px;
 }
 .corr-bar .label {
   color: var(--ink);
@@ -1151,8 +1158,8 @@ footer a:hover { color: var(--accent); text-decoration-color: var(--accent); }
   section { padding: 48px 20px; }
   .alt-bg > .alt-inner { padding: 0 20px; }
   .footer__inner { padding: 24px 20px; }
-  #corr-list { max-width: none; }
-  .corr-bar { grid-template-columns: 130px 1fr 60px; gap: 12px; font-size: 12.5px; }
+  #corr-list { grid-template-columns: 1fr; }
+  .corr-bar { grid-template-columns: 130px minmax(0, 1fr) 56px; gap: 12px; font-size: 12.5px; }
   .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 22px 14px; }
   .method-section { padding: 56px 20px; }
   .method { padding: 32px 24px; }
