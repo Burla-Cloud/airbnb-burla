@@ -286,7 +286,6 @@ function paintCorrelations(payload) {
         <span>${escapeHTML(title)}</span>
         <span class="verdict ${h.verdict}">${verdictLabel}</span>
       </h3>
-      ${h.reason ? `<p class="reason">${escapeHTML(h.reason)}</p>` : ""}
       <div class="corr-bars">${bars}</div>
     `;
     root.appendChild(block);
