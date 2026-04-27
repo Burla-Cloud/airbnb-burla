@@ -113,7 +113,7 @@ button { font-family: inherit; }
 }
 .nav__links a {
   padding: 8px 14px;
-  border-radius: 999px;
+  border-radius: 10px;
   font-weight: 500;
   font-size: 14px;
   color: var(--ink-2);
@@ -126,8 +126,8 @@ button { font-family: inherit; }
 .nav__cta {
   background: var(--ink) !important;
   color: var(--bg) !important;
-  padding: 10px 18px !important;
-  border-radius: 999px;
+  padding: 9px 16px !important;
+  border-radius: 10px !important;
   font-weight: 600 !important;
 }
 .nav__cta:hover {
@@ -144,21 +144,24 @@ button { font-family: inherit; }
 .hero__eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  font-weight: 500;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 600;
   color: var(--ink-2);
-  background: var(--bg-2);
-  padding: 6px 12px;
-  border-radius: 999px;
-  margin-bottom: 28px;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  margin-bottom: 32px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 .hero__eyebrow .live {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-soft);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+  flex-shrink: 0;
 }
 .hero h1 {
   font-size: clamp(40px, 5.6vw, 64px);
@@ -270,16 +273,17 @@ section {
 }
 .section__count {
   font-size: 13px;
-  color: var(--ink-2);
+  color: var(--ink-3);
   font-weight: 500;
   white-space: nowrap;
-  background: var(--bg-2);
-  border: 1px solid var(--line);
-  padding: 6px 12px;
-  border-radius: 999px;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font-feature-settings: "tnum";
+  letter-spacing: 0.005em;
 }
 .alt-bg .section__count {
-  background: var(--bg);
+  background: transparent;
 }
 
 /* ---------------- Map ---------------- */
@@ -308,25 +312,28 @@ section {
 .legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 16px;
+  gap: 18px 26px;
+  margin-top: 18px;
+  padding: 0 4px;
 }
 .legend span {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 6px 14px 6px 10px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
   font-size: 13px;
-  color: var(--ink);
+  letter-spacing: 0.005em;
+  color: var(--ink-2);
   font-weight: 500;
 }
 .legend .swatch {
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
+  flex-shrink: 0;
 }
 
 /* ---------------- Photo grids (Airbnb listing card feel) ---------------- */
@@ -387,16 +394,19 @@ section {
   right: 12px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  background: rgba(255, 255, 255, 0.92);
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.95);
   color: var(--ink);
-  border-radius: 999px;
+  border-radius: 8px;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0;
   opacity: 0;
   transform: translateY(-4px);
+  box-shadow: var(--shadow-1);
   transition: opacity 0.18s ease, transform 0.18s ease;
   box-shadow: var(--shadow-2);
 }
@@ -483,22 +493,23 @@ section {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: var(--accent-soft);
+  background: transparent;
   color: var(--accent-dark);
-  border-radius: 999px;
-  padding: 4px 10px;
+  border-radius: 0;
+  padding: 0;
   font-size: 11px;
   font-weight: 600;
-  text-transform: capitalize;
-  letter-spacing: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   white-space: nowrap;
 }
 .card .category::before {
   content: "";
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: var(--accent);
+  flex-shrink: 0;
 }
 .card__cta {
   font-size: 12px;
@@ -638,14 +649,21 @@ section {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
   gap: 20px;
+  align-items: stretch;
 }
 .corr {
   background: var(--bg);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 24px 26px 22px;
+  padding: 26px 28px 24px;
   display: flex;
   flex-direction: column;
+  min-height: 280px;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.corr:hover {
+  border-color: var(--line-2);
+  box-shadow: var(--shadow-1);
 }
 .corr h3 {
   margin: 0 0 6px;
@@ -661,12 +679,12 @@ section {
 }
 .corr h3 > span:first-child { flex: 1; min-width: 0; }
 .corr .verdict {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  border-radius: 999px;
-  padding: 4px 10px;
+  letter-spacing: 0.06em;
+  border-radius: 6px;
+  padding: 3px 8px;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -681,19 +699,23 @@ section {
 .corr .reason {
   font-size: 13px;
   color: var(--ink-2);
-  margin: 0 0 16px;
+  margin: 0 0 18px;
   line-height: 1.5;
 }
 .corr-bars {
-  display: grid;
-  gap: 10px;
-  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-around;
+  gap: 16px;
+  margin-top: 8px;
+  min-height: 168px;
 }
 .corr-bar {
   display: grid;
-  grid-template-columns: 130px 1fr 60px;
+  grid-template-columns: minmax(140px, max-content) 1fr auto;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   font-size: 13px;
 }
 .corr-bar .label {
@@ -701,41 +723,40 @@ section {
   font-weight: 500;
   font-family: var(--sans);
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 .corr-bar .ci-track {
   position: relative;
-  height: 4px;
-  background: var(--line);
+  height: 5px;
+  background: var(--bg-2);
   border-radius: 999px;
 }
 .corr-bar .ci-fill {
   position: absolute;
   top: 0;
   bottom: 0;
-  background: var(--ink-2);
+  background: var(--ink-3);
   border-radius: 999px;
-  opacity: 0.55;
+  opacity: 0.7;
 }
 .corr.accepted-corr .ci-fill {
   background: var(--accent);
-  opacity: 0.55;
+  opacity: 0.6;
 }
 .corr-bar .ci-median {
   position: absolute;
   top: -3px;
   width: 2px;
-  height: 10px;
+  height: 11px;
   background: var(--ink);
   border-radius: 1px;
 }
 .corr.accepted-corr .ci-median { background: var(--accent); }
 .corr-bar .n {
   text-align: right;
-  color: var(--ink-2);
-  font-size: 12px;
+  color: var(--ink-3);
+  font-size: 11px;
   font-feature-settings: "tnum";
+  letter-spacing: 0.01em;
 }
 
 /* ---------------- Modal ---------------- */
@@ -862,10 +883,10 @@ section {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 16px;
+  padding: 11px 18px;
   background: var(--ink);
   color: #FFFFFF !important;
-  border-radius: 999px;
+  border-radius: 10px;
   font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
