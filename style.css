@@ -787,9 +787,10 @@ section {
 
 #corr-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
-  gap: 20px;
-  align-items: stretch;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  max-width: 760px;
+  margin: 0 auto;
 }
 .corr {
   background: var(--bg);
@@ -852,20 +853,25 @@ section {
 }
 .corr-bar {
   display: grid;
-  grid-template-columns: 150px 1fr 64px;
+  grid-template-columns: 160px 1fr 70px;
   align-items: center;
-  gap: 16px;
-  font-size: 13px;
+  gap: 18px;
+  font-size: 13.5px;
 }
 .corr-bar .label {
   color: var(--ink);
   font-weight: 500;
   font-family: var(--sans);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .corr-bar .ci-track {
+  display: block;
   position: relative;
-  height: 5px;
+  width: 100%;
+  height: 6px;
+  min-width: 0;
   background: var(--bg-2);
   border-radius: 999px;
 }
@@ -885,7 +891,7 @@ section {
   position: absolute;
   top: -3px;
   width: 2px;
-  height: 11px;
+  height: 12px;
   background: var(--ink);
   border-radius: 1px;
 }
@@ -1144,8 +1150,8 @@ footer a:hover { color: var(--accent); text-decoration-color: var(--accent); }
   section { padding: 48px 20px; }
   .alt-bg > .alt-inner { padding: 0 20px; }
   .footer__inner { padding: 24px 20px; }
-  #corr-list { grid-template-columns: 1fr; }
-  .corr-bar { grid-template-columns: 130px 1fr 56px; gap: 12px; font-size: 12.5px; }
+  #corr-list { max-width: none; }
+  .corr-bar { grid-template-columns: 130px 1fr 60px; gap: 12px; font-size: 12.5px; }
   .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 22px 14px; }
   .method-section { padding: 56px 20px; }
   .method { padding: 32px 24px; }
