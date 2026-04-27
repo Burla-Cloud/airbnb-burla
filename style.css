@@ -74,14 +74,15 @@ button { font-family: inherit; }
 .nav {
   position: sticky;
   top: 0;
-  z-index: 50;
-  background: rgba(255, 255, 255, 0.96);
+  z-index: 1100;
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: saturate(180%) blur(10px);
   -webkit-backdrop-filter: saturate(180%) blur(10px);
   border-bottom: 1px solid transparent;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .nav.is-scrolled {
+  background: #ffffff;
   border-bottom-color: var(--line);
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
 }
