@@ -1006,7 +1006,7 @@ footer a:hover { color: var(--accent); text-decoration-color: var(--accent); }
   .alt-bg > .alt-inner { padding: 0 20px; }
   .footer__inner { padding: 24px 20px; }
   #corr-list { grid-template-columns: 1fr; }
-  .corr-bar { grid-template-columns: 100px 1fr 50px; gap: 10px; }
+  .corr-bar { grid-template-columns: minmax(120px, max-content) 1fr auto; gap: 12px; font-size: 12.5px; }
   .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 22px 14px; }
   .method-section { padding: 56px 20px; }
   .method { padding: 32px 24px; }
