@@ -1,10 +1,10 @@
 {
-  "n_listings": 1097241,
-  "n_photo_manifest_rows": 1406718,
-  "n_cpu_images": 1243339,
-  "n_gpu_images": 48122,
+  "n_listings": 1740077,
+  "n_photo_manifest_rows": 1945032,
+  "n_cpu_images": 1710664,
+  "n_gpu_images": 12640,
   "n_reviews": 50686612,
-  "wall_time_hours": 10.87465774152014,
-  "estimated_cost_usd": 360.5433,
-  "peak_workers": 1000
+  "wall_time_hours": 22.934206935895816,
+  "estimated_cost_usd": 1024.8931,
+  "peak_workers": 1741
 }
