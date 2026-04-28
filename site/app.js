@@ -3,30 +3,15 @@
 const DATA_BASE = "./data";
 
 const SECTION_COLORS = {
-  worst_tv_placements: "#E0533A",
-  ugly_bathrooms:      "#7A4A2C",
-  hectic_kitchens:     "#B97A1E",
-  drug_den_vibes:      "#5C2E63",
   pets_in_photos:      "#5C4DA8",
-  wtf_clusters:        "#9B1E5A",
 };
 
 const SECTION_LABELS = {
-  worst_tv_placements: "Worst TV placements",
-  ugly_bathrooms:      "Ugly bathrooms",
-  hectic_kitchens:     "Hectic kitchens",
-  drug_den_vibes:      "Drug-den vibes",
   pets_in_photos:      "Real pets in photos",
-  wtf_clusters:        "Wait, what photos",
 };
 
 const SCORE_PROMPTS = {
-  worst_tv_placements: 'CLIP score against "a TV mounted high on the wall above a fireplace"',
-  ugly_bathrooms:      'Claude Haiku Vision said this is genuinely a grimy or sad bathroom',
-  hectic_kitchens:     'Claude Haiku Vision said this kitchen is genuinely chaotic',
-  drug_den_vibes:      'Claude Haiku Vision said this gives "did-someone-just-leave" energy',
   pets_in_photos:      'Claude Haiku Vision said yes, that is a real cat or dog',
-  wtf_clusters:        'CLIP screened for absurdity, then Claude Haiku reranked and clustered',
 };
 
 const HYPOTHESIS_META = {
@@ -766,27 +751,17 @@ function openReviewModal(it) {
 (async function main() {
   setupNav();
   ensureModalEl();
-  const [stats, tv, bathrooms, kitchens, drugDen, pets, wtf, reviews, corr, world] =
+  const [stats, pets, reviews, corr, world] =
     await Promise.all([
       loadJSON("homepage_stats"),
-      loadJSON("worst_tv_placements"),
-      loadJSON("ugly_bathrooms"),
-      loadJSON("hectic_kitchens"),
-      loadJSON("drug_den_vibes"),
       loadJSON("pets_in_photos"),
-      loadJSON("wtf_clusters"),
       loadJSON("funniest_reviews"),
       loadJSON("correlations"),
       loadJSON("world_map"),
     ]);
 
   paintStats(stats);
-  paintGrid("worst_tv_placements", tv);
-  paintGrid("ugly_bathrooms", bathrooms);
-  paintGrid("hectic_kitchens", kitchens);
-  paintGrid("drug_den_vibes", drugDen);
   paintGrid("pets_in_photos", pets);
-  paintWtfClusters(wtf);
   paintReviews(reviews);
   paintCorrelations(corr);
   paintMap(world);
