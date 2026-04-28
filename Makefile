@@ -3,13 +3,13 @@ SSL_CERT_FILE := $(shell $(PY) -c 'import certifi; print(certifi.where())' 2>/de
 ENV := SSL_CERT_FILE=$(SSL_CERT_FILE)
 RUN := $(ENV) $(PY) -m
 
-.PHONY: all stage00 stage01 stage02a stage02a_sample stage02b stage02b_sample stage03 stage04 stage05 stage06 site site_serve site_data test clean help
+.PHONY: all stage00 stage01 stage02a stage02a_sample stage02b stage02b_sample stage03 stage04 stage05 stage05b stage06 stage07 site site_serve site_data test clean help
 
 help:
 	@echo "Targets:"
 	@echo "  make all              run every stage in order, resume-aware"
 	@echo "  make stage00          validate every Inside Airbnb city"
-	@echo "  make stage01          download + clean per-city listings"
+	@echo "  make stage01          download + clean per-city listings + calendar"
 	@echo "  make stage02a_sample  scrape ~5k listings, sanity check"
 	@echo "  make stage02a         scrape ~3M listings (slow, hours)"
 	@echo "  make stage02b_sample  CLIP-score ~10k images, sanity check"
@@ -17,7 +17,9 @@ help:
 	@echo "  make stage03          GPU object detection on top candidates"
 	@echo "  make stage04          three-tier review scoring"
 	@echo "  make stage05          correlations with bootstrap CIs"
+	@echo "  make stage05b         WTF photo Haiku rerank + cluster"
 	@echo "  make stage06          write site JSON artifacts"
+	@echo "  make stage07          derive occupancy_365 + price volatility"
 	@echo "  make site             serve site/ on localhost:8000"
 	@echo "  make test             run pytest"
 	@echo "  make clean            wipe data/interim and data/outputs"
@@ -44,15 +46,24 @@ stage03:
 	$(RUN) src.stages.s03_images_gpu
 
 stage04:
-	$(RUN) src.stages.s04_reviews
+	$(RUN) src.stages.s04_reviews --skip-ingest --skip-tier1
 
 stage05:
 	$(RUN) src.stages.s05_correlate
 
+stage05b:
+	$(RUN) src.stages.s05b_wtf_haiku
+
+stage05c:
+	$(RUN) src.stages.s05c_categories
+
 stage06:
 	$(RUN) src.stages.s06_artifacts
 
-all: stage00 stage01 stage02a stage02b stage03 stage04 stage05 stage06 site_data
+stage07:
+	$(RUN) src.stages.s07_calendar
+
+all: stage00 stage01 stage02a stage02b stage03 stage07 stage05b stage05c stage04 stage05 stage06 site_data
 	@echo "All stages complete. Outputs in data/outputs/. Site data at site/data/."
 
 site_data:

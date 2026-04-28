@@ -15,8 +15,9 @@ import time
 from dotenv import load_dotenv
 
 from ..config import (
-    LISTINGS_BATCH_SIZE, PHOTO_MANIFEST_PATH, SCRAPE_MAX_PARALLELISM,
-    SCRAPE_MIN_SUCCESS_RATE, SCRAPE_REQ_PER_SEC_PER_WORKER, SCRAPE_RETRY_LIMIT,
+    LISTINGS_BATCH_SIZE, PHOTO_MANIFEST_INCLUDE_HISTORY, PHOTO_MANIFEST_PATH,
+    SCRAPE_MAX_PARALLELISM, SCRAPE_MIN_SUCCESS_RATE,
+    SCRAPE_REQ_PER_SEC_PER_WORKER, SCRAPE_RETRY_LIMIT,
     SHARED_PHOTOS, SHARED_ROOT,
 )
 from ..lib.budget import BudgetTracker
@@ -36,6 +37,20 @@ def main() -> None:
 
     load_dotenv()
     register_src_for_burla()
+
+    if not args.sample:
+        from ..lib.io import read_json
+        local_manifest_path = PHOTO_MANIFEST_PATH.with_suffix(".manifest.json")
+        existing = read_json(local_manifest_path)
+        if existing and existing.get("ok") and existing.get("n_rows"):
+            print(
+                f"[s02a] manifest exists ({existing['n_rows']:,} rows, "
+                f"{existing.get('n_listings', 0):,} listings); skipping "
+                f"(delete {local_manifest_path} to force rerun).",
+                flush=True,
+            )
+            return
+
     from burla import remote_parallel_map
 
     listings_parquet = f"{SHARED_ROOT}/listings_clean.parquet"
@@ -44,7 +59,7 @@ def main() -> None:
     [lst] = remote_parallel_map(
         list_listing_ids,
         [ListListingIdsArgs(listings_parquet_path=listings_parquet, sample_n=args.sample)],
-        func_cpu=4, func_ram=16, max_parallelism=1, grow=True, spinner=True,
+        func_cpu=4, func_ram=16, max_parallelism=1, grow=True, spinner=False,
     )
     listing_ids = lst["listing_ids"]
     print(f"[s02a]   {len(listing_ids):,} listings selected (of {lst['n_total']:,} total)", flush=True)
@@ -80,7 +95,7 @@ def main() -> None:
             func_ram=2,
             max_parallelism=n_workers,
             grow=True,
-            spinner=True,
+            spinner=False,
         )
 
         n_ok_total = sum(int(r.get("n_ok", 0)) for r in results)
@@ -130,15 +145,23 @@ def main() -> None:
 
     print("[s02a] reducing batch parquets into one photo manifest ...", flush=True)
     shared_merged = f"{SHARED_ROOT}/photo_manifest.parquet"
+    history_path = f"{SHARED_ROOT}/listings_history.parquet" if PHOTO_MANIFEST_INCLUDE_HISTORY else ""
     [merge] = remote_parallel_map(
         merge_photo_batches,
-        [MergePhotosArgs(shared_root=shared_root, output_path=shared_merged)],
-        func_cpu=8, func_ram=32, max_parallelism=1, grow=True, spinner=True,
+        [MergePhotosArgs(
+            shared_root=shared_root,
+            output_path=shared_merged,
+            listings_history_path=history_path,
+        )],
+        func_cpu=8, func_ram=32, max_parallelism=1, grow=True, spinner=False,
     )
     if not merge.get("ok"):
         raise SystemExit(f"[s02a] merge failed: {merge.get('error')}")
     print(f"[s02a]   merged {merge['n_rows']:,} photo rows across "
-          f"{merge['n_listings']:,} listings from {merge['n_files']:,} batches", flush=True)
+          f"{merge['n_listings']:,} listings from {merge['n_files']:,} batches "
+          f"(history added {merge.get('n_history_added', 0):,}, "
+          f"after url-dedupe {merge.get('n_after_url_dedupe', merge['n_rows']):,})",
+          flush=True)
 
     ensure_dir(PHOTO_MANIFEST_PATH.parent)
     manifest_path = PHOTO_MANIFEST_PATH.with_suffix(".manifest.json")

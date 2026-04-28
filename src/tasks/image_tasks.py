@@ -55,10 +55,11 @@ class ValidateCityArgs:
     snapshot_date: str
     listings_url: str
     reviews_url: str
+    calendar_url: str = ""
 
 
 def validate_city(args: ValidateCityArgs) -> dict:
-    """HEAD-check the listings + reviews dumps, count rows, sample 5 images."""
+    """HEAD-check listings + reviews + calendar, count listings, sample 5 images."""
     out = {
         **asdict(args),
         "listings_ok": False,
@@ -66,6 +67,8 @@ def validate_city(args: ValidateCityArgs) -> dict:
         "n_listings": 0,
         "reviews_ok": False,
         "reviews_bytes": 0,
+        "calendar_ok": False,
+        "calendar_bytes": 0,
         "sample_image_ok_ratio": 0.0,
         "error": None,
     }
@@ -73,6 +76,8 @@ def validate_city(args: ValidateCityArgs) -> dict:
         out["listings_ok"], out["listings_bytes"] = _head(args.listings_url)
         if args.reviews_url:
             out["reviews_ok"], out["reviews_bytes"] = _head(args.reviews_url)
+        if args.calendar_url:
+            out["calendar_ok"], out["calendar_bytes"] = _head(args.calendar_url)
 
         if out["listings_ok"]:
             sample_picture_urls, n_listings = _sample_listings(args.listings_url, n_sample=5)
@@ -142,14 +147,17 @@ class DownloadCityArgs:
     snapshot_date: str
     listings_url: str
     shared_root: str  # e.g. /workspace/shared/airbnb/listings
-    city_slug: str    # filename-safe key
+    city_slug: str    # filename-safe key, includes snapshot date
 
 
 def download_and_clean_city(args: DownloadCityArgs) -> dict:
-    """Download listings.csv.gz, parse + clean, write parquet to shared FS.
+    """Download listings.csv.gz for one (city, snapshot), clean, write parquet.
 
     Returns row count and a small sample summary; the cleaned parquet itself
     lives on /workspace/shared so Stage 2a can load all cities' parquets at once.
+    The output parquet carries the snapshot_date column so the merge step can
+    keep the latest snapshot per listing_id and emit a snapshot_history parquet
+    for trajectory analysis.
     """
     out = {
         "city": args.city,
@@ -164,6 +172,18 @@ def download_and_clean_city(args: DownloadCityArgs) -> dict:
     try:
         import pandas as pd
         os.makedirs(args.shared_root, exist_ok=True)
+
+        out_path = os.path.join(args.shared_root, f"{args.city_slug}.parquet")
+        if os.path.exists(out_path):
+            try:
+                existing = pd.read_parquet(out_path, columns=["listing_id"])
+                out["n_rows"] = int(len(existing))
+                out["ok"] = True
+                out["shared_path"] = out_path
+                out["resumed"] = True
+                return out
+            except Exception:
+                pass
 
         r = requests.get(
             args.listings_url, timeout=600,
@@ -249,17 +269,21 @@ def _parse_price_inline(value) -> Optional[float]:
 class MergeListingsArgs:
     shared_root: str
     output_path: str
+    history_path: str = ""  # optional: full multi-snapshot parquet
 
 
 def merge_listings_parquets(args: MergeListingsArgs) -> dict:
-    """One Burla worker, big func_cpu/func_ram, merges all city parquets.
+    """One Burla worker merges all per-(city, snapshot) parquets.
 
-    Returns metadata + a 100-row sample. The full parquet stays on shared FS;
-    later stages read it from there directly.
+    Two outputs:
+    - ``output_path``: latest snapshot per listing_id (one row per listing).
+    - ``history_path`` (optional): every (listing_id, snapshot_date) row, used
+      by trajectory analyses and the calendar stage.
     """
     out = {
         "ok": False, "n_files": 0, "n_rows": 0, "n_cities": 0,
-        "output_path": args.output_path,
+        "n_history_rows": 0,
+        "output_path": args.output_path, "history_path": args.history_path,
         "schema": [], "sample_rows": [],
         "n_with_picture_url": 0, "error": None,
     }
@@ -274,8 +298,36 @@ def merge_listings_parquets(args: MergeListingsArgs) -> dict:
         dfs = [pd.read_parquet(f) for f in files]
         big = pd.concat(dfs, ignore_index=True)
         big["listing_id"] = big["listing_id"].astype("int64")
-        big = big.drop_duplicates(subset=["listing_id"])
+        if "snapshot_date" not in big.columns:
+            big["snapshot_date"] = ""
+        big["snapshot_date"] = big["snapshot_date"].astype(str)
+        out["n_history_rows"] = int(len(big))
+
+        if args.history_path:
+            os.makedirs(os.path.dirname(args.history_path), exist_ok=True)
+            history_cols = [
+                c for c in (
+                    "listing_id", "snapshot_date", "city", "country", "region",
+                    "price_usd", "reviews_per_month", "number_of_reviews",
+                    "demand_proxy", "accommodates", "bedrooms",
+                    "picture_url", "listing_url",
+                ) if c in big.columns
+            ]
+            history_df = big[history_cols].copy()
+            for _col in history_df.columns:
+                if history_df[_col].dtype == "object":
+                    history_df[_col] = history_df[_col].astype("string")
+            history_df.to_parquet(
+                args.history_path, compression="zstd", index=False,
+            )
+
+        big = big.sort_values(["listing_id", "snapshot_date"]) \
+                 .drop_duplicates(subset=["listing_id"], keep="last")
         os.makedirs(os.path.dirname(args.output_path), exist_ok=True)
+
+        for _col in big.columns:
+            if big[_col].dtype == "object":
+                big[_col] = big[_col].astype("string")
         big.to_parquet(args.output_path, compression="zstd", index=False)
         out["ok"] = True
         out["n_rows"] = int(len(big))
@@ -284,6 +336,168 @@ def merge_listings_parquets(args: MergeListingsArgs) -> dict:
         if "picture_url" in big.columns:
             out["n_with_picture_url"] = int(big["picture_url"].notna().sum())
         out["sample_rows"] = big.head(50).to_dict("records")
+    except Exception as e:
+        out["error"] = f"{type(e).__name__}: {str(e)[:200]}"
+        out["traceback"] = traceback.format_exc()[:1000]
+    return out
+
+
+# ============================================================================
+# Stage 1b: download calendar.csv.gz for one (city, snapshot) tuple
+# ============================================================================
+
+@dataclass
+class DownloadCalendarArgs:
+    city: str
+    country: str
+    region: str
+    snapshot_date: str
+    calendar_url: str
+    shared_root: str  # /workspace/shared/airbnb/calendar_v2
+    city_slug: str    # filename-safe, includes snapshot_date
+
+
+def download_and_compress_calendar(args: DownloadCalendarArgs) -> dict:
+    """Download calendar.csv.gz (year of forward day-level availability + price),
+    compute per-listing summary stats, write a slim parquet to shared FS.
+
+    Calendar files are large (sometimes 100M+ rows raw). We aggregate to one
+    row per listing per snapshot in the worker so the downstream calendar stage
+    only joins ~1M rows per snapshot, not 100M.
+    """
+    out = {
+        "city": args.city, "snapshot_date": args.snapshot_date,
+        "city_slug": args.city_slug,
+        "ok": False, "n_listings": 0, "n_calendar_rows": 0,
+        "shared_path": None, "error": None,
+    }
+    try:
+        if not args.calendar_url:
+            out["error"] = "no_calendar_url"
+            return out
+        import pandas as pd
+        os.makedirs(args.shared_root, exist_ok=True)
+
+        out_path = os.path.join(args.shared_root, f"{args.city_slug}.parquet")
+        if os.path.exists(out_path):
+            try:
+                existing = pd.read_parquet(out_path, columns=["listing_id"])
+                out["ok"] = True
+                out["n_listings"] = int(len(existing))
+                out["shared_path"] = out_path
+                out["resumed"] = True
+                return out
+            except Exception:
+                pass
+
+        r = requests.get(
+            args.calendar_url, timeout=900,
+            headers={"User-Agent": "Mozilla/5.0 (compatible; airbnb-burla/0.1)"},
+        )
+        if r.status_code != 200:
+            out["error"] = f"http_{r.status_code}"
+            return out
+        raw = gzip.decompress(r.content)
+        df = pd.read_csv(io.BytesIO(raw), low_memory=False)
+        out["n_calendar_rows"] = int(len(df))
+        if "listing_id" not in df.columns:
+            out["error"] = "no_listing_id_column"
+            return out
+
+        df["listing_id"] = pd.to_numeric(df["listing_id"], errors="coerce").astype("Int64")
+        df = df.dropna(subset=["listing_id"])
+        df["listing_id"] = df["listing_id"].astype("int64")
+        df["available"] = df.get("available", "").astype(str).str.lower().isin(("t", "true"))
+        if "date" in df.columns:
+            df["date"] = pd.to_datetime(df["date"], errors="coerce")
+        else:
+            df["date"] = pd.NaT
+        df["price_usd"] = df.get("price").apply(_parse_price_inline)
+        df["weekday"] = df["date"].dt.dayofweek
+        df["is_weekend"] = df["weekday"].isin((4, 5))
+        if "minimum_nights" in df.columns:
+            df["minimum_nights"] = pd.to_numeric(df["minimum_nights"], errors="coerce")
+        else:
+            df["minimum_nights"] = float("nan")
+        snapshot_dt = pd.to_datetime(args.snapshot_date, errors="coerce")
+        df["days_from_snapshot"] = (df["date"] - snapshot_dt).dt.days
+
+        grouped = df.groupby("listing_id")
+        agg = grouped.agg(
+            n_days=("date", "count"),
+            n_days_available=("available", "sum"),
+            n_weekend_days=("is_weekend", "sum"),
+            n_weekend_available=("available", lambda s: int((s & df.loc[s.index, "is_weekend"]).sum())),
+            mean_price=("price_usd", "mean"),
+            median_price=("price_usd", "median"),
+            std_price=("price_usd", "std"),
+            min_minimum_nights=("minimum_nights", "min"),
+            max_minimum_nights=("minimum_nights", "max"),
+        ).reset_index()
+        agg["snapshot_date"] = args.snapshot_date
+        agg["city"] = args.city
+        agg["country"] = args.country
+        agg["region"] = args.region
+
+        # Lead-time-open: how many days from snapshot until the first
+        # available night? Lower = more open, higher = booked far out.
+        first_open = (
+            df.loc[df["available"]]
+            .groupby("listing_id")["days_from_snapshot"]
+            .min()
+            .rename("lead_time_open")
+        )
+        agg = agg.merge(first_open, on="listing_id", how="left")
+
+        out_path = os.path.join(args.shared_root, f"{args.city_slug}.parquet")
+        agg.to_parquet(out_path, compression="zstd", index=False)
+        out.update({
+            "ok": True,
+            "n_listings": int(len(agg)),
+            "shared_path": out_path,
+        })
+    except Exception as e:
+        out["error"] = f"{type(e).__name__}: {str(e)[:200]}"
+        out["traceback"] = traceback.format_exc()[:1000]
+    return out
+
+
+@dataclass
+class MergeCalendarArgs:
+    shared_root: str
+    output_path: str
+
+
+def merge_calendar_parquets(args: MergeCalendarArgs) -> dict:
+    """Merge per-(city, snapshot) calendar summaries into one parquet.
+
+    Keeps every (listing_id, snapshot_date) row so the calendar stage can
+    compute occupancy_365, weekend_premium, etc per-listing-per-snapshot.
+    """
+    out = {
+        "ok": False, "n_files": 0, "n_rows": 0, "n_listings": 0,
+        "output_path": args.output_path, "error": None,
+    }
+    try:
+        import glob
+        import pandas as pd
+        files = sorted(glob.glob(os.path.join(args.shared_root, "*.parquet")))
+        out["n_files"] = len(files)
+        if not files:
+            out["error"] = f"no parquets at {args.shared_root}"
+            return out
+        big = pd.concat([pd.read_parquet(f) for f in files], ignore_index=True)
+        big = big.drop_duplicates(subset=["listing_id", "snapshot_date"])
+        os.makedirs(os.path.dirname(args.output_path), exist_ok=True)
+
+        for _col in big.columns:
+            if big[_col].dtype == "object":
+                big[_col] = big[_col].astype("string")
+        big.to_parquet(args.output_path, compression="zstd", index=False)
+        out.update({
+            "ok": True, "n_rows": int(len(big)),
+            "n_listings": int(big["listing_id"].nunique()),
+        })
     except Exception as e:
         out["error"] = f"{type(e).__name__}: {str(e)[:200]}"
         out["traceback"] = traceback.format_exc()[:1000]
@@ -400,6 +614,20 @@ def cpu_score_image_batch(args: CpuImageBatchArgs) -> dict:
         "shared_path": None, "elapsed_seconds": 0.0, "error": None,
     }
     started = time.time()
+    shared_path = os.path.join(args.output_root, f"batch_{args.batch_id:06d}.parquet")
+    if os.path.exists(shared_path):
+        try:
+            import pandas as pd
+            existing = pd.read_parquet(shared_path, columns=["download_ok"])
+            out["n_inputs"] = int(len(existing))
+            out["n_ok"] = int(existing["download_ok"].sum())
+            out["n_failed"] = int(out["n_inputs"] - out["n_ok"])
+            out["shared_path"] = shared_path
+            out["resumed"] = True
+            out["elapsed_seconds"] = time.time() - started
+            return out
+        except Exception:
+            pass
     try:
         import pandas as pd
         manifest = pd.read_parquet(
@@ -628,6 +856,19 @@ def gpu_detect_image_batch(args: GpuImageBatchArgs) -> dict:
         "shared_path": None, "elapsed_seconds": 0.0, "error": None,
     }
     started = time.time()
+    shared_path = os.path.join(args.output_root, f"batch_{args.batch_id:06d}.parquet")
+    if os.path.exists(shared_path):
+        try:
+            import pandas as pd
+            existing = pd.read_parquet(shared_path, columns=["listing_id"])
+            out["n_inputs"] = int(len(existing))
+            out["n_ok"] = int(out["n_inputs"])
+            out["shared_path"] = shared_path
+            out["resumed"] = True
+            out["elapsed_seconds"] = time.time() - started
+            return out
+        except Exception:
+            pass
     try:
         rows = []
         for r in args.rows:
@@ -704,6 +945,10 @@ def gpu_detect_image(args: GpuImageArgs) -> dict:
         "potted_plant_count": 0,
         "couch_detected": False,
         "bed_detected": False,
+        "cat_detected": False,
+        "dog_detected": False,
+        "pet_detected": False,
+        "pet_count": 0,
         "n_objects": 0,
         "error": None,
     }
@@ -719,7 +964,6 @@ def gpu_detect_image(args: GpuImageArgs) -> dict:
             return out
         img = Image.open(io.BytesIO(r.content)).convert("RGB")
         h = img.height
-        w = img.width
 
         state = _ensure_yolo()
         device = state.get("device", "cpu")
@@ -750,6 +994,14 @@ def gpu_detect_image(args: GpuImageArgs) -> dict:
                 out["couch_detected"] = True
             elif c == _YOLO_TARGET_CLASSES["bed"]:
                 out["bed_detected"] = True
+            elif c == _YOLO_TARGET_CLASSES["cat"]:
+                out["cat_detected"] = True
+                out["pet_detected"] = True
+                out["pet_count"] += 1
+            elif c == _YOLO_TARGET_CLASSES["dog"]:
+                out["dog_detected"] = True
+                out["pet_detected"] = True
+                out["pet_count"] += 1
     except Exception as e:
         out["error"] = f"{type(e).__name__}: {str(e)[:200]}"
     return out

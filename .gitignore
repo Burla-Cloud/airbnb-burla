@@ -18,6 +18,9 @@ dist/
 # data: keep outputs (small json), drop everything else
 data/raw/
 data/interim/
+
+# pipeline logs
+logs/
 !data/outputs/
 data/outputs/.tmp/
 

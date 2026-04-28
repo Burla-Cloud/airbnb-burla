@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Optional
 
 from ..config import (
-    PIPELINE_HARD_CAP_HOURS, PIPELINE_HARD_CAP_USD,
+    PIPELINE_HARD_CAP_HOURS, PIPELINE_HARD_CAP_SOFT_USD, PIPELINE_HARD_CAP_USD,
     RUNTIME_LOG_PATH, STAGE_BUDGETS,
 )
 
@@ -168,6 +168,15 @@ class BudgetTracker:
                 f"Pipeline-wide hard cap ${PIPELINE_HARD_CAP_USD:.0f} exceeded "
                 f"(actual ${log['total_usd']:.2f})."
             )
+        if log["total_usd"] > PIPELINE_HARD_CAP_SOFT_USD and not log.get("soft_warned"):
+            print(
+                f"[budget] WARNING: pipeline at ${log['total_usd']:.2f}, "
+                f"crossed soft cap ${PIPELINE_HARD_CAP_SOFT_USD:.0f}. "
+                f"Hard cap is ${PIPELINE_HARD_CAP_USD:.0f}.",
+                flush=True,
+            )
+            log["soft_warned"] = True
+            _save_log(log)
         if log["total_hours"] > PIPELINE_HARD_CAP_HOURS:
             raise BudgetExceeded(
                 f"Pipeline-wide hard cap {PIPELINE_HARD_CAP_HOURS:.0f}h exceeded "

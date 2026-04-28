@@ -434,16 +434,49 @@ class ClaudeBatchArgs:
     categories: list
 
 
-_CLAUDE_PROMPT_TEMPLATE = """You categorize Airbnb reviews. The categories are:
+_CLAUDE_PROMPT_TEMPLATE = """You categorize Airbnb guest reviews for a viral-content roundup.
+
+You MUST pick exactly one category from this fixed list, copying the label
+character-for-character. Do not invent new labels.
+
 {categories}
 
-For each review, return JSON with:
-- review_id (echo back)
-- category (one of the above)
-- humor_score (0 to 10, how funny is this review's situation)
-- one_line (a short headline, max 12 words)
+Definitions (resolve overlap by picking the one that best captures the WHY
+the story is interesting, not just the surface keywords):
 
-Return only a JSON array, no prose. Reviews:
+- "This escalated quickly": review starts mundane and ends with chaos.
+- "Five stars but terrifying": a positive star rating despite a clearly
+  unsettling story.
+- "Passive aggressive poetry": carefully worded backhanded compliments,
+  understatement, dry sarcasm.
+- "Host said what now": odd, intrusive, or unhinged behavior from the host.
+- "Pets and wildlife": cats, dogs, raccoons, snakes, geckos, monkeys,
+  unexpected critters - whether welcome or not.
+- "Bugs and pests": cockroaches, bedbugs, ants, rodents, infestations.
+- "Plumbing and smells": toilets, sewage, leaks, mystery odors, sewage gas.
+- "Noise complaint hall of fame": neighbors, parties, construction,
+  rooftop bars, jackhammers at 4am.
+- "Cleanliness mystery": dust, hair, stains, "deep clean" claims that
+  clearly were not.
+- "Weather and building drama": fires, blackouts, storms, leaks from above,
+  elevator outages.
+- "Lost in translation": Google Translate-flavored prose, language gaps,
+  cross-cultural misunderstandings.
+- "Photo did not match": the listing's photos misrepresented the reality
+  in a meaningful way (size, view, condition).
+- "Honest disaster": the stay was bad in a generic way that doesn't fit any
+  category above. Use sparingly.
+- "Not funny": the review is bland, generic, or simply positive with no
+  story.
+
+For each review, return JSON with these exact keys:
+- review_id (echo back the integer)
+- category (one of the labels above, copied verbatim)
+- humor_score (integer 0-10; how funny is the SITUATION described, not the
+  prose; reserve 8-10 for genuinely viral)
+- one_line (a punchy headline, max 12 words, no emoji, no quotes)
+
+Return ONLY a JSON array. No prose, no preamble. Reviews:
 {block}"""
 
 

@@ -34,6 +34,7 @@ class CorrelateArgs:
     listings_path: str
     images_cpu_path: str
     images_gpu_path: str
+    wtf_haiku_path: str
     output_path: str
     hypotheses: list
     bootstrap_resamples: int
@@ -48,62 +49,122 @@ def correlate_all(args: CorrelateArgs) -> dict:
            "rejected": [], "accepted": [], "rows": [],
            "output_path": args.output_path, "error": None}
     try:
+        import os as _os
         import numpy as np
         import pandas as pd
 
-        listings = pd.read_parquet(
-            args.listings_path,
-            columns=["listing_id", "city", "country", "region", "snapshot_date",
-                     "demand_proxy", "price_usd", "cleaning_fee_ratio",
-                     "latitude", "longitude"],
-        )
+        # Prefer listings_demand.parquet (has occupancy_365) but fall back if
+        # Stage 7 has not run yet.
+        listings_path = args.listings_path
+        if not _os.path.exists(listings_path):
+            fallback = listings_path.replace("listings_demand.parquet",
+                                             "listings_clean.parquet")
+            if _os.path.exists(fallback):
+                listings_path = fallback
+        listings_cols = ["listing_id", "city", "country", "region", "snapshot_date",
+                         "demand_proxy", "price_usd",
+                         "latitude", "longitude"]
+        try:
+            listings = pd.read_parquet(
+                listings_path,
+                columns=listings_cols + ["occupancy_365"],
+            )
+        except Exception:
+            listings = pd.read_parquet(listings_path, columns=listings_cols)
         out["n_listings"] = int(len(listings))
+        # If occupancy_365 is present we use it as the primary demand proxy;
+        # fallback to reviews_per_month-derived demand_proxy where it is null.
+        if "occupancy_365" in listings.columns:
+            listings["demand_proxy"] = pd.to_numeric(
+                listings["occupancy_365"], errors="coerce"
+            ).fillna(pd.to_numeric(listings["demand_proxy"], errors="coerce"))
         listings = listings.dropna(subset=["demand_proxy"]).reset_index(drop=True)
 
-        cpu = pd.read_parquet(
-            args.images_cpu_path,
-            columns=["listing_id", "image_idx", "download_ok",
-                     "brightness", "edge_density",
-                     "clip_messy_room", "clip_lots_of_plants",
-                     "clip_tv_above_fireplace"],
-        )
+        cpu_cols = ["listing_id", "image_idx", "download_ok",
+                    "brightness", "edge_density",
+                    "clip_messy_room", "clip_lots_of_plants",
+                    "clip_tv_above_fireplace",
+                    "clip_pet_dog", "clip_pet_cat", "clip_pet_on_furniture",
+                    "clip_wtf_absurd_object", "clip_wtf_unsettling_decor",
+                    "clip_wtf_unusual_scene", "clip_wtf_does_not_belong"]
+        try:
+            cpu = pd.read_parquet(args.images_cpu_path, columns=cpu_cols)
+        except Exception:
+            base = ["listing_id", "image_idx", "download_ok", "brightness",
+                    "edge_density", "clip_messy_room", "clip_lots_of_plants",
+                    "clip_tv_above_fireplace"]
+            cpu = pd.read_parquet(args.images_cpu_path, columns=base)
+            for c in cpu_cols:
+                if c not in cpu.columns:
+                    cpu[c] = 0.0
         cpu = cpu[cpu["download_ok"].astype(bool)]
+        cpu["clip_pet_max"] = cpu[["clip_pet_dog", "clip_pet_cat",
+                                    "clip_pet_on_furniture"]].max(axis=1)
+        cpu["clip_wtf_max"] = cpu[["clip_wtf_absurd_object", "clip_wtf_unsettling_decor",
+                                    "clip_wtf_unusual_scene", "clip_wtf_does_not_belong"]].max(axis=1)
         per_listing_cpu = cpu.groupby("listing_id").agg(
             mean_brightness=("brightness", "mean"),
             messy_score_max=("clip_messy_room", "max"),
             plants_score_max=("clip_lots_of_plants", "max"),
             tv_above_score_max=("clip_tv_above_fireplace", "max"),
+            pet_score_max=("clip_pet_max", "max"),
+            wtf_score_max=("clip_wtf_max", "max"),
         ).reset_index()
 
+        gpu_cols = ["listing_id", "tv_detected", "tv_above_50pct",
+                    "potted_plant_count", "pet_detected", "pet_count"]
         try:
-            gpu = pd.read_parquet(
-                args.images_gpu_path,
-                columns=["listing_id", "tv_detected", "tv_above_50pct",
-                         "potted_plant_count"],
-            )
+            gpu = pd.read_parquet(args.images_gpu_path, columns=gpu_cols)
+        except Exception:
+            try:
+                base = ["listing_id", "tv_detected", "tv_above_50pct",
+                        "potted_plant_count"]
+                gpu = pd.read_parquet(args.images_gpu_path, columns=base)
+                gpu["pet_detected"] = False
+                gpu["pet_count"] = 0
+            except Exception:
+                gpu = pd.DataFrame(columns=gpu_cols)
+        if len(gpu):
             per_listing_gpu = gpu.groupby("listing_id").agg(
                 tv_detected_any=("tv_detected", "any"),
                 tv_too_high=("tv_above_50pct", "any"),
                 plant_count_max=("potted_plant_count", "max"),
+                yolo_pet_detected=("pet_detected", "any"),
+                yolo_pet_count_max=("pet_count", "max"),
             ).reset_index()
-        except Exception:
+        else:
             per_listing_gpu = pd.DataFrame(columns=[
-                "listing_id", "tv_detected_any", "tv_too_high", "plant_count_max",
+                "listing_id", "tv_detected_any", "tv_too_high",
+                "plant_count_max", "yolo_pet_detected", "yolo_pet_count_max",
             ])
+
+        # WTF: any photo of this listing made it through Haiku as is_absurd?
+        try:
+            wtf = pd.read_parquet(args.wtf_haiku_path,
+                                  columns=["listing_id", "is_absurd"])
+            wtf_listings = set(
+                wtf[wtf["is_absurd"].astype(bool)]["listing_id"].astype(int).tolist()
+            )
+        except Exception:
+            wtf_listings = set()
 
         df = listings.merge(per_listing_cpu, on="listing_id", how="left")
         df = df.merge(per_listing_gpu, on="listing_id", how="left")
-        df["cleaning_fee_ratio"] = pd.to_numeric(
-            df["cleaning_fee_ratio"], errors="coerce"
-        ).replace([float("inf"), -float("inf")], None)
         df["price_usd"] = pd.to_numeric(df["price_usd"], errors="coerce")
         df["plant_count_max"] = df["plant_count_max"].fillna(0).astype(int)
         df["tv_too_high"] = df["tv_too_high"].fillna(False).astype(bool)
         df["tv_detected_any"] = df["tv_detected_any"].fillna(False).astype(bool)
+        df["yolo_pet_detected"] = df["yolo_pet_detected"].fillna(False).astype(bool)
+        df["pet_score_max"] = df["pet_score_max"].fillna(0.0)
+        df["wtf_score_max"] = df["wtf_score_max"].fillna(0.0)
+        # has_pet = YOLO confirmed OR strong CLIP pet match (>0.25 cosine sim
+        # against ViT-B/32 prompts is a fairly tight threshold).
+        df["has_pet"] = (df["yolo_pet_detected"] |
+                         (df["pet_score_max"] >= 0.25)).astype(bool)
+        df["is_wtf"] = df["listing_id"].isin(wtf_listings)
 
         for col, q in [("mean_brightness", "brightness_quartile"),
-                       ("messy_score_max", "messiness_quartile"),
-                       ("cleaning_fee_ratio", "cleaning_fee_ratio_bucket")]:
+                       ("messy_score_max", "messiness_quartile")]:
             mask = df[col].notna()
             try:
                 df.loc[mask, q] = pd.qcut(
@@ -125,6 +186,8 @@ def correlate_all(args: CorrelateArgs) -> dict:
         for hyp_var, target in args.hypotheses:
             if hyp_var == "tv_too_high":
                 groups = df[df["tv_detected_any"]].groupby("tv_too_high")[target]
+            elif hyp_var in ("has_pet", "is_wtf"):
+                groups = df.groupby(hyp_var)[target]
             else:
                 groups = df.groupby(hyp_var)[target]
 
@@ -202,9 +265,12 @@ def main() -> None:
     register_src_for_burla()
     from burla import remote_parallel_map
 
-    listings_shared = f"{SHARED_ROOT}/listings_clean.parquet"
+    # Prefer listings_demand.parquet (has occupancy_365); the worker falls
+    # back to listings_clean.parquet automatically if Stage 7 has not run.
+    listings_shared = f"{SHARED_ROOT}/listings_demand.parquet"
     cpu_shared = f"{SHARED_ROOT}/images_cpu.parquet"
     gpu_shared = f"{SHARED_ROOT}/images_gpu.parquet"
+    wtf_shared = f"{SHARED_ROOT}/wtf_haiku.parquet"
     correlations_shared = f"{SHARED_ROOT}/correlations.parquet"
 
     print("[s05] computing correlations on shared FS ...", flush=True)
@@ -217,12 +283,13 @@ def main() -> None:
                 listings_path=listings_shared,
                 images_cpu_path=cpu_shared,
                 images_gpu_path=gpu_shared,
+                wtf_haiku_path=wtf_shared,
                 output_path=correlations_shared,
                 hypotheses=list(HYPOTHESES),
                 bootstrap_resamples=BOOTSTRAP_RESAMPLES,
                 min_bucket_n=MIN_BUCKET_N,
             )],
-            func_cpu=16, func_ram=64, max_parallelism=1, grow=True, spinner=True,
+            func_cpu=16, func_ram=64, max_parallelism=1, grow=True, spinner=False,
         )
         bt.set_succeeded(1 if r.get("ok") else 0)
         bt.set_failed(0 if r.get("ok") else 1)

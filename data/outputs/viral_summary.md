@@ -4,17 +4,17 @@
 
 ## Headline numbers
 
-- 1,097,241 Airbnb listings worldwide (Inside Airbnb, latest snapshot per city)
-- 1,406,718 photo URLs scraped from public listing pages
-- 1,243,339 images CLIP-scored on Burla CPU
-- 48,122 images run through YOLOv8 on Burla A100s
-- 50,686,612 reviews heuristic-scored, top 100 sent through Claude
+- 1,740,077 Airbnb listings worldwide (Inside Airbnb, latest snapshot per city)
+- 1,945,032 photo URLs scraped from public listing pages
+- 1,710,664 images CLIP-scored on Burla CPU
+- 12,640 images run through YOLOv8 on Burla A100s
+- 50,686,612 reviews heuristic-scored, top 250 sent through Claude
 
 ## What we found
 
 ### TVs in places no one should mount a TV
 
-Top-50 listings where YOLO confirmed a TV in the upper half of the photo
+Top-60 listings where YOLO confirmed a TV in the upper half of the photo
 and CLIP rated the image high on "TV mounted above a fireplace."
 
 ### Messiest photos a host actually posted
@@ -22,38 +22,38 @@ and CLIP rated the image high on "TV mounted above a fireplace."
 Top-50 listings, ranked by CLIP score against "a messy cluttered room
 with stuff everywhere."
 
-### Mirror selfies
-
-Top-24 listings where the host got caught reflected in their own
-mirror photo (CLIP score against "a photographer reflected in a mirror").
-
 ### Plant-maximalist Airbnbs
 
 Top-30 listings combining CLIP "room full of houseplants" with YOLO
 potted plant counts.
 
-### Cleaning fees > nightly rate
+### Pets in photos
 
-Top-100 listings where the cleaning fee exceeds the nightly price. The
-worst offenders charge 0.0x the nightly rate as a cleaning fee.
+Top-60 listings where YOLO confirmed a cat or dog and CLIP scored high
+on the pet prompts.
+
+### Photos that made us go "wait, what"
+
+360 photos across 32 Haiku-named clusters of genuinely
+absurd, unsettling, or out-of-place hosting choices. Top clusters: closet bedroom, kitchen in bedroom, other, creepy doll, cramped bedroom.
 
 ### The funniest reviews
 
-Top-100 reviews surfaced by 3-tier funnel (heuristic -> embedding cluster
+Top-250 reviews surfaced by 3-tier funnel (heuristic -> embedding cluster
 -> Claude humor score).
 
 ## What held up under bootstrap
 
-- brightness_quartile
-- tv_too_high
+- has_pet
+- is_wtf
+- messiness_quartile
 
 ## What did not survive
 
-- cleaning_fee_ratio_bucket
-- messiness_quartile
+- brightness_quartile
 - plant_count_bucket
 
 ## Replication
 
 Repo: airbnb-burla
-Runtime: 10.9 hours wall time, peak 1000 Burla workers.
+Runtime: 22.9 hours wall time, peak 1741 Burla workers.

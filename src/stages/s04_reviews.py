@@ -83,6 +83,18 @@ def main() -> None:
 
     load_dotenv()
     register_src_for_burla()
+    if os.environ.get("FORCE_S04") != "1":
+        manifest_path = REVIEWS_SCORED_PATH.with_suffix(".manifest.json")
+        if manifest_path.exists():
+            existing = read_json(manifest_path)
+            if existing and existing.get("ok") and existing.get("n_claude_rows", 0) > 0:
+                print(
+                    f"[s04] manifest exists ({existing.get('n_claude_rows', 0):,} Claude-scored "
+                    f"rows at {existing.get('shared_path')}); skipping. "
+                    f"Set FORCE_S04=1 or delete {manifest_path} to force.",
+                    flush=True,
+                )
+                return
     from burla import remote_parallel_map
 
     anthropic_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
@@ -95,25 +107,36 @@ def main() -> None:
         report = read_json(VALIDATION_REPORT_PATH)
         if not report:
             raise SystemExit(f"[s04] no validation report at {VALIDATION_REPORT_PATH}")
-        passing = [r for r in report.get("passing", []) if r.get("reviews_url")]
+        # Reviews are append-only on Inside Airbnb: each new snapshot is a
+        # superset of the previous one. Pulling every snapshot per city would
+        # download tens of GB of duplicates we then have to dedupe. We pick
+        # the latest reviews-bearing snapshot per (country, region, city).
+        passing_rows = [r for r in report.get("passing", []) if r.get("reviews_url")]
+        latest: dict[tuple, dict] = {}
+        for r in passing_rows:
+            key = (r["country"], r["region"], r["city"])
+            prev = latest.get(key)
+            if prev is None or r["snapshot_date"] > prev["snapshot_date"]:
+                latest[key] = r
         ingest_args = [
             IngestReviewsArgs(
                 city_slug=_city_slug(r["country"], r["region"], r["city"], r["snapshot_date"]),
                 reviews_url=r["reviews_url"],
                 output_root=SHARED_REVIEWS,
             )
-            for r in passing
+            for r in latest.values()
         ]
         n_cities = len(ingest_args)
-        print(f"[s04] ingesting reviews for {n_cities} cities ...", flush=True)
+        print(f"[s04] ingesting reviews for {n_cities} cities (latest snapshot each, "
+              f"{len(passing_rows)} candidate tuples) ...", flush=True)
         t0 = time.time()
         with BudgetTracker("s04_reviews_ingest", n_inputs=n_cities, func_cpu=1) as bt:
-            bt.set_workers(min(120, n_cities))
+            bt.set_workers(min(250, n_cities))
             results = remote_parallel_map(
                 ingest_reviews_for_city, ingest_args,
                 func_cpu=1, func_ram=4,
-                max_parallelism=min(120, n_cities),
-                grow=True, spinner=True,
+                max_parallelism=min(250, n_cities),
+                grow=True, spinner=False,
             )
             n_ok = sum(1 for r in results if r.get("ok"))
             n_rows = sum(int(r.get("n_rows", 0)) for r in results if r.get("ok"))
@@ -126,7 +149,7 @@ def main() -> None:
         [m] = remote_parallel_map(
             merge_reviews,
             [MergeReviewsArgs(shared_root=SHARED_REVIEWS, output_path=raw_path)],
-            func_cpu=16, func_ram=64, max_parallelism=1, grow=True, spinner=True,
+            func_cpu=16, func_ram=64, max_parallelism=1, grow=True, spinner=False,
         )
         if not m.get("ok"):
             raise SystemExit(f"[s04] reviews merge failed: {m.get('error')}")
@@ -143,7 +166,7 @@ def main() -> None:
             [RechunkReviewsArgs(input_path=raw_path,
                                  output_path=rechunked_path,
                                  row_group_size=REVIEW_TIER1_BATCH_SIZE)],
-            func_cpu=8, func_ram=64, max_parallelism=1, grow=True, spinner=True,
+            func_cpu=8, func_ram=64, max_parallelism=1, grow=True, spinner=False,
         )
         if not rc.get("ok"):
             raise SystemExit(f"[s04] rechunk failed: {rc.get('error')}")
@@ -169,7 +192,7 @@ def main() -> None:
                 heuristic_score_batch, batches,
                 func_cpu=1, func_ram=2,
                 max_parallelism=n_workers,
-                grow=True, spinner=True,
+                grow=True, spinner=False,
             )
             ok = sum(1 for r in results if r.get("shared_path"))
             bt.set_succeeded(ok)
@@ -182,7 +205,7 @@ def main() -> None:
             [TopKHeuristicArgs(shared_root=SHARED_REVIEWS_TIER1,
                                output_path=tier1_top_path,
                                top_k=REVIEW_TIER2_TOP_K)],
-            func_cpu=16, func_ram=64, max_parallelism=1, grow=True, spinner=True,
+            func_cpu=16, func_ram=64, max_parallelism=1, grow=True, spinner=False,
         )
         if not t.get("ok"):
             raise SystemExit(f"[s04] tier1 merge failed: {t.get('error')}")
@@ -192,7 +215,7 @@ def main() -> None:
     if not args.skip_tier2:
         [c2] = remote_parallel_map(
             count_parquet_rows, [CountParquetArgs(path=tier1_top_path)],
-            func_cpu=2, func_ram=4, max_parallelism=1, grow=True, spinner=True,
+            func_cpu=2, func_ram=4, max_parallelism=1, grow=True, spinner=False,
         )
         n_top = int(c2["n"])
         print(f"[s04] tier 2: embedding {n_top:,} reviews ...", flush=True)
@@ -217,7 +240,7 @@ def main() -> None:
                 embed_reviews_batch, batches,
                 func_cpu=2, func_ram=8,
                 max_parallelism=n_workers,
-                grow=True, spinner=True,
+                grow=True, spinner=False,
             )
             ok = sum(1 for r in results if r.get("shared_path"))
             bt.set_succeeded(ok)
@@ -233,7 +256,7 @@ def main() -> None:
                 n_clusters=REVIEW_TIER2_NUM_CLUSTERS,
                 top_k_for_tier3=REVIEW_TIER3_TOP_K,
             )],
-            func_cpu=16, func_ram=64, max_parallelism=1, grow=True, spinner=True,
+            func_cpu=16, func_ram=64, max_parallelism=1, grow=True, spinner=False,
         )
         if not r.get("ok"):
             raise SystemExit(f"[s04] tier2 cluster failed: {r.get('error')}")
@@ -243,7 +266,7 @@ def main() -> None:
         [tdat] = remote_parallel_map(
             read_tier3_input,
             [ReadTier3InputArgs(path=tier3_input_path, cap=args.sample_tier3)],
-            func_cpu=2, func_ram=4, max_parallelism=1, grow=True, spinner=True,
+            func_cpu=2, func_ram=4, max_parallelism=1, grow=True, spinner=False,
         )
         rows = tdat["rows"]
         n_top3 = len(rows)
@@ -269,7 +292,7 @@ def main() -> None:
                 claude_score_batch, batches,
                 func_cpu=1, func_ram=2,
                 max_parallelism=n_workers,
-                grow=True, spinner=True,
+                grow=True, spinner=False,
             )
             n_ok = sum(int(r.get("n_ok", 0)) for r in results)
             n_failed = sum(int(r.get("n_failed", 0)) for r in results)
@@ -287,7 +310,7 @@ def main() -> None:
             raw_reviews_path=raw_path,
             output_path=final_path,
         )],
-        func_cpu=16, func_ram=64, max_parallelism=1, grow=True, spinner=True,
+        func_cpu=16, func_ram=64, max_parallelism=1, grow=True, spinner=False,
     )
     if not mc.get("ok"):
         raise SystemExit(f"[s04] merge_claude failed: {mc.get('error')}")

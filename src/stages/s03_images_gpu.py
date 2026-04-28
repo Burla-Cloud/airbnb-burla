@@ -98,7 +98,7 @@ def main() -> None:
         select_top_k_images,
         [TopKImagesArgs(images_cpu_path=images_cpu_path,
                         top_n_per_axis=TOP_N_PER_AXIS)],
-        func_cpu=8, func_ram=64, max_parallelism=1, grow=True, spinner=True,
+        func_cpu=8, func_ram=64, max_parallelism=1, grow=True, spinner=False,
     )
     if not picked.get("ok"):
         print(f"[s03] select_top_k_images failed: {picked.get('error')}", flush=True)
@@ -126,24 +126,44 @@ def main() -> None:
     print(f"[s03]   built {len(batches):,} batches of {GPU_BATCH_SIZE}, "
           f"max {n_workers} A100 workers", flush=True)
 
+    @dataclass
+    class _CountGpuShardsArgs:
+        output_root: str
+
+    def _count_gpu_shards(a: _CountGpuShardsArgs) -> int:
+        import os, glob
+        return len(glob.glob(os.path.join(a.output_root, "batch_*.parquet")))
+
+    [n_existing_shards] = remote_parallel_map(
+        _count_gpu_shards,
+        [_CountGpuShardsArgs(output_root=SHARED_IMAGES_GPU)],
+        func_cpu=1, func_ram=1, max_parallelism=1, grow=True, spinner=False,
+    )
+    print(f"[s03]   {n_existing_shards:,} of {len(batches):,} GPU batch parquets already on shared FS", flush=True)
     t0 = time.time()
-    with BudgetTracker("s03_images_gpu", n_inputs=n_images, func_cpu=8) as bt:
-        bt.set_workers(n_workers)
-        results: list[dict] = remote_parallel_map(
-            gpu_detect_image_batch,
-            batches,
-            func_cpu=8,
-            func_ram=64,
-            func_gpu="A100_40G",
-            max_parallelism=n_workers,
-            grow=True,
-            spinner=True,
-        )
-        n_ok = sum(int(r.get("n_ok", 0)) for r in results)
-        n_failed = sum(int(r.get("n_failed", 0)) for r in results)
-        bt.set_succeeded(n_ok)
-        bt.set_failed(n_failed)
-        bt.note(success_rate=n_ok / max(1, n_images))
+    if n_existing_shards >= len(batches):
+        print("[s03]   all batches already complete; skipping remote_parallel_map.", flush=True)
+        results: list[dict] = []
+        n_ok = n_images
+        n_failed = 0
+    else:
+        with BudgetTracker("s03_images_gpu", n_inputs=n_images, func_cpu=8) as bt:
+            bt.set_workers(n_workers)
+            results = remote_parallel_map(
+                gpu_detect_image_batch,
+                batches,
+                func_cpu=8,
+                func_ram=64,
+                func_gpu="A100_40G",
+                max_parallelism=n_workers,
+                grow=True,
+                spinner=False,
+            )
+            n_ok = sum(int(r.get("n_ok", 0)) for r in results)
+            n_failed = sum(int(r.get("n_failed", 0)) for r in results)
+            bt.set_succeeded(n_ok)
+            bt.set_failed(n_failed)
+            bt.note(success_rate=n_ok / max(1, n_images))
 
     elapsed = time.time() - t0
     print(f"[s03]   {n_ok:,}/{n_images:,} images detected ({n_ok/max(1,n_images):.2%}) "
@@ -154,7 +174,7 @@ def main() -> None:
     [merge] = remote_parallel_map(
         merge_images_gpu,
         [MergeImagesGpuArgs(shared_root=SHARED_IMAGES_GPU, output_path=shared_merged)],
-        func_cpu=8, func_ram=64, max_parallelism=1, grow=True, spinner=True,
+        func_cpu=8, func_ram=64, max_parallelism=1, grow=True, spinner=False,
     )
     if not merge.get("ok"):
         raise SystemExit(f"[s03] merge failed: {merge.get('error')}")

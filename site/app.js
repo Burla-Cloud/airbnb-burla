@@ -4,32 +4,35 @@ const DATA_BASE = "./data";
 
 const SECTION_COLORS = {
   worst_tv_placements: "#E0533A",
-  messiest_listings:   "#B97A1E",
-  plant_maximalists:   "#0E6E5C",
+  ugly_bathrooms:      "#7A4A2C",
+  hectic_kitchens:     "#B97A1E",
+  drug_den_vibes:      "#5C2E63",
+  pets_in_photos:      "#5C4DA8",
+  wtf_clusters:        "#9B1E5A",
 };
 
 const SECTION_LABELS = {
   worst_tv_placements: "Worst TV placements",
-  messiest_listings:   "Messiest listings",
-  plant_maximalists:   "Plant maximalists",
+  ugly_bathrooms:      "Ugly bathrooms",
+  hectic_kitchens:     "Hectic kitchens",
+  drug_den_vibes:      "Drug-den vibes",
+  pets_in_photos:      "Real pets in photos",
+  wtf_clusters:        "Wait, what photos",
 };
 
-// Per-section CLIP prompt copy for the modal "How it was scored" line.
 const SCORE_PROMPTS = {
   worst_tv_placements: 'CLIP score against "a TV mounted high on the wall above a fireplace"',
-  messiest_listings:   'CLIP score against "a messy cluttered room with stuff everywhere"',
-  plant_maximalists:   'CLIP score against "a room full of houseplants"',
+  ugly_bathrooms:      'Claude Haiku Vision said this is genuinely a grimy or sad bathroom',
+  hectic_kitchens:     'Claude Haiku Vision said this kitchen is genuinely chaotic',
+  drug_den_vibes:      'Claude Haiku Vision said this gives "did-someone-just-leave" energy',
+  pets_in_photos:      'Claude Haiku Vision said yes, that is a real cat or dog',
+  wtf_clusters:        'CLIP screened for absurdity, then Claude Haiku reranked and clustered',
 };
 
-// Human-readable hypothesis titles + bucket labels for the correlations grid.
 const HYPOTHESIS_META = {
   brightness_quartile: {
     title: "Brighter photos earn more demand",
     buckets: { q1: "Darkest", q2: "Q2", q3: "Q3", q4: "Brightest" },
-  },
-  cleaning_fee_ratio_bucket: {
-    title: "Cleaning-fee ratio vs demand",
-    buckets: { single: "All listings" },
   },
   messiness_quartile: {
     title: "Messier photos vs demand",
@@ -42,6 +45,14 @@ const HYPOTHESIS_META = {
   tv_too_high: {
     title: "TV mounted high vs demand",
     buckets: { "False": "Normal height", "True": "Mounted too high" },
+  },
+  has_pet: {
+    title: "Pet visible in photos vs demand",
+    buckets: { "False": "No pet detected", "True": "Pet in photo" },
+  },
+  is_wtf: {
+    title: "Has an absurd photo vs demand",
+    buckets: { "False": "Normal photos", "True": "Has an absurd photo" },
   },
 };
 
@@ -148,7 +159,9 @@ function paintStats(stats) {
     n_cpu_images: fmt(stats.n_cpu_images),
     n_gpu_images: fmt(stats.n_gpu_images),
     n_reviews: fmt(stats.n_reviews),
-    peak_workers: fmt(stats.peak_workers),
+    peak_workers: stats.peak_workers
+      ? Number(stats.peak_workers).toLocaleString("en-US")
+      : "--",
     wall_time_hours: stats.wall_time_hours
       ? stats.wall_time_hours.toFixed(1)
       : "--",
@@ -157,8 +170,8 @@ function paintStats(stats) {
       : "--",
   };
   for (const [k, v] of Object.entries(map)) {
-    const el = document.querySelector(`[data-stat="${k}"]`);
-    if (el) el.textContent = v;
+    const els = document.querySelectorAll(`[data-stat="${k}"]`);
+    els.forEach((el) => { el.textContent = v; });
   }
 }
 
@@ -206,11 +219,57 @@ function paintGrid(sectionId, payload) {
   }
 }
 
-function paintReviews(payload) {
+// Module-level handle so the filter UI can re-render on input.
+const _reviewState = {
+  all: [],
+  visible: [],
+  filters: { search: "", city: "", year: "", category: "" },
+};
+
+function reviewYear(it) {
+  if (!it || !it.date) return "";
+  const m = String(it.date).match(/^(\d{4})/);
+  return m ? m[1] : "";
+}
+
+function applyReviewFilters() {
+  const f = _reviewState.filters;
+  const needle = f.search.trim().toLowerCase();
+  _reviewState.visible = _reviewState.all.filter((it) => {
+    if (f.category && (it.category || "") !== f.category) return false;
+    if (f.city && placeLabel(it) !== f.city) return false;
+    if (f.year && reviewYear(it) !== f.year) return false;
+    if (needle) {
+      const hay = (
+        (it.comment || "") + " " +
+        (it.comment_full || "") + " " +
+        (it.one_line || "") + " " +
+        (it.category || "") + " " +
+        placeLabel(it)
+      ).toLowerCase();
+      if (!hay.includes(needle)) return false;
+    }
+    return true;
+  });
+  renderReviewCards();
+}
+
+function renderReviewCards() {
   const root = document.querySelector('[data-section="funniest_reviews"]');
-  if (!root || !payload || !payload.items) return;
+  const empty = document.getElementById("reviews-empty");
+  const counter = document.querySelector('[data-counter="reviews-visible"]');
+  if (!root) return;
   root.innerHTML = "";
-  for (const it of payload.items) {
+  const items = _reviewState.visible;
+  if (counter) {
+    counter.textContent = `${fmt(items.length)} of ${fmt(_reviewState.all.length)}`;
+  }
+  if (!items.length) {
+    if (empty) empty.hidden = false;
+    return;
+  }
+  if (empty) empty.hidden = true;
+  for (const it of items) {
     const card = document.createElement("button");
     card.type = "button";
     card.className = "card";
@@ -238,6 +297,169 @@ function paintReviews(payload) {
     `;
     card.addEventListener("click", () => openReviewModal(it));
     root.appendChild(card);
+  }
+}
+
+function paintReviews(payload) {
+  const items = (payload && payload.items) ? payload.items.slice() : [];
+  _reviewState.all = items;
+  _reviewState.visible = items.slice();
+  setupReviewFilters();
+  renderReviewCards();
+}
+
+function setupReviewFilters() {
+  const all = _reviewState.all;
+  const chipsRoot = document.getElementById("review-chips");
+  const citySel = document.getElementById("review-city");
+  const yearSel = document.getElementById("review-year");
+  const search = document.getElementById("review-search");
+  const reset = document.getElementById("review-reset");
+  if (!chipsRoot || !citySel || !yearSel || !search || !reset) return;
+
+  const catCounts = new Map();
+  const cityCounts = new Map();
+  const yearCounts = new Map();
+  for (const it of all) {
+    const cat = it.category || "";
+    if (cat) catCounts.set(cat, (catCounts.get(cat) || 0) + 1);
+    const place = placeLabel(it);
+    if (place) cityCounts.set(place, (cityCounts.get(place) || 0) + 1);
+    const yr = reviewYear(it);
+    if (yr) yearCounts.set(yr, (yearCounts.get(yr) || 0) + 1);
+  }
+
+  const cats = [...catCounts.entries()].sort((a, b) => b[1] - a[1]);
+  chipsRoot.innerHTML = `
+    <button type="button" class="filter-chip is-active" data-cat="">
+      All categories
+      <span class="chip-n">${fmt(all.length)}</span>
+    </button>
+    ${cats.map(([c, n]) => `
+      <button type="button" class="filter-chip" data-cat="${escapeHTML(c)}">
+        ${escapeHTML(c.replace(/_/g, " "))}
+        <span class="chip-n">${fmt(n)}</span>
+      </button>
+    `).join("")}
+  `;
+
+  const cities = [...cityCounts.entries()].sort((a, b) => b[1] - a[1]);
+  citySel.innerHTML = `<option value="">All cities</option>` +
+    cities.map(([c, n]) => `<option value="${escapeHTML(c)}">${escapeHTML(c)} (${fmt(n)})</option>`).join("");
+
+  const years = [...yearCounts.entries()].sort((a, b) => Number(b[0]) - Number(a[0]));
+  yearSel.innerHTML = `<option value="">All years</option>` +
+    years.map(([y, n]) => `<option value="${escapeHTML(y)}">${escapeHTML(y)} (${fmt(n)})</option>`).join("");
+
+  chipsRoot.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-cat]");
+    if (!btn) return;
+    _reviewState.filters.category = btn.dataset.cat || "";
+    chipsRoot.querySelectorAll(".filter-chip").forEach((el) => {
+      el.classList.toggle("is-active", el === btn);
+    });
+    applyReviewFilters();
+  });
+
+  citySel.addEventListener("change", () => {
+    _reviewState.filters.city = citySel.value;
+    applyReviewFilters();
+  });
+  yearSel.addEventListener("change", () => {
+    _reviewState.filters.year = yearSel.value;
+    applyReviewFilters();
+  });
+
+  let _searchT;
+  search.addEventListener("input", () => {
+    clearTimeout(_searchT);
+    _searchT = setTimeout(() => {
+      _reviewState.filters.search = search.value;
+      applyReviewFilters();
+    }, 120);
+  });
+
+  reset.addEventListener("click", () => {
+    _reviewState.filters = { search: "", city: "", year: "", category: "" };
+    search.value = "";
+    citySel.value = "";
+    yearSel.value = "";
+    chipsRoot.querySelectorAll(".filter-chip").forEach((el, idx) => {
+      el.classList.toggle("is-active", idx === 0);
+    });
+    applyReviewFilters();
+  });
+}
+
+function paintWtfClusters(payload) {
+  const root = document.getElementById("wtf-clusters");
+  if (!root) return;
+  const head = root.parentElement && root.parentElement.querySelector(".section__count");
+  const clusters = (payload && payload.clusters) ? payload.clusters : [];
+  if (!clusters.length) {
+    root.innerHTML = `<p class="wtf-empty">No clusters survived the filter on this run.</p>`;
+    if (head) head.textContent = "0 clusters";
+    return;
+  }
+  root.innerHTML = "";
+  let totalKept = 0;
+  for (const c of clusters) {
+    const items = dedupeItems(c.items || []);
+    if (!items.length) continue;
+    totalKept += items.length;
+    const card = document.createElement("article");
+    card.className = "wtf-cluster";
+    const title = c.title || titleCase(String(c.cluster || "").replace(/_/g, " "));
+    card.innerHTML = `
+      <header class="wtf-cluster__head">
+        <h3>${escapeHTML(title)}</h3>
+        <span class="wtf-cluster__count">${items.length} photo${items.length === 1 ? "" : "s"}</span>
+      </header>
+      <div class="wtf-cluster__grid"></div>
+    `;
+    const grid = card.querySelector(".wtf-cluster__grid");
+    for (const it of items) {
+      const tile = document.createElement("button");
+      tile.type = "button";
+      tile.className = "item wtf-tile";
+      tile.setAttribute("aria-label",
+        `Open ${placeLabel(it) || "absurd photo"} in lightbox`);
+      const thumb = document.createElement("div");
+      thumb.className = "thumb";
+      const img = it.image_url || it.thumbnail_url;
+      if (img) thumb.style.backgroundImage = `url("${img}")`;
+      const overlay = document.createElement("span");
+      overlay.className = "thumb__overlay";
+      overlay.innerHTML =
+        `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <polyline points="9 21 3 21 3 15"></polyline>
+          <line x1="21" y1="3" x2="14" y2="10"></line>
+          <line x1="3" y1="21" x2="10" y2="14"></line>
+        </svg>`;
+      thumb.appendChild(overlay);
+      tile.appendChild(thumb);
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      const top = document.createElement("span");
+      top.className = "city";
+      top.textContent = placeLabel(it) || "Unknown";
+      meta.appendChild(top);
+      if (it.one_line) {
+        const cap = document.createElement("span");
+        cap.className = "wtf-caption";
+        cap.textContent = it.one_line;
+        meta.appendChild(cap);
+      }
+      tile.appendChild(meta);
+      tile.addEventListener("click", () => openPhotoModal(it, "wtf_clusters"));
+      grid.appendChild(tile);
+    }
+    root.appendChild(card);
+  }
+  if (head) {
+    const n = clusters.length;
+    head.textContent = `${n} cluster${n === 1 ? "" : "s"} \u00b7 ${totalKept} photos`;
   }
 }
 
@@ -515,10 +737,9 @@ function openReviewModal(it) {
         { year: "numeric", month: "long", day: "numeric" })
     : "";
   const datePlace = [place, date].filter(Boolean).join(" \u00b7 ");
-  // Prefer the full untruncated comment if the upstream pipeline included one.
+  // Always render the full untruncated comment; never show "..." in the modal.
   const fullText = cleanReviewText(it.comment_full || it.comment || "");
   const listingUrl = it.listing_url || "";
-  const truncated = !it.comment_full && (it.comment || "").length >= 600;
   const html = `
     <div class="review-modal">
       <div class="modal__eyebrow">${escapeHTML(cat || "Funniest reviews")}</div>
@@ -526,9 +747,6 @@ function openReviewModal(it) {
       <p class="modal__sub">${escapeHTML(datePlace)}</p>
       <div class="review-modal__body">
         <p>${escapeHTML(fullText)}</p>
-        ${truncated
-          ? `<p class="review-modal__note">Inside Airbnb capped this comment at 600 characters; that is the full text we have.</p>`
-          : ""}
       </div>
       ${listingUrl
         ? `<a class="modal__cta" href="${escapeHTML(listingUrl)}" target="_blank" rel="noopener">
@@ -548,12 +766,15 @@ function openReviewModal(it) {
 (async function main() {
   setupNav();
   ensureModalEl();
-  const [stats, tv, messy, plants, reviews, corr, world] =
+  const [stats, tv, bathrooms, kitchens, drugDen, pets, wtf, reviews, corr, world] =
     await Promise.all([
       loadJSON("homepage_stats"),
       loadJSON("worst_tv_placements"),
-      loadJSON("messiest_listings"),
-      loadJSON("plant_maximalists"),
+      loadJSON("ugly_bathrooms"),
+      loadJSON("hectic_kitchens"),
+      loadJSON("drug_den_vibes"),
+      loadJSON("pets_in_photos"),
+      loadJSON("wtf_clusters"),
       loadJSON("funniest_reviews"),
       loadJSON("correlations"),
       loadJSON("world_map"),
@@ -561,8 +782,11 @@ function openReviewModal(it) {
 
   paintStats(stats);
   paintGrid("worst_tv_placements", tv);
-  paintGrid("messiest_listings", messy);
-  paintGrid("plant_maximalists", plants);
+  paintGrid("ugly_bathrooms", bathrooms);
+  paintGrid("hectic_kitchens", kitchens);
+  paintGrid("drug_den_vibes", drugDen);
+  paintGrid("pets_in_photos", pets);
+  paintWtfClusters(wtf);
   paintReviews(reviews);
   paintCorrelations(corr);
   paintMap(world);

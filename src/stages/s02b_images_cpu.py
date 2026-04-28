@@ -51,15 +51,24 @@ def main() -> None:
 
     photo_manifest = f"{SHARED_ROOT}/photo_manifest.parquet"
     print(f"[s02b] counting rows in {photo_manifest} ...", flush=True)
-    [count] = remote_parallel_map(
-        count_manifest_rows,
-        [CountManifestArgs(photo_manifest_path=photo_manifest)],
-        func_cpu=2, func_ram=4, max_parallelism=1, grow=True, spinner=True,
-    )
-    n_rows = count["n_rows"]
+
+    from ..config import PHOTO_MANIFEST_PATH
+    from ..lib.io import read_json
+    local_manifest = read_json(PHOTO_MANIFEST_PATH.with_suffix(".manifest.json"))
+    if local_manifest and local_manifest.get("n_rows"):
+        n_rows = int(local_manifest["n_rows"])
+        print(f"[s02b]   read row count from local manifest: {n_rows:,}", flush=True)
+    else:
+        [count] = remote_parallel_map(
+            count_manifest_rows,
+            [CountManifestArgs(photo_manifest_path=photo_manifest)],
+            func_cpu=2, func_ram=4, max_parallelism=1, grow=True, spinner=False,
+        )
+        n_rows = count["n_rows"]
+    total_rows = n_rows
     if args.sample:
         n_rows = min(n_rows, args.sample)
-    print(f"[s02b]   manifest has {count['n_rows']:,} rows; processing {n_rows:,}", flush=True)
+    print(f"[s02b]   manifest has {total_rows:,} rows; processing {n_rows:,}", flush=True)
 
     output_root = SHARED_IMAGES_CPU + ("_sample" if args.sample else "")
     batches: list[CpuImageBatchArgs] = []
@@ -76,32 +85,53 @@ def main() -> None:
     print(f"[s02b]   built {len(batches):,} batches of {CPU_IMAGE_BATCH_SIZE} images, "
           f"max {n_workers} parallel workers", flush=True)
 
+    @dataclass
+    class CountShardsArgs:
+        output_root: str
+
+    def count_shards(a: CountShardsArgs) -> int:
+        import os, glob
+        return len(glob.glob(os.path.join(a.output_root, "batch_*.parquet")))
+
+    [n_shards] = remote_parallel_map(
+        count_shards,
+        [CountShardsArgs(output_root=output_root)],
+        func_cpu=1, func_ram=1, max_parallelism=1, grow=True, spinner=False,
+    )
+    print(f"[s02b]   {n_shards:,} of {len(batches):,} batch parquets already on shared FS", flush=True)
     t0 = time.time()
-    with BudgetTracker("s02b_images_cpu", n_inputs=n_rows, func_cpu=1) as bt:
-        bt.set_workers(n_workers)
-        results: list[dict] = remote_parallel_map(
-            cpu_score_image_batch,
-            batches,
-            func_cpu=1,
-            func_ram=4,
-            max_parallelism=n_workers,
-            grow=True,
-            spinner=True,
-        )
-        n_ok = sum(int(r.get("n_ok", 0)) for r in results)
-        n_failed = sum(int(r.get("n_failed", 0)) for r in results)
-        n_seen = sum(int(r.get("n_inputs", 0)) for r in results)
-        errs = [r.get("error") for r in results if r.get("error")]
-        if errs:
-            print(f"[s02b]   {len(errs)} batches errored. first 3:", flush=True)
-            for e in errs[:3]:
-                print(f"[s02b]     {e}", flush=True)
-            tracebacks = [r.get("traceback") for r in results if r.get("traceback")]
-            if tracebacks:
-                print(f"[s02b]   first traceback:\n{tracebacks[0]}", flush=True)
-        bt.set_succeeded(n_ok)
-        bt.set_failed(n_failed)
-        bt.note(success_rate=n_ok / max(1, n_seen))
+    n_ok = n_failed = n_seen = 0
+    if n_shards >= len(batches):
+        print("[s02b]   all batches already complete; skipping remote_parallel_map.", flush=True)
+        results: list[dict] = []
+        n_seen = n_rows
+        n_ok = n_rows
+    else:
+        with BudgetTracker("s02b_images_cpu", n_inputs=n_rows, func_cpu=1) as bt:
+            bt.set_workers(n_workers)
+            results = remote_parallel_map(
+                cpu_score_image_batch,
+                batches,
+                func_cpu=1,
+                func_ram=4,
+                max_parallelism=n_workers,
+                grow=True,
+                spinner=False,
+            )
+            n_ok = sum(int(r.get("n_ok", 0)) for r in results)
+            n_failed = sum(int(r.get("n_failed", 0)) for r in results)
+            n_seen = sum(int(r.get("n_inputs", 0)) for r in results)
+            errs = [r.get("error") for r in results if r.get("error")]
+            if errs:
+                print(f"[s02b]   {len(errs)} batches errored. first 3:", flush=True)
+                for e in errs[:3]:
+                    print(f"[s02b]     {e}", flush=True)
+                tracebacks = [r.get("traceback") for r in results if r.get("traceback")]
+                if tracebacks:
+                    print(f"[s02b]   first traceback:\n{tracebacks[0]}", flush=True)
+            bt.set_succeeded(n_ok)
+            bt.set_failed(n_failed)
+            bt.note(success_rate=n_ok / max(1, n_seen))
 
     elapsed = time.time() - t0
     print(f"[s02b]   {n_ok:,}/{n_seen:,} images scored ({n_ok/max(1, n_seen):.2%}) "
@@ -133,7 +163,7 @@ def main() -> None:
     [merge] = remote_parallel_map(
         merge_images_cpu,
         [MergeImagesCpuArgs(shared_root=output_root, output_path=shared_merged)],
-        func_cpu=8, func_ram=64, max_parallelism=1, grow=True, spinner=True,
+        func_cpu=8, func_ram=64, max_parallelism=1, grow=True, spinner=False,
     )
     if not merge.get("ok"):
         raise SystemExit(f"[s02b] merge failed: {merge.get('error')}")

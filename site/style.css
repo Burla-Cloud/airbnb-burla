@@ -559,6 +559,185 @@ section {
   margin-top: 2px;
 }
 
+/* ---------------- Review filter bar ---------------- */
+.filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: -8px 0 28px;
+  padding: 18px 20px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.filter-bar__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 0.7fr) auto;
+  gap: 10px;
+  align-items: center;
+}
+.filter-input {
+  appearance: none;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font: 500 14px var(--sans);
+  color: var(--ink);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  width: 100%;
+  min-width: 0;
+}
+.filter-input:hover { border-color: var(--line-2); }
+.filter-input:focus {
+  outline: none;
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px var(--bg);
+}
+.filter-input::placeholder { color: var(--ink-3); font-weight: 500; }
+.filter-select {
+  appearance: none;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 11px 36px 11px 14px;
+  font: 500 14px var(--sans);
+  color: var(--ink);
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236A6A6A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px 14px;
+  width: 100%;
+  min-width: 0;
+}
+.filter-select:hover { border-color: var(--line-2); }
+.filter-select:focus { outline: none; border-color: var(--ink); }
+.filter-reset {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font: 600 13px var(--sans);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+.filter-reset:hover { border-color: var(--ink-3); color: var(--ink); }
+
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font: 500 13px var(--sans);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+.filter-chip:hover { border-color: var(--ink-3); color: var(--ink); }
+.filter-chip.is-active {
+  background: var(--ink);
+  color: #FFFFFF;
+  border-color: var(--ink);
+}
+.filter-chip.is-active .chip-n { color: rgba(255, 255, 255, 0.65); }
+.chip-n {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--ink-3);
+  font-feature-settings: "tnum";
+}
+
+.cards-empty {
+  border: 1px dashed var(--line-2);
+  border-radius: var(--radius);
+  padding: 28px;
+  font-size: 14px;
+  color: var(--ink-2);
+  text-align: center;
+}
+
+/* ---------------- WTF clusters ---------------- */
+.wtf-section { padding-top: 64px; padding-bottom: 64px; }
+.wtf-clusters {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+.wtf-cluster {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px 24px 24px;
+}
+.alt-bg .wtf-cluster {
+  background: var(--bg);
+}
+.wtf-cluster__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+.wtf-cluster__head h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-transform: capitalize;
+}
+.wtf-cluster__count {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-3);
+  font-feature-settings: "tnum";
+  white-space: nowrap;
+}
+.wtf-cluster__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 22px 16px;
+}
+@media (min-width: 1180px) {
+  .wtf-cluster__grid { grid-template-columns: repeat(5, 1fr); }
+}
+.wtf-tile .meta {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+.wtf-caption {
+  font-size: 12px;
+  color: var(--ink-2);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.wtf-empty {
+  font-size: 14px;
+  color: var(--ink-2);
+  border: 1px dashed var(--line-2);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+}
+
 /* ---------------- Method / "How it ran" ---------------- */
 .method-section {
   padding-top: 80px;
@@ -1099,7 +1278,7 @@ section {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 20px 22px;
-  max-height: 55vh;
+  max-height: 72vh;
   overflow-y: auto;
   white-space: pre-wrap;
 }
@@ -1179,6 +1358,13 @@ footer a:hover { color: var(--accent); text-decoration-color: var(--accent); }
     grid-template-columns: 1fr !important;
     grid-auto-rows: auto !important;
   }
+  .filter-bar__row {
+    grid-template-columns: 1fr 1fr;
+  }
+  .filter-bar__row .filter-input { grid-column: 1 / -1; }
+  .filter-bar__row .filter-reset { grid-column: 1 / -1; }
+  .wtf-cluster { padding: 18px; }
+  .wtf-cluster__grid { gap: 18px 12px; }
 }
 @media (max-width: 560px) {
   .corr-bar { grid-template-columns: 110px minmax(0, 1fr) 50px; }

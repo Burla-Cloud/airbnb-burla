@@ -246,6 +246,22 @@ def scrape_batch(args: ScrapeBatchArgs) -> dict:
 
     try:
         os.makedirs(args.shared_root, exist_ok=True)
+
+        shared_path = os.path.join(args.shared_root, f"batch_{args.batch_id:06d}.parquet")
+        if os.path.exists(shared_path):
+            try:
+                import pandas as pd
+                existing = pd.read_parquet(shared_path, columns=["listing_id"])
+                out["n_listings"] = int(existing["listing_id"].nunique())
+                out["n_ok"] = out["n_listings"]
+                out["n_total_photos"] = int(len(existing))
+                out["shared_path"] = shared_path
+                out["resumed"] = True
+                out["elapsed_seconds"] = time.time() - started
+                return out
+            except Exception:
+                pass
+
         for lid in args.listing_ids:
             t = time.time()
             r = fetch_room(FetchRoomArgs(listing_id=int(lid)), retry_limit=args.retry_limit)
@@ -274,7 +290,6 @@ def scrape_batch(args: ScrapeBatchArgs) -> dict:
 
         if rows:
             import pandas as pd
-            shared_path = os.path.join(args.shared_root, f"batch_{args.batch_id:06d}.parquet")
             pd.DataFrame(rows).to_parquet(shared_path, compression="zstd", index=False)
             out["shared_path"] = shared_path
     except Exception as e:
@@ -312,10 +327,27 @@ def list_listing_ids(args: ListListingIdsArgs) -> dict:
 class MergePhotosArgs:
     shared_root: str
     output_path: str
+    listings_history_path: str = ""  # optional: union picture_urls across snapshots
 
 
 def merge_photo_batches(args: MergePhotosArgs) -> dict:
-    out = {"ok": False, "n_files": 0, "n_rows": 0, "n_listings": 0, "output_path": args.output_path, "error": None}
+    """Reduce per-batch scrape parquets into one ``photo_manifest.parquet``.
+
+    Steps:
+    1. Concat every ``batch_*.parquet`` from the scrape stage.
+    2. Drop intra-batch duplicates by ``(listing_id, image_idx)``.
+    3. Optional: union with hero ``picture_url`` from
+       ``listings_history.parquet`` so listings whose host later changed the
+       hero photo still get every historical hero pulled. This is the
+       cross-snapshot dedupe step.
+    4. Final dedupe by ``image_url`` so the downloader/CLIP scorer never
+       processes the same physical URL twice.
+    """
+    out = {
+        "ok": False, "n_files": 0, "n_rows": 0, "n_listings": 0,
+        "n_history_added": 0, "n_after_url_dedupe": 0,
+        "output_path": args.output_path, "error": None,
+    }
     try:
         import glob
         import pandas as pd
@@ -327,6 +359,35 @@ def merge_photo_batches(args: MergePhotosArgs) -> dict:
         dfs = [pd.read_parquet(f) for f in files]
         big = pd.concat(dfs, ignore_index=True)
         big = big.drop_duplicates(subset=["listing_id", "image_idx"])
+
+        if args.listings_history_path and os.path.exists(args.listings_history_path):
+            try:
+                hist = pd.read_parquet(
+                    args.listings_history_path,
+                    columns=[c for c in (
+                        "listing_id", "snapshot_date", "picture_url"
+                    ) if c is not None],
+                )
+                hist = hist[hist["picture_url"].astype(str).str.startswith("http")]
+                hist = hist.drop_duplicates(
+                    subset=["listing_id", "picture_url"]
+                )
+                hist = hist.rename(columns={"picture_url": "image_url"})
+                hist["image_idx"] = -1  # sentinel for "Inside Airbnb hero"
+                if "scrape_ok" in big.columns:
+                    hist["scrape_ok"] = True
+                merge_cols = [c for c in big.columns if c in hist.columns]
+                hist = hist[merge_cols + [c for c in hist.columns if c not in merge_cols]]
+                before = len(big)
+                big = pd.concat([big, hist], ignore_index=True)
+                out["n_history_added"] = int(len(big) - before)
+            except Exception as e:  # noqa: BLE001
+                out["history_error"] = f"{type(e).__name__}: {str(e)[:200]}"
+
+        if "image_url" in big.columns:
+            big = big.drop_duplicates(subset=["image_url"])
+        out["n_after_url_dedupe"] = int(len(big))
+
         os.makedirs(os.path.dirname(args.output_path), exist_ok=True)
         big.to_parquet(args.output_path, compression="zstd", index=False)
         out["ok"] = True
