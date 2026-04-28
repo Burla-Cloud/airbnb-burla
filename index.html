@@ -12,7 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<link rel="stylesheet" href="style.css?v=24" />
+<link rel="stylesheet" href="style.css?v=25" />
 </head>
 <body>
 
@@ -20,12 +20,7 @@
   <div class="nav__inner">
     <a class="brand" href="#">airbnb<span class="x">×</span>burla</a>
     <div class="nav__links">
-      <a href="#worst-tv">TVs</a>
-      <a href="#ugly-bathrooms">Bathrooms</a>
-      <a href="#hectic-kitchens">Kitchens</a>
-      <a href="#drug-den">Drug dens</a>
       <a href="#pets">Pets</a>
-      <a href="#wtf">Wait, what</a>
       <a href="#reviews">Reviews</a>
       <a href="#correlations">Findings</a>
       <a class="nav__cta" href="https://github.com/Burla-Cloud/airbnb-burla">View on GitHub</a>
@@ -40,11 +35,12 @@
   </div>
   <h1>Every Airbnb,<br/>looked at <span class="accent">all at once</span>.</h1>
   <p class="lede">
-    116 cities, 4 quarterly snapshots, every public listing in Inside Airbnb's
-    open data dump. <strong>Millions of photos</strong> through CLIP and YOLOv8,
-    every <strong>review</strong> heuristic-scored and the weirdest 12K through
-    Claude Haiku, plus a year of forward calendar availability per listing.
-    All of it parallelised on <a href="https://docs.burla.dev">Burla</a>.
+    119 cities, 4 quarterly snapshots, every public listing in Inside Airbnb's
+    open data dump. <strong>1.7M photos</strong> CLIP-scored and the
+    cat-and-dog-shaped candidates double-checked with Claude Haiku Vision. Every
+    <strong>review</strong> heuristic-scored and the weirdest 12K reranked
+    through Claude Haiku. All of it parallelised on
+    <a href="https://docs.burla.dev">Burla</a>.
   </p>
 
   <div class="stats-card">
@@ -65,17 +61,17 @@
     come straight from those dumps. <a href="#correlations">Correlations</a>
     use bootstrap 95% CIs with n &ge; 100 per bucket. The primary demand proxy
     is occupancy over the next 365 nights, derived from each listing's calendar
-    snapshot. Click any photo to expand it, any review to read it in full.
+    snapshot. Click any pet photo to expand it, any review to read it in full.
   </p>
 </header>
 
 <section class="map-section">
   <div class="section__head">
     <div>
-      <h2>Every flagged listing on a map</h2>
+      <h2>Every Haiku-confirmed pet listing on a map</h2>
       <p class="section-lede">
-        Each dot is a listing flagged by one of the photo detectors below,
-        color-coded by category. Drag, zoom, click for the listing.
+        Each dot is one of the listings whose top photo Claude Haiku Vision
+        confirmed contains a real cat or dog. Drag, zoom, click for the listing.
       </p>
     </div>
   </div>
@@ -85,102 +81,21 @@
   <div class="legend" id="map-legend"></div>
 </section>
 
-<section id="worst-tv" class="grid-section">
-  <div class="section__head">
-    <div>
-      <h2>Worst TV placements across every public Airbnb</h2>
-      <p class="section-lede">
-        YOLOv8 confirmed a TV in the upper half of the photo and CLIP also
-        flagged it as &ldquo;TV mounted above a fireplace.&rdquo; Click any
-        photo for the full image and the listing.
-      </p>
-    </div>
-    <span class="section__count">--</span>
-  </div>
-  <div class="grid" data-section="worst_tv_placements"></div>
-</section>
-
-<div class="alt-bg">
-  <section id="ugly-bathrooms" class="grid-section alt-inner">
-    <div class="section__head">
-      <div>
-        <h2>Ugly bathrooms a host actually photographed</h2>
-        <p class="section-lede">
-          CLIP shortlisted &ldquo;messy room&rdquo; candidates, then Claude
-          Haiku Vision said the photo is genuinely a grimy or sad bathroom.
-          Click any photo to expand it.
-        </p>
-      </div>
-      <span class="section__count">--</span>
-    </div>
-    <div class="grid" data-section="ugly_bathrooms"></div>
-  </section>
-</div>
-
-<section id="hectic-kitchens" class="grid-section">
-  <div class="section__head">
-    <div>
-      <h2>The most hectic kitchens</h2>
-      <p class="section-lede">
-        CLIP shortlisted &ldquo;messy room&rdquo; candidates, then Claude
-        Haiku Vision said the photo is genuinely a chaotic kitchen, not just
-        a small one.
-      </p>
-    </div>
-    <span class="section__count">--</span>
-  </div>
-  <div class="grid" data-section="hectic_kitchens"></div>
-</section>
-
-<div class="alt-bg">
-  <section id="drug-den" class="grid-section alt-inner">
-    <div class="section__head">
-      <div>
-        <h2>Listings with drug-den vibes</h2>
-        <p class="section-lede">
-          CLIP shortlisted &ldquo;messy room&rdquo; candidates, then Claude
-          Haiku Vision picked the ones that genuinely give
-          &ldquo;did-someone-just-leave&rdquo; energy. Bare bulbs, mattress
-          on the floor, peeling walls.
-        </p>
-      </div>
-      <span class="section__count">--</span>
-    </div>
-    <div class="grid" data-section="drug_den_vibes"></div>
-  </section>
-</div>
-
 <section id="pets" class="grid-section">
   <div class="section__head">
     <div>
       <h2>Cats and dogs Claude said are actually real</h2>
       <p class="section-lede">
-        CLIP found pet-shaped candidates, then Claude Haiku Vision said
-        &ldquo;yes, that is a real cat or dog.&rdquo; Paintings, throw pillows,
-        and rugs that looked vaguely animal-shaped were rejected.
+        CLIP shortlisted pet-shaped candidates from 1.7M photos, then Claude
+        Haiku Vision said &ldquo;yes, that is a real cat or dog.&rdquo;
+        Paintings, throw pillows, and rugs that looked vaguely animal-shaped
+        were rejected.
       </p>
     </div>
     <span class="section__count">--</span>
   </div>
   <div class="grid" data-section="pets_in_photos"></div>
 </section>
-
-<div class="alt-bg">
-  <section id="wtf" class="wtf-section alt-inner">
-    <div class="section__head">
-      <div>
-        <h2>Photos that made us go &ldquo;wait, what.&rdquo;</h2>
-        <p class="section-lede">
-          CLIP screened every photo for absurdity, then Claude Haiku reranked
-          the top candidates and grouped them into clusters. These are the
-          clusters with at least three photos that survived.
-        </p>
-      </div>
-      <span class="section__count">--</span>
-    </div>
-    <div id="wtf-clusters" class="wtf-clusters"></div>
-  </section>
-</div>
 
 <section id="reviews" class="cards-section">
   <div class="section__head">
@@ -349,6 +264,6 @@ results = remote_parallel_map(
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="app.js?v=24" defer></script>
+<script src="app.js?v=25" defer></script>
 </body>
 </html>
