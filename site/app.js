@@ -3,14 +3,23 @@
 const DATA_BASE = "./data";
 
 const SECTION_COLORS = {
+  worst_tv_placements: "#E0533A",
+  hectic_kitchens:     "#B97A1E",
+  drug_den_vibes:      "#5C2E63",
   pets_in_photos:      "#5C4DA8",
 };
 
 const SECTION_LABELS = {
+  worst_tv_placements: "Worst TV placements",
+  hectic_kitchens:     "Hectic kitchens",
+  drug_den_vibes:      "Drug-den vibes",
   pets_in_photos:      "Real pets in photos",
 };
 
 const SCORE_PROMPTS = {
+  worst_tv_placements: 'Claude Haiku Vision said yes, that TV is mounted absurdly',
+  hectic_kitchens:     'Claude Haiku Vision said this kitchen is genuinely chaotic',
+  drug_den_vibes:      'Claude Haiku Vision said this gives "did-someone-just-leave" energy',
   pets_in_photos:      'Claude Haiku Vision said yes, that is a real cat or dog',
 };
 
@@ -751,9 +760,12 @@ function openReviewModal(it) {
 (async function main() {
   setupNav();
   ensureModalEl();
-  const [stats, pets, reviews, corr, world] =
+  const [stats, tv, kitchens, drugDen, pets, reviews, corr, world] =
     await Promise.all([
       loadJSON("homepage_stats"),
+      loadJSON("worst_tv_placements"),
+      loadJSON("hectic_kitchens"),
+      loadJSON("drug_den_vibes"),
       loadJSON("pets_in_photos"),
       loadJSON("funniest_reviews"),
       loadJSON("correlations"),
@@ -761,6 +773,9 @@ function openReviewModal(it) {
     ]);
 
   paintStats(stats);
+  paintGrid("worst_tv_placements", tv);
+  paintGrid("hectic_kitchens", kitchens);
+  paintGrid("drug_den_vibes", drugDen);
   paintGrid("pets_in_photos", pets);
   paintReviews(reviews);
   paintCorrelations(corr);
