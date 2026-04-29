@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Airbnb at scale: every public listing, looked at all at once on Burla</title>
-<meta name="description" content="Every public Airbnb listing in Inside Airbnb's open dump across 116 cities and four quarterly snapshots. Photos, reviews, and calendar processed in parallel on Burla with CLIP, YOLOv8, and Claude Haiku." />
+<meta name="description" content="Every public Airbnb listing in Inside Airbnb's open dump across 119 cities and four quarterly snapshots. 1.7M photos CLIP-scored, the most suspicious shortlists double-checked with Claude Haiku. All parallelized on Burla." />
 <meta property="og:title" content="Every public Airbnb, looked at all at once on Burla" />
 <meta property="og:description" content="116 cities x 4 snapshots of Inside Airbnb data. Photos through CLIP and YOLO, reviews through Haiku, all on Burla." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -12,7 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<link rel="stylesheet" href="style.css?v=27" />
+<link rel="stylesheet" href="style.css?v=28" />
 </head>
 <body>
 
@@ -20,10 +20,10 @@
   <div class="nav__inner">
     <a class="brand" href="#">airbnb<span class="x">×</span>burla</a>
     <div class="nav__links">
-      <a href="#worst-tv">TVs</a>
-      <a href="#hectic-kitchens">Kitchens</a>
       <a href="#drug-den">Drug dens</a>
+      <a href="#hectic-kitchens">Kitchens</a>
       <a href="#pets">Pets</a>
+      <a href="#worst-tv">TVs</a>
       <a href="#reviews">Reviews</a>
       <a href="#correlations">Findings</a>
       <a class="nav__cta" href="https://github.com/Burla-Cloud/airbnb-burla">View on GitHub</a>
@@ -38,12 +38,17 @@
   </div>
   <h1>Every Airbnb,<br/>looked at <span class="accent">all at once</span>.</h1>
   <p class="lede">
-    119 cities, 4 quarterly snapshots, every public listing in Inside Airbnb's
-    open data dump. <strong>1.7M photos</strong> CLIP-scored, the most
-    suspicious shortlists then double-checked with Claude Haiku Vision (TVs,
-    kitchens, drug-den vibes, pets). Every <strong>review</strong>
-    heuristic-scored and the weirdest 12K reranked through Claude Haiku. All of
-    it parallelised on <a href="https://docs.burla.dev">Burla</a>.
+    Every public listing in Inside Airbnb's open dump, 119 cities, 4 quarterly
+    snapshots. We scored <strong>1.7M photos</strong> with
+    <a href="https://github.com/mlfoundations/open_clip" target="_blank" rel="noopener">CLIP</a>
+    (a model that turns an image into a vector you can compare to a text
+    prompt), shortlisted the most suspicious ones, and had Claude Haiku Vision
+    double-check each shortlist. We also scored every review and reranked the
+    weirdest 12K with Haiku.     Everything was parallelized on
+    <a href="https://docs.burla.dev" target="_blank" rel="noopener">Burla</a>,
+    on a single dynamic cluster that scaled to ~1.7K CPU workers for photo
+    download and CLIP, with a small GPU pool running embedding clusters in
+    parallel on the same cluster.
   </p>
 
   <div class="stats-card">
@@ -54,17 +59,15 @@
       <div class="stat"><span class="num" data-stat="n_reviews">--</span><span class="label">Reviews scored</span></div>
       <div class="stat"><span class="num" data-stat="peak_workers">--</span><span class="label">Peak workers</span></div>
       <div class="stat"><span class="num" data-stat="n_gpu_images">--</span><span class="label">GPU detections</span></div>
-      <div class="stat"><span class="num" data-stat="wall_time_hours">--</span><span class="label">Hours wall</span></div>
-      <div class="stat"><span class="num" data-stat="estimated_cost_usd_dollar">--</span><span class="label">Total spend</span></div>
     </div>
   </div>
 
   <p class="meta-line">
-    Public Inside Airbnb dumps for listings, reviews, and calendar. Photo URLs
-    come straight from those dumps. <a href="#correlations">Correlations</a>
-    use bootstrap 95% CIs with n &ge; 100 per bucket. The primary demand proxy
-    is occupancy over the next 365 nights, derived from each listing's calendar
-    snapshot. Click any photo to expand it, any review to read it in full.
+    Listings, reviews, and calendars come straight from public Inside Airbnb
+    dumps. The findings cards below use bootstrap 95% confidence intervals on
+    each listing's <strong>365-night calendar occupancy</strong> (how booked a
+    listing is over the next year, our demand proxy). Click any photo to
+    expand it. Click any review to read it in full.
   </p>
 </header>
 
@@ -85,20 +88,20 @@
   <div class="legend" id="map-legend"></div>
 </section>
 
-<section id="worst-tv" class="grid-section">
+<section id="drug-den" class="grid-section">
   <div class="section__head">
     <div>
-      <h2>Worst TV placements across every public Airbnb</h2>
+      <h2>Listings with drug-den vibes</h2>
       <p class="section-lede">
-        CLIP shortlisted &ldquo;TV mounted high above a fireplace&rdquo;
-        candidates from 1.7M photos, then Claude Haiku Vision confirmed each
-        one as either above-fireplace or unusually-high. Click any photo to
-        expand it.
+        CLIP shortlisted &ldquo;messy room&rdquo; candidates, then Claude
+        Haiku Vision picked the ones that genuinely give
+        &ldquo;did-someone-just-leave&rdquo; energy. Bare bulbs, mattress on
+        the floor, peeling walls.
       </p>
     </div>
     <span class="section__count">--</span>
   </div>
-  <div class="grid" data-section="worst_tv_placements"></div>
+  <div class="grid" data-section="drug_den_vibes"></div>
 </section>
 
 <div class="alt-bg">
@@ -118,37 +121,36 @@
   </section>
 </div>
 
-<section id="drug-den" class="grid-section">
+<section id="pets" class="grid-section">
   <div class="section__head">
     <div>
-      <h2>Listings with drug-den vibes</h2>
+      <h2>Cats and dogs Claude said are actually real</h2>
       <p class="section-lede">
-        CLIP shortlisted &ldquo;messy room&rdquo; candidates, then Claude
-        Haiku Vision picked the ones that genuinely give
-        &ldquo;did-someone-just-leave&rdquo; energy. Bare bulbs, mattress on
-        the floor, peeling walls.
+        CLIP shortlisted pet-shaped candidates from 1.7M photos, then Claude
+        Haiku Vision said &ldquo;yes, that is a real cat or dog.&rdquo;
+        Paintings, throw pillows, and rugs that looked vaguely animal-shaped
+        were rejected.
       </p>
     </div>
     <span class="section__count">--</span>
   </div>
-  <div class="grid" data-section="drug_den_vibes"></div>
+  <div class="grid" data-section="pets_in_photos"></div>
 </section>
 
 <div class="alt-bg">
-  <section id="pets" class="grid-section alt-inner">
+  <section id="worst-tv" class="grid-section alt-inner">
     <div class="section__head">
       <div>
-        <h2>Cats and dogs Claude said are actually real</h2>
+        <h2>Worst TV placements across every public Airbnb</h2>
         <p class="section-lede">
-          CLIP shortlisted pet-shaped candidates from 1.7M photos, then Claude
-          Haiku Vision said &ldquo;yes, that is a real cat or dog.&rdquo;
-          Paintings, throw pillows, and rugs that looked vaguely animal-shaped
-          were rejected.
+          CLIP shortlisted &ldquo;TV mounted high above a fireplace&rdquo;
+          candidates from 1.7M photos, then Claude Haiku Vision confirmed each
+          one as either above-fireplace or unusually-high.
         </p>
       </div>
       <span class="section__count">--</span>
     </div>
-    <div class="grid" data-section="pets_in_photos"></div>
+    <div class="grid" data-section="worst_tv_placements"></div>
   </section>
 </div>
 
@@ -193,43 +195,47 @@
     <div class="method__copy">
       <h2>How it ran on <span class="accent">Burla</span></h2>
       <p>
-        Burla runs Python work across a fleet of containers using the standard
-        <code>python:3.12</code> image. The
-        orchestrator returns them as a single iterator. The shared filesystem
-        at <code>./shared</code> is GCSFuse-mounted to a GCS bucket and
-        visible from every worker, which is what makes this kind of
-        slice-and-merge pipeline cheap.
+        <a href="https://docs.burla.dev" target="_blank" rel="noopener">Burla</a>
+        is a high-performance parallel processing library for data teams that
+        iterate quickly. You write a Python function, you call
+        <code>remote_parallel_map</code>, and it runs across a cluster with a
+        shared filesystem mounted at <code>./shared</code>. No Docker, no
+        Kubernetes, no orchestration glue.
       </p>
       <p>
-        Burla bursts to thousands of containers on the photo download and CLIP
-        stages, then narrows to a small GPU fleet for YOLO and an LLM-rate-limited
-        pool for Haiku. Numbers above are read live from
-        <code>site/data/run_stats.json</code>, so the &ldquo;peak workers&rdquo;
-        stat reflects the actual run, not a marketing claim.
+        For this run a single dynamic cluster scaled CPU workers up to ~1.7K
+        for photo download and CLIP scoring, and the same cluster ran a small
+        GPU pool for embedding-cluster work, in parallel with the CPU jobs.
+        Claude Haiku validation ran rate-limited on top.
       </p>
 
       <div class="peak-callout">
         <span class="peak-num" data-stat="peak_workers">--</span>
         <span class="peak-text">
-          <strong>concurrent containers</strong> at peak across photo download,
-          CLIP scoring, and review tier-1. GPU YOLO ran on a smaller fleet;
-          Claude Haiku ran rate-limited.
+          <strong>concurrent workers</strong> at peak across photo download,
+          CLIP scoring, and review tier-1. GPU work ran on a smaller fleet
+          on the same cluster, while CPU jobs kept going.
         </span>
       </div>
 
       <p style="margin-top: 24px;">
         Full writeup is on
-        <a href="https://github.com/Burla-Cloud/airbnb-burla/blob/main/WRITEUP.md">GitHub</a>.
-        Burla docs are at <a href="https://docs.burla.dev">docs.burla.dev</a>.
+        <a href="https://github.com/Burla-Cloud/airbnb-burla/blob/main/WRITEUP.md" target="_blank" rel="noopener">GitHub</a>.
+        Burla docs are at <a href="https://docs.burla.dev" target="_blank" rel="noopener">docs.burla.dev</a>.
       </p>
     </div>
 
     <div class="code-card">
       <div class="code-card__head">
         <span class="code-card__dots"><i></i><i></i><i></i></span>
-        <span>score_photos.py</span>
+        <div class="code-tabs" role="tablist">
+          <button type="button" class="code-tab is-active" role="tab"
+                  aria-selected="true" data-tab="score">score_photos.py</button>
+          <button type="button" class="code-tab" role="tab"
+                  aria-selected="false" data-tab="encode">encode_batch.py</button>
+        </div>
       </div>
-      <pre class="code-block"><span class="k">from</span> burla <span class="k">import</span> remote_parallel_map
+      <pre class="code-block is-active" data-pane="score"><span class="k">from</span> burla <span class="k">import</span> remote_parallel_map
 
 <span class="k">def</span> <span class="f">score_batch</span>(args: ScoreArgs) -&gt; list[dict]:
     <span class="k">import</span> torch, open_clip, pyarrow.parquet <span class="k">as</span> pq
@@ -239,7 +245,7 @@
         cache_dir=<span class="s">"./shared/airbnb/clip_weights"</span>,
     )
     <span class="c"># read row group, encode, score against prompts,</span>
-    <span class="c"># write a parquet shard back to /workspace/shared.</span>
+    <span class="c"># write a parquet shard back to ./shared.</span>
 
 results = remote_parallel_map(
     score_batch,
@@ -248,6 +254,29 @@ results = remote_parallel_map(
     max_parallelism=<span class="n">1000</span>,    <span class="c"># 1k concurrent at peak</span>
     grow=<span class="n">True</span>, spinner=<span class="n">True</span>,
 )</pre>
+      <pre class="code-block" data-pane="encode"><span class="k">import</span> io, torch, open_clip
+<span class="k">from</span> PIL <span class="k">import</span> Image
+
+PROMPTS = [
+    <span class="s">"a TV mounted absurdly high above a fireplace"</span>,
+    <span class="s">"a chaotic kitchen with dishes piled in the sink"</span>,
+    <span class="s">"a real cat or dog visible in the photo"</span>,
+    <span class="s">"a dingy room that gives drug-den vibes"</span>,
+]
+
+<span class="k">def</span> <span class="f">encode_batch</span>(image_bytes: list[bytes]) -&gt; dict[str, list[float]]:
+    <span class="c"># Pre-loaded once per worker: model, prep, tokenizer, device.</span>
+    pixels = torch.stack([prep(Image.open(io.BytesIO(b)).convert(<span class="s">"RGB"</span>))
+                          <span class="k">for</span> b <span class="k">in</span> image_bytes]).to(device)
+
+    <span class="k">with</span> torch.no_grad(), torch.cuda.amp.autocast():
+        img = model.encode_image(pixels)
+        img = img / img.norm(dim=-<span class="n">1</span>, keepdim=<span class="n">True</span>)
+        txt = model.encode_text(tokenizer(PROMPTS).to(device))
+        txt = txt / txt.norm(dim=-<span class="n">1</span>, keepdim=<span class="n">True</span>)
+
+    sims = (img @ txt.T).cpu().numpy()  <span class="c"># (B, P) cosine similarity</span>
+    <span class="k">return</span> {p: sims[:, i].tolist() <span class="k">for</span> i, p <span class="k">in</span> enumerate(PROMPTS)}</pre>
     </div>
   </div>
 </section>
@@ -319,6 +348,6 @@ results = remote_parallel_map(
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="app.js?v=27" defer></script>
+<script src="app.js?v=28" defer></script>
 </body>
 </html>

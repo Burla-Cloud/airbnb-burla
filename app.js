@@ -481,6 +481,7 @@ function paintCorrelations(payload) {
     const allLow = Math.min(...buckets.map((b) => b.ci_low));
     const allHigh = Math.max(...buckets.map((b) => b.ci_high));
     const span = Math.max(1e-6, allHigh - allLow);
+    const fmtPct = (frac) => `${Math.round(frac * 100)}% booked`;
     const bars = buckets.map((b) => {
       const left = ((b.ci_low - allLow) / span) * 100;
       const width = ((b.ci_high - b.ci_low) / span) * 100;
@@ -502,7 +503,17 @@ function paintCorrelations(payload) {
         <span>${escapeHTML(title)}</span>
         <span class="verdict ${h.verdict}">${verdictLabel}</span>
       </h3>
+      <p class="corr-demand-key">Bar position = how booked the next 365 nights are. Further right means more booked.</p>
       <div class="corr-bars">${bars}</div>
+      <div class="corr-axis" aria-hidden="true">
+        <span class="corr-axis__pad"></span>
+        <span class="corr-axis__track">
+          <span class="corr-axis__low">${escapeHTML(fmtPct(allLow))}</span>
+          <span class="corr-axis__arrow">more booked &rarr;</span>
+          <span class="corr-axis__high">${escapeHTML(fmtPct(allHigh))}</span>
+        </span>
+        <span class="corr-axis__pad-right"></span>
+      </div>
     `;
     root.appendChild(block);
   }
@@ -618,6 +629,28 @@ function setupNav() {
   };
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
+}
+
+// IDE-style tab switcher inside the "How it ran on Burla" code card.
+function setupCodeTabs() {
+  const card = document.querySelector(".code-card");
+  if (!card) return;
+  const tabs = card.querySelectorAll(".code-tab");
+  const panes = card.querySelectorAll(".code-block");
+  if (!tabs.length || !panes.length) return;
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const key = tab.dataset.tab;
+      tabs.forEach((t) => {
+        const active = t === tab;
+        t.classList.toggle("is-active", active);
+        t.setAttribute("aria-selected", active ? "true" : "false");
+      });
+      panes.forEach((p) => {
+        p.classList.toggle("is-active", p.dataset.pane === key);
+      });
+    });
+  });
 }
 
 // ============================================================================
@@ -759,24 +792,25 @@ function openReviewModal(it) {
 
 (async function main() {
   setupNav();
+  setupCodeTabs();
   ensureModalEl();
-  const [stats, tv, kitchens, drugDen, pets, reviews, corr, world] =
+  const [stats, drugDen, kitchens, pets, tv, reviews, corr, world] =
     await Promise.all([
       loadJSON("homepage_stats"),
-      loadJSON("worst_tv_placements"),
-      loadJSON("hectic_kitchens"),
       loadJSON("drug_den_vibes"),
+      loadJSON("hectic_kitchens"),
       loadJSON("pets_in_photos"),
+      loadJSON("worst_tv_placements"),
       loadJSON("funniest_reviews"),
       loadJSON("correlations"),
       loadJSON("world_map"),
     ]);
 
   paintStats(stats);
-  paintGrid("worst_tv_placements", tv);
-  paintGrid("hectic_kitchens", kitchens);
   paintGrid("drug_den_vibes", drugDen);
+  paintGrid("hectic_kitchens", kitchens);
   paintGrid("pets_in_photos", pets);
+  paintGrid("worst_tv_placements", tv);
   paintReviews(reviews);
   paintCorrelations(corr);
   paintMap(world);
