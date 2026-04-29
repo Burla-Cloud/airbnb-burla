@@ -1,0 +1,199 @@
+{
+  "_doc": "Listings (by city + name) the human reviewer flagged as not passing visual review. s06_artifacts and any sync script should drop these from the surfaced top-K. Add new (section, city, name) tuples here; the sync script will resolve them to listing_ids and persist those too.",
+  "by_city_name": [
+    {
+      "section": "worst_tv_placements",
+      "city": "new-zealand",
+      "name": "Poraiti, Napier Room"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "Clark County, NV",
+      "name": "Comfortable Room in Townhouse"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "Rio de Janeiro",
+      "name": "Luxo 2 minutos a pé praia prédio seguro24h WI-FI"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "Mornington Peninsula",
+      "name": "Capella Villa No. 2 - stylish coastal living"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "South Aegean",
+      "name": "Villa next to the sea"
+    },
+    {
+      "section": "hectic_kitchens",
+      "city": "New York City",
+      "name": "Friendly and well located place to get away"
+    },
+    {
+      "section": "hectic_kitchens",
+      "city": "Singapore",
+      "name": "Full Student Care home for foreign students"
+    },
+    {
+      "section": "hectic_kitchens",
+      "city": "London",
+      "name": "ENSUITE w Double bed; near WEMBLEY ARENA, STADIUM"
+    },
+    {
+      "section": "hectic_kitchens",
+      "city": "Lyon",
+      "name": "Charmant t3 lumineux et agréable à vivre"
+    },
+    {
+      "section": "hectic_kitchens",
+      "city": "Berlin",
+      "name": "OASE im PRENZL'BERG || central, cosy, be welcome!"
+    },
+    {
+      "section": "hectic_kitchens",
+      "city": "Vienna",
+      "name": "Cosy sunny and quiet room near city center"
+    },
+    {
+      "section": "hectic_kitchens",
+      "city": "New York City",
+      "name": "Comfy Room in Large E Williamsburg Apartment"
+    },
+    {
+      "section": "hectic_kitchens",
+      "city": "Paris",
+      "name": "Appartement cosy proche du canal"
+    },
+    {
+      "section": "hectic_kitchens",
+      "city": "Melbourne",
+      "name": "One private bedroom with its own bathroom!"
+    },
+    {
+      "section": "hectic_kitchens",
+      "city": "Paris",
+      "name": "grand loft d'artiste, avec terrasse arborée"
+    },
+    {
+      "section": "hectic_kitchens",
+      "city": "New York City",
+      "name": "Café DuChill (backyard facing)"
+    },
+    {
+      "section": "drug_den_vibes",
+      "city": "Rome",
+      "name": "Stanza in affitto per 2 persone"
+    },
+    {
+      "section": "drug_den_vibes",
+      "city": "Istanbul",
+      "name": "Ali&Harvey Home"
+    },
+    {
+      "section": "drug_den_vibes",
+      "city": "New York City",
+      "name": "Private Bedroom on Prospect Park"
+    },
+    {
+      "section": "drug_den_vibes",
+      "city": "Los Angeles",
+      "name": "Classic Koreatown Pad-- 1920s Charm, Hip Locale"
+    },
+    {
+      "section": "drug_den_vibes",
+      "city": "New York City",
+      "name": "Private room in great apt bwick"
+    },
+    {
+      "section": "drug_den_vibes",
+      "city": "New York City",
+      "name": "Room in Williamsburg Duplex"
+    },
+    {
+      "section": "pets_in_photos",
+      "city": "London",
+      "name": "nice and bright"
+    },
+    {
+      "section": "pets_in_photos",
+      "city": "Copenhagen",
+      "name": "Central location in the old city"
+    },
+    {
+      "section": "pets_in_photos",
+      "city": "Sydney",
+      "name": "Bedroom by the Beach"
+    },
+    {
+      "section": "pets_in_photos",
+      "city": "Edinburgh",
+      "name": "One bedroom flat in Edinburgh"
+    },
+    {
+      "section": "pets_in_photos",
+      "city": "Tokyo",
+      "name": "BRT102 池袋站| 繁华商圈双人公寓， 山手线及8条地铁直达新宿 涩谷 银座 秋叶原，设施齐全"
+    },
+    {
+      "section": "pets_in_photos",
+      "city": "Toronto",
+      "name": "Boho 🏡 🍭Room - 10Mins to Downtown"
+    },
+    {
+      "section": "pets_in_photos",
+      "city": "Ireland",
+      "name": "Gorgeous home in Greystones!"
+    },
+    {
+      "section": "pets_in_photos",
+      "city": "Ireland",
+      "name": "Shackleton at The Mountain Lodge"
+    },
+    {
+      "section": "pets_in_photos",
+      "city": "Paris",
+      "name": "single room heart of paris, quiet and cool"
+    },
+    {
+      "section": "pets_in_photos",
+      "city": "Oslo",
+      "name": "By the sea with breathtaking View – Sunset Magic"
+    }
+  ],
+  "by_listing_id": [
+    2701487,
+    5147549,
+    5695509,
+    5931261,
+    6911965,
+    7698619,
+    12324428,
+    15257676,
+    16914299,
+    19114872,
+    19250621,
+    20880300,
+    20921518,
+    21230538,
+    21291783,
+    22884053,
+    24935620,
+    29739020,
+    36258404,
+    36400986,
+    53584501,
+    931551865890022546,
+    935336064341840362,
+    945039581908566050,
+    1039637716292079820,
+    1158368227593729569,
+    1413144121208834230,
+    1441366854805334738,
+    1460095022278341930,
+    1485734515088976672,
+    1498481982973554652,
+    1518987557142845503
+  ]
+}

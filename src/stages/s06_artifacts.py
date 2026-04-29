@@ -716,6 +716,17 @@ def main() -> None:
     })
     write_json(OUTPUT_DIR / "runtime_log.json", runtime_summary)
 
+    # Apply the human-curated blocklist on top of whatever Haiku surfaced.
+    # See data/manual_blocklist.json + scripts/apply_manual_blocklist.py.
+    try:
+        import subprocess as _sub
+        _sub.run(
+            ["python", "-m", "scripts.apply_manual_blocklist"],
+            check=True,
+        )
+    except Exception as _exc:  # noqa: BLE001 -- best-effort, don't fail the stage
+        print(f"[s06] manual blocklist sync failed (non-fatal): {_exc}", flush=True)
+
     md = _build_viral_summary(sections, stats, runtime_summary)
     (OUTPUT_DIR / "viral_summary.md").write_text(md, encoding="utf-8")
 

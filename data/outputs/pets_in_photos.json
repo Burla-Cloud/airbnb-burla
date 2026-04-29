@@ -1,13 +1,13 @@
 {
   "title": "Cats and dogs Claude said are actually real",
   "subtitle": "CLIP found candidates, Haiku Vision said YES this is a real animal",
-  "n": 60,
+  "n": 50,
   "items": [
     {
       "listing_id": 917440706911803962,
       "city": "London",
       "country": "United Kingdom",
-      "name": "Jesse\u2019s Manor",
+      "name": "Jesse’s Manor",
       "score": 10.0,
       "image_url": "https://a0.muscache.com/pictures/hosting/Hosting-917440706911803962/original/8f61c15e-a720-4012-821e-27381c681734.jpeg",
       "thumbnail_url": "https://a0.muscache.com/pictures/hosting/Hosting-917440706911803962/original/8f61c15e-a720-4012-821e-27381c681734.jpeg",
@@ -183,7 +183,7 @@
       "listing_id": 46471893,
       "city": "Hong Kong",
       "country": "China",
-      "name": "\u88ab180\u5ea6\u6d77\u666f\u5305\u570d\uff0c\u5f77\u5982\u6642\u5149\u5012\u6d41\u7684\u8a2d\u8a08\u5e2b\u4e4b\u5bb6 \u9999\u6e2f\u96f2\u6d69\u5f71 \u5b89\u4fca\u8c6a\u591a\u4f4d \u8457\u540d\u6b4c\u624b \u62cd\u651d MV\u53ca\u5531\u7247\u5c01\u5957",
+      "name": "被180度海景包圍，彷如時光倒流的設計師之家 香港雲浩影 安俊豪多位 著名歌手 拍攝 MV及唱片封套",
       "score": 10.0,
       "image_url": "https://a0.muscache.com/im/pictures/5bf6a6a5-39a1-4cf7-843a-a7b54305a4b8.jpg",
       "thumbnail_url": "https://a0.muscache.com/pictures/7b4b0304-0247-47b7-a7be-d51955b56c79.jpg",
@@ -209,22 +209,6 @@
       "lng": 4.8318847,
       "animal_type": "cat",
       "one_line": "Gray cat lounges on living room floor by sunlit window.",
-      "haiku_score": 9.0
-    },
-    {
-      "listing_id": 5931261,
-      "city": "London",
-      "country": "United Kingdom",
-      "name": "nice and bright",
-      "score": 9.0,
-      "image_url": "https://a0.muscache.com/pictures/47c7c0e8-25ae-45ae-87c1-8053699244d4.jpg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/47c7c0e8-25ae-45ae-87c1-8053699244d4.jpg",
-      "listing_url": "https://www.airbnb.com/rooms/5931261",
-      "demand_proxy": 1.0,
-      "lat": 51.45048,
-      "lng": -0.12032,
-      "animal_type": "dog",
-      "one_line": "Happy golden Labrador smiling on bed with colorful blanket.",
       "haiku_score": 9.0
     },
     {
@@ -308,22 +292,6 @@
       "haiku_score": 9.0
     },
     {
-      "listing_id": 1441366854805334738,
-      "city": "Copenhagen",
-      "country": "Denmark",
-      "name": "Central location in the old city",
-      "score": 9.0,
-      "image_url": "https://a0.muscache.com/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTQ0MTM2Njg1NDgwNTMzNDczOA==/original/5feb6eec-9140-40f3-896b-36118ba36b02.jpeg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTQ0MTM2Njg1NDgwNTMzNDczOA==/original/5feb6eec-9140-40f3-896b-36118ba36b02.jpeg",
-      "listing_url": "https://www.airbnb.com/rooms/1441366854805334738",
-      "demand_proxy": 0.9945205479452055,
-      "lat": 55.68133,
-      "lng": 12.57138,
-      "animal_type": "cat",
-      "one_line": "Fluffy light-colored cat lounging on floor by window.",
-      "haiku_score": 9.0
-    },
-    {
       "listing_id": 591318761585784585,
       "city": "Cape Town",
       "country": "South Africa",
@@ -375,7 +343,7 @@
       "listing_id": 557715183082332092,
       "city": "Paris",
       "country": "France",
-      "name": "Un chat dans le 11\u00e8me!",
+      "name": "Un chat dans le 11ème!",
       "score": 9.0,
       "image_url": "https://a0.muscache.com/pictures/7ccb7b13-99f1-449f-ab18-0f7c6aeb59f0.jpg",
       "thumbnail_url": "https://a0.muscache.com/pictures/7ccb7b13-99f1-449f-ab18-0f7c6aeb59f0.jpg",
@@ -391,7 +359,7 @@
       "listing_id": 39693103,
       "city": "Pays Basque",
       "country": "France",
-      "name": "Chambre priv\u00e9e",
+      "name": "Chambre privée",
       "score": 9.0,
       "image_url": "https://a0.muscache.com/pictures/miso/Hosting-39693103/original/34424210-ba19-42e5-89b4-5d60c4d57d27.jpeg",
       "thumbnail_url": "https://a0.muscache.com/pictures/miso/Hosting-39693103/original/34424210-ba19-42e5-89b4-5d60c4d57d27.jpeg",
@@ -423,7 +391,7 @@
       "listing_id": 1271918110351790871,
       "city": "Copenhagen",
       "country": "Denmark",
-      "name": "Vandudsigt og t\u00e6t p\u00e5 Metroen",
+      "name": "Vandudsigt og tæt på Metroen",
       "score": 9.0,
       "image_url": "https://a0.muscache.com/pictures/hosting/Hosting-1271918110351790871/original/e81fba3f-32a6-41f9-a6ba-0df0c07dc91e.jpeg",
       "thumbnail_url": "https://a0.muscache.com/pictures/hosting/Hosting-1271918110351790871/original/e81fba3f-32a6-41f9-a6ba-0df0c07dc91e.jpeg",
@@ -513,22 +481,6 @@
       "lng": -0.0890723174649957,
       "animal_type": "cat",
       "one_line": "Black cat lounging on couch back like a furry mane decoration.",
-      "haiku_score": 9.0
-    },
-    {
-      "listing_id": 19250621,
-      "city": "Sydney",
-      "country": "Australia",
-      "name": "Bedroom by the Beach",
-      "score": 9.0,
-      "image_url": "https://a0.muscache.com/pictures/b3b25c39-73f1-4187-a874-9e7ca80c95f3.jpg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/b3b25c39-73f1-4187-a874-9e7ca80c95f3.jpg",
-      "listing_url": "https://www.airbnb.com/rooms/19250621",
-      "demand_proxy": 0.02,
-      "lat": -33.89431,
-      "lng": 151.27159,
-      "animal_type": "cat",
-      "one_line": "White cat lounging in a bowl on the living room floor",
       "haiku_score": 9.0
     },
     {
@@ -644,22 +596,6 @@
       "haiku_score": 9.0
     },
     {
-      "listing_id": 945039581908566050,
-      "city": "Edinburgh",
-      "country": "United Kingdom",
-      "name": "One bedroom flat in Edinburgh",
-      "score": 9.0,
-      "image_url": "https://a0.muscache.com/pictures/miso/Hosting-945039581908566050/original/07b1406b-c32c-45bf-9ddb-bf86a36b1762.jpeg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/miso/Hosting-945039581908566050/original/07b1406b-c32c-45bf-9ddb-bf86a36b1762.jpeg",
-      "listing_url": "https://www.airbnb.com/rooms/945039581908566050",
-      "demand_proxy": 0.019178082191780854,
-      "lat": 55.94073,
-      "lng": -3.22771,
-      "animal_type": "dog",
-      "one_line": "Golden Labrador lounges in sunny modern apartment.",
-      "haiku_score": 9.0
-    },
-    {
       "listing_id": 1097091091075236977,
       "city": "Toronto",
       "country": "Canada",
@@ -692,22 +628,6 @@
       "haiku_score": 9.0
     },
     {
-      "listing_id": 22884053,
-      "city": "Toronto",
-      "country": "Canada",
-      "name": "Boho \ud83c\udfe1 \ud83c\udf6dRoom - 10Mins to Downtown",
-      "score": 9.0,
-      "image_url": "https://a0.muscache.com/pictures/miso/Hosting-22884053/original/62352e44-22b5-42b5-b02f-d72cf6f819cc.jpeg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/miso/Hosting-22884053/original/62352e44-22b5-42b5-b02f-d72cf6f819cc.jpeg",
-      "listing_url": "https://www.airbnb.com/rooms/22884053",
-      "demand_proxy": 0.0,
-      "lat": 43.70403,
-      "lng": -79.34933,
-      "animal_type": "dog",
-      "one_line": "Golden retriever lounges peacefully on sunny living room carpet.",
-      "haiku_score": 9.0
-    },
-    {
       "listing_id": 1406516431637981250,
       "city": "London",
       "country": "United Kingdom",
@@ -724,22 +644,6 @@
       "haiku_score": 9.0
     },
     {
-      "listing_id": 1158368227593729569,
-      "city": "Tokyo",
-      "country": "Japan",
-      "name": "BRT102 \u6c60\u888b\u7ad9|  \u7e41\u534e\u5546\u5708\u53cc\u4eba\u516c\u5bd3\uff0c \u5c71\u624b\u7ebf\u53ca8\u6761\u5730\u94c1\u76f4\u8fbe\u65b0\u5bbf \u6da9\u8c37 \u94f6\u5ea7 \u79cb\u53f6\u539f\uff0c\u8bbe\u65bd\u9f50\u5168",
-      "score": 9.0,
-      "image_url": "https://a0.muscache.com/pictures/miso/Hosting-1158368227593729569/original/268af78e-2203-46de-9f01-f359f52da6a5.jpeg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/miso/Hosting-1158368227593729569/original/268af78e-2203-46de-9f01-f359f52da6a5.jpeg",
-      "listing_url": "https://www.airbnb.com/rooms/1158368227593729569",
-      "demand_proxy": 0.6219178082191781,
-      "lat": 35.73841,
-      "lng": 139.70732,
-      "animal_type": "dog",
-      "one_line": "Golden retriever lounges on fuzzy chair in modern bedroom.",
-      "haiku_score": 9.0
-    },
-    {
       "listing_id": 15001135,
       "city": "Los Angeles",
       "country": "United States",
@@ -753,38 +657,6 @@
       "lng": -118.46975,
       "animal_type": "dog",
       "one_line": "Two white dogs walk along poolside in sunny yard",
-      "haiku_score": 9.0
-    },
-    {
-      "listing_id": 1498481982973554652,
-      "city": "ireland",
-      "country": "Ireland",
-      "name": "Gorgeous home in Greystones!",
-      "score": 9.0,
-      "image_url": "https://a0.muscache.com/pictures/hosting/Hosting-1498481982973554652/original/aea4a144-9e74-4d42-8619-5f47209419f2.jpeg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/hosting/Hosting-1498481982973554652/original/aea4a144-9e74-4d42-8619-5f47209419f2.jpeg",
-      "listing_url": "https://www.airbnb.com/rooms/1498481982973554652",
-      "demand_proxy": 0.5506849315068494,
-      "lat": 53.13193546333818,
-      "lng": -6.077232097028552,
-      "animal_type": "dog",
-      "one_line": "Brown dog lying on living room rug, clearly visible.",
-      "haiku_score": 9.0
-    },
-    {
-      "listing_id": 1518987557142845503,
-      "city": "Oslo",
-      "country": "Norway",
-      "name": "By the sea with breathtaking View \u2013 Sunset Magic",
-      "score": 9.0,
-      "image_url": "https://a0.muscache.com/im/pictures/hosting/Hosting-1518987557142845503/original/23fda0df-0a8a-4889-9861-6180502a4317.jpeg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/hosting/Hosting-1518987557142845503/original/84d4243f-f230-4a48-8d88-79cd4200046e.jpeg",
-      "listing_url": "https://www.airbnb.com/rooms/1518987557142845503",
-      "demand_proxy": 0.989041095890411,
-      "lat": 59.90090573181537,
-      "lng": 10.751854442059994,
-      "animal_type": "dog",
-      "one_line": "Fluffy white dog chilling on bedroom floor.",
       "haiku_score": 9.0
     },
     {
@@ -820,22 +692,6 @@
       "haiku_score": 9.0
     },
     {
-      "listing_id": 24935620,
-      "city": "Paris",
-      "country": "France",
-      "name": "single room heart of paris, quiet and cool",
-      "score": 9.0,
-      "image_url": "https://a0.muscache.com/pictures/bb9b69ad-d90e-4e7d-a852-1ae8df587899.jpg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/bb9b69ad-d90e-4e7d-a852-1ae8df587899.jpg",
-      "listing_url": "https://www.airbnb.com/rooms/24935620",
-      "demand_proxy": 1.0,
-      "lat": 48.84206,
-      "lng": 2.35394,
-      "animal_type": "dog",
-      "one_line": "Fluffy white dog lounging on striped bedding by window.",
-      "haiku_score": 9.0
-    },
-    {
       "listing_id": 25207848,
       "city": "Copenhagen",
       "country": "Denmark",
@@ -849,22 +705,6 @@
       "lng": 12.55276,
       "animal_type": "cat",
       "one_line": "Black cat investigates candles by sunny window sill.",
-      "haiku_score": 9.0
-    },
-    {
-      "listing_id": 935336064341840362,
-      "city": "ireland",
-      "country": "Ireland",
-      "name": "Shackleton at The Mountain Lodge",
-      "score": 9.0,
-      "image_url": "https://a0.muscache.com/pictures/miso/Hosting-935336064341840362/original/103e37be-95e9-4781-bc55-4c425d6cbe19.jpeg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/miso/Hosting-935336064341840362/original/103e37be-95e9-4781-bc55-4c425d6cbe19.jpeg",
-      "listing_url": "https://www.airbnb.com/rooms/935336064341840362",
-      "demand_proxy": 0.30958904109589036,
-      "lat": 52.15557,
-      "lng": -9.56782,
-      "animal_type": "other",
-      "one_line": "Polar bear skin rug with taxidermied head sprawls across bedroom floor.",
       "haiku_score": 9.0
     },
     {
@@ -903,7 +743,7 @@
       "listing_id": 812361339609512248,
       "city": "Copenhagen",
       "country": "Denmark",
-      "name": "Det lille r\u00f8de R\u00e6kkehus",
+      "name": "Det lille røde Rækkehus",
       "score": 9.0,
       "image_url": "https://a0.muscache.com/pictures/miso/Hosting-812361339609512248/original/f0ee51a5-7588-4127-bf81-efe91bb4772e.jpeg",
       "thumbnail_url": "https://a0.muscache.com/pictures/miso/Hosting-812361339609512248/original/f0ee51a5-7588-4127-bf81-efe91bb4772e.jpeg",
