@@ -38,6 +38,9 @@ from ..tasks.wtf_tasks import (
 )
 
 
+import pandas as pd
+import traceback as _tb
+
 @dataclass
 class SelectWtfArgs:
     images_cpu_path: str
@@ -51,7 +54,6 @@ def select_wtf_candidates(args: SelectWtfArgs) -> dict:
     return the top-K rows."""
     out = {"ok": False, "rows": [], "n_total": 0, "n_selected": 0, "error": None}
     try:
-        import pandas as pd
         wanted_cols = ["listing_id", "image_idx", "image_url", "download_ok"]
         wanted_cols += [f"clip_{k}" for k in args.clip_keys]
         df = pd.read_parquet(args.images_cpu_path, columns=wanted_cols)
@@ -71,7 +73,6 @@ def select_wtf_candidates(args: SelectWtfArgs) -> dict:
         out["rows"] = rows
         out["n_selected"] = len(rows)
     except Exception as e:
-        import traceback as _tb
         out["error"] = f"{type(e).__name__}: {str(e)[:200]}"
         out["traceback"] = _tb.format_exc()[:1000]
     return out

@@ -38,6 +38,9 @@ from ..tasks.categories_tasks import (
 )
 
 
+import pandas as pd
+import traceback as _tb
+
 CAT_PETS_TOP_K = 1500
 CAT_ROOMS_TOP_K = 4000
 CAT_TV_TOP_K = 2000
@@ -67,7 +70,6 @@ def select_category_candidates(args: SelectCategoryCandidatesArgs) -> dict:
         "n_total": 0, "n_pets": 0, "n_rooms": 0, "n_tv": 0,
     }
     try:
-        import pandas as pd
         cols = ["listing_id", "image_idx", "image_url", "download_ok",
                 "brightness",
                 "clip_messy_room", "clip_tv_above_fireplace",
@@ -114,7 +116,6 @@ def select_category_candidates(args: SelectCategoryCandidatesArgs) -> dict:
 
         out["ok"] = True
     except Exception as e:
-        import traceback as _tb
         out["error"] = f"{type(e).__name__}: {str(e)[:200]}"
         out["traceback"] = _tb.format_exc()[:1000]
     return out

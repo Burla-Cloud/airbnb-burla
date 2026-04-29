@@ -39,6 +39,9 @@ from ..tasks.review_tasks import (
 )
 
 
+import pyarrow.parquet as pq
+import pandas as pd
+
 def _city_slug(country: str, region: str, city: str, snapshot_date: str) -> str:
     raw = f"{country}__{region}__{city}__{snapshot_date}"
     return re.sub(r"[^A-Za-z0-9._-]+", "-", raw).strip("-").lower()
@@ -51,7 +54,6 @@ class CountParquetArgs:
 
 def count_parquet_rows(args: CountParquetArgs) -> dict:
     """Top-level so Burla can pickle it. Counts rows in a parquet on shared FS."""
-    import pyarrow.parquet as pq
     return {"n": int(pq.read_metadata(args.path).num_rows)}
 
 
@@ -63,7 +65,6 @@ class ReadTier3InputArgs:
 
 def read_tier3_input(args: ReadTier3InputArgs) -> dict:
     """Top-level so Burla can pickle it. Reads tier-3 input parquet, returns rows as list of dicts."""
-    import pandas as pd
     df = pd.read_parquet(args.path, columns=["review_id", "comments"])
     if args.cap and len(df) > args.cap:
         df = df.iloc[: args.cap]

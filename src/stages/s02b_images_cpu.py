@@ -27,6 +27,9 @@ from ..tasks.image_tasks import (
 )
 
 
+import pyarrow.parquet as pq
+import os, glob
+
 @dataclass
 class CountManifestArgs:
     photo_manifest_path: str
@@ -34,7 +37,6 @@ class CountManifestArgs:
 
 def count_manifest_rows(args: CountManifestArgs) -> dict:
     """Run on Burla. Counts rows in the photo manifest parquet on shared FS."""
-    import pyarrow.parquet as pq
     n = pq.read_metadata(args.photo_manifest_path).num_rows
     return {"n_rows": int(n)}
 
@@ -90,7 +92,6 @@ def main() -> None:
         output_root: str
 
     def count_shards(a: CountShardsArgs) -> int:
-        import os, glob
         return len(glob.glob(os.path.join(a.output_root, "batch_*.parquet")))
 
     [n_shards] = remote_parallel_map(

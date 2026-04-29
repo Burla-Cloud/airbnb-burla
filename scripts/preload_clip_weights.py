@@ -8,6 +8,11 @@ Run once before s02b. Idempotent: skips download if file already present.
 from __future__ import annotations
 import sys
 import time
+
+import os
+import requests
+import traceback
+
 sys.path.insert(0, ".")
 
 from dataclasses import dataclass
@@ -35,8 +40,6 @@ class PreloadArgs:
 
 
 def preload(args: PreloadArgs) -> dict:
-    import os
-    import requests
 
     out: dict = {"ok": False, "error": None}
     try:
@@ -62,7 +65,6 @@ def preload(args: PreloadArgs) -> dict:
             elapsed_sec=round(time.time() - t0, 2),
         )
     except Exception as e:
-        import traceback
         out["error"] = f"{type(e).__name__}: {e}"
         out["traceback"] = traceback.format_exc()[:2000]
     return out

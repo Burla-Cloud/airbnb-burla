@@ -1,6 +1,11 @@
 """Inspect a single Stage 3 batch parquet to check whether YOLO actually ran."""
 from __future__ import annotations
 import sys
+
+import os
+import glob
+import pandas as pd
+
 sys.path.insert(0, ".")
 
 from dataclasses import dataclass
@@ -21,9 +26,6 @@ class A:
 
 
 def inspect(args: A) -> dict:
-    import os
-    import glob
-    import pandas as pd
     files = sorted(glob.glob(os.path.join(args.shared_root, "batch_*.parquet")))
     out = {"n_files": len(files), "samples": []}
     if not files:

@@ -13,6 +13,11 @@ We delete:
 """
 from __future__ import annotations
 import sys
+
+import os
+import glob
+import shutil
+
 sys.path.insert(0, ".")
 
 from dataclasses import dataclass
@@ -30,9 +35,6 @@ class CleanupArgs:
 
 
 def cleanup(_a: CleanupArgs) -> dict:
-    import os
-    import glob
-    import shutil
 
     out = {"deleted_files": 0, "deleted_dirs": [], "freed_bytes": 0, "errors": []}
     targets = [

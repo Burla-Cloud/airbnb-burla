@@ -2,6 +2,11 @@
 on the GitHub release URL the first time they call _ensure_yolo()."""
 from __future__ import annotations
 import sys
+
+import os
+import requests
+import traceback
+
 sys.path.insert(0, ".")
 
 import time
@@ -22,8 +27,6 @@ class PreloadArgs:
 
 
 def preload(args: PreloadArgs) -> dict:
-    import os
-    import requests
 
     out: dict = {"ok": False, "error": None}
     try:
@@ -48,7 +51,6 @@ def preload(args: PreloadArgs) -> dict:
             elapsed_sec=round(time.time() - t0, 2),
         )
     except Exception as e:
-        import traceback
         out["error"] = f"{type(e).__name__}: {e}"
         out["traceback"] = traceback.format_exc()[:1500]
     return out

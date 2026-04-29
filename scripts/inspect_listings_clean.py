@@ -1,6 +1,9 @@
 """Inspect listings_clean.parquet schema on shared FS."""
 from __future__ import annotations
 import sys
+
+import pyarrow.parquet as pq
+
 sys.path.insert(0, ".")
 from dotenv import load_dotenv
 
@@ -13,7 +16,6 @@ from src.lib.io import register_src_for_burla
 def _inspect(args) -> dict:
     out = {"ok": False, "error": None}
     try:
-        import pyarrow.parquet as pq
         for path in [
             "/workspace/shared/airbnb/listings_clean.parquet",
             "/workspace/shared/airbnb/images_cpu.parquet",

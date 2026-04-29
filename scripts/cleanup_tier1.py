@@ -4,6 +4,9 @@ from __future__ import annotations
 import os
 import sys
 import time
+
+import glob
+
 sys.path.insert(0, ".")
 
 from dotenv import load_dotenv
@@ -15,7 +18,6 @@ def _delete(args) -> dict:
     out = {"ok": False, "deleted": 0, "error": None, "elapsed_seconds": 0.0}
     started = time.time()
     try:
-        import glob
         n = 0
         roots = [
             "/workspace/shared/airbnb/reviews_tier1",

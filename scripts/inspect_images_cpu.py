@@ -1,6 +1,9 @@
 """Inspect /workspace/shared/airbnb/images_cpu.parquet to see if it has clip_* cols."""
 from __future__ import annotations
 import sys
+
+import pyarrow.parquet as pq
+
 sys.path.insert(0, ".")
 
 from dataclasses import dataclass
@@ -21,7 +24,6 @@ class A:
 
 
 def inspect(args: A) -> dict:
-    import pyarrow.parquet as pq
     sch = pq.read_schema(args.path)
     return {
         "n_rows": int(pq.read_metadata(args.path).num_rows),

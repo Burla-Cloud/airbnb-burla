@@ -28,6 +28,9 @@ from ..config import SHARED_ROOT
 from ..lib.budget import BudgetTracker
 from ..lib.io import register_src_for_burla
 
+import os
+import pandas as pd
+import traceback as _tb
 
 @dataclass
 class CalendarDeriveArgs:
@@ -50,8 +53,6 @@ def derive_calendar_signals(args: CalendarDeriveArgs) -> dict:
         "error": None,
     }
     try:
-        import os
-        import pandas as pd
 
         cal = pd.read_parquet(args.calendar_summary_path)
         out["n_trajectory_rows"] = int(len(cal))
@@ -112,7 +113,6 @@ def derive_calendar_signals(args: CalendarDeriveArgs) -> dict:
         merged.to_parquet(args.output_path, compression="zstd", index=False)
         out["ok"] = True
     except Exception as e:
-        import traceback as _tb
         out["error"] = f"{type(e).__name__}: {str(e)[:200]}"
         out["traceback"] = _tb.format_exc()[:1000]
     return out

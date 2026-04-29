@@ -7,6 +7,10 @@ import os
 import sys
 import shutil
 import time
+
+from sentence_transformers import SentenceTransformer
+import traceback as _tb
+
 sys.path.insert(0, ".")
 
 from dotenv import load_dotenv
@@ -25,7 +29,6 @@ def _preload(args) -> dict:
            "n_files": 0, "elapsed_seconds": 0.0, "error": None}
     started = time.time()
     try:
-        from sentence_transformers import SentenceTransformer
         os.makedirs(os.path.dirname(SHARED_DIR), exist_ok=True)
         # If already populated, skip.
         marker = os.path.join(SHARED_DIR, "config.json")
@@ -53,7 +56,6 @@ def _preload(args) -> dict:
         files = sorted(os.listdir(SHARED_DIR))
         out.update({"ok": True, "n_files": len(files)})
     except Exception as e:
-        import traceback as _tb
         out["error"] = f"{type(e).__name__}: {str(e)[:200]}"
         out["traceback"] = _tb.format_exc()[:1000]
     out["elapsed_seconds"] = time.time() - started

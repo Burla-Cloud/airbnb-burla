@@ -1,6 +1,10 @@
 """See what disk space Burla workers have on different mounts."""
 from __future__ import annotations
 import sys
+
+import os
+import shutil
+
 sys.path.insert(0, ".")
 
 from dataclasses import dataclass
@@ -17,8 +21,6 @@ class A:
 
 
 def check(_a: A) -> dict:
-    import os
-    import shutil
     out = {"mounts": {}}
     for path in [
         "/", "/tmp", "/root", "/root/.cache", "/var", "/var/tmp",

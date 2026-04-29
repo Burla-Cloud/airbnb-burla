@@ -1,6 +1,9 @@
 """Verify the debug batch parquet has clip_* columns and reasonable values."""
 from __future__ import annotations
 import sys
+
+import pandas as pd
+
 sys.path.insert(0, ".")
 
 from dataclasses import dataclass
@@ -21,7 +24,6 @@ class A:
 
 
 def inspect(args: A) -> dict:
-    import pandas as pd
     df = pd.read_parquet(args.path)
     return {
         "columns": df.columns.tolist(),

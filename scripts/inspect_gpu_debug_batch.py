@@ -1,6 +1,9 @@
 """Print the rows of the debug GPU batch parquet to see per-image errors."""
 from __future__ import annotations
 import sys
+
+import pandas as pd
+
 sys.path.insert(0, ".")
 
 from dataclasses import dataclass
@@ -18,7 +21,6 @@ class A:
 
 
 def inspect(_a: A) -> dict:
-    import pandas as pd
     df = pd.read_parquet("/workspace/shared/airbnb/images_gpu_debug/batch_999999.parquet")
     out = {
         "n_rows": int(len(df)),

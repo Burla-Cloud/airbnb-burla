@@ -2,6 +2,9 @@
 from __future__ import annotations
 
 import sys
+
+import pandas as pd
+
 sys.path.insert(0, ".")
 
 from dotenv import load_dotenv
@@ -23,7 +26,6 @@ class InspectArgs:
 
 
 def inspect(args: InspectArgs) -> dict:
-    import pandas as pd
     df = pd.read_parquet(args.path)
     return {
         "n_rows": int(len(df)),

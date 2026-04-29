@@ -138,8 +138,8 @@
     <div class="method__copy">
       <h2>How it ran on <span class="accent">Burla</span></h2>
       <p>
-        Burla ships a Python function plus its imports to a fleet of
-        containers running the standard <code>python:3.12</code> image. The
+        Burla runs Python work across a fleet of containers using the standard
+        <code>python:3.12</code> image. The
         orchestrator returns them as a single iterator. The shared filesystem
         at <code>./shared</code> is GCSFuse-mounted to a GCS bucket and
         visible from every worker, which is what makes this kind of

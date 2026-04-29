@@ -1,6 +1,11 @@
 """Delete the failed Stage 3 batch parquets (all had 'No module named ultralytics')."""
 from __future__ import annotations
 import sys
+
+import os
+import glob
+import shutil
+
 sys.path.insert(0, ".")
 
 from dataclasses import dataclass
@@ -18,9 +23,6 @@ class A:
 
 
 def cleanup(_a: A) -> dict:
-    import os
-    import glob
-    import shutil
 
     out = {"deleted_files": 0, "freed_gb": 0.0}
     target = "/workspace/shared/airbnb/images_gpu"

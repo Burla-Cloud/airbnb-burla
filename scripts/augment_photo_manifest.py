@@ -14,6 +14,13 @@ import sys
 import time
 from dataclasses import dataclass
 
+import os
+import glob
+import pandas as pd
+import pyarrow as pa
+import pyarrow.parquet as pq
+import traceback
+
 sys.path.insert(0, ".")
 
 from dotenv import load_dotenv
@@ -37,11 +44,6 @@ class AugmentArgs:
 
 def augment(args: AugmentArgs) -> dict:
     """Run on Burla. Reads both parquets, unions, dedupes, writes back."""
-    import os
-    import glob
-    import pandas as pd
-    import pyarrow as pa
-    import pyarrow.parquet as pq
 
     out = {"ok": False, "error": None}
     try:
@@ -106,7 +108,6 @@ def augment(args: AugmentArgs) -> dict:
             output_path=args.output_path,
         )
     except Exception as e:
-        import traceback
         out["error"] = f"{type(e).__name__}: {str(e)[:300]}"
         out["traceback"] = traceback.format_exc()[:1500]
     return out

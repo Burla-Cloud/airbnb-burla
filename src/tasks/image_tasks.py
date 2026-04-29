@@ -1,7 +1,7 @@
 """Top-level Burla worker functions for listings + images.
 
-Burla pickles these functions across workers, so they must be importable at
-module level (no closures) and accept a single ``@dataclass`` arg.
+Burla pickles these functions across workers, so they must be plain
+module functions with no closures and accept a single ``@dataclass`` arg.
 """
 from __future__ import annotations
 
@@ -16,10 +16,7 @@ from typing import Optional
 
 import requests
 
-# Force these on every worker. They are imported lazily inside individual
-# task functions, but Burla's package detector only sees what's in the
-# function's globals, so we list them at module top-level to make sure each
-# worker pip-installs them before running.
+# Required worker dependencies.
 import numpy as _np  # noqa: F401
 import pandas as _pd  # noqa: F401
 import pyarrow as _pa  # noqa: F401

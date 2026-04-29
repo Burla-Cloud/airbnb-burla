@@ -28,6 +28,10 @@ from ..config import (
 from ..lib.budget import BudgetTracker
 from ..lib.io import ensure_dir, register_src_for_burla, write_json
 
+import os as _os
+import numpy as np
+import os
+import traceback as _tb
 
 @dataclass
 class CorrelateArgs:
@@ -49,9 +53,6 @@ def correlate_all(args: CorrelateArgs) -> dict:
            "rejected": [], "accepted": [], "rows": [],
            "output_path": args.output_path, "error": None}
     try:
-        import os as _os
-        import numpy as np
-        import pandas as pd
 
         # Prefer listings_demand.parquet (has occupancy_365) but fall back if
         # Stage 7 has not run yet.
@@ -248,13 +249,11 @@ def correlate_all(args: CorrelateArgs) -> dict:
             })
 
         result_df = pd.DataFrame(rows)
-        import os
         os.makedirs(os.path.dirname(args.output_path), exist_ok=True)
         result_df.to_parquet(args.output_path, compression="zstd", index=False)
         out["rows"] = result_df.to_dict("records")
         out["ok"] = True
     except Exception as e:
-        import traceback as _tb
         out["error"] = f"{type(e).__name__}: {str(e)[:200]}"
         out["traceback"] = _tb.format_exc()[:1000]
     return out

@@ -1,6 +1,12 @@
 """Inspect the GPU worker container: torch version, CUDA, free disk."""
 from __future__ import annotations
 import sys
+
+import torch
+import shutil
+import subprocess
+import importlib
+
 sys.path.insert(0, ".")
 
 from dataclasses import dataclass
@@ -17,7 +23,6 @@ class A:
 def inspect(_a: A) -> dict:
     out = {}
     try:
-        import torch
         out["torch_version"] = torch.__version__
         out["cuda_available"] = torch.cuda.is_available()
         out["cuda_version"] = getattr(torch.version, "cuda", None)
@@ -28,7 +33,6 @@ def inspect(_a: A) -> dict:
         out["torch_error"] = f"{type(e).__name__}: {e}"
 
     try:
-        import shutil
         free = shutil.disk_usage("/")
         out["root_free_gb"] = round(free.free / 1e9, 2)
         out["root_total_gb"] = round(free.total / 1e9, 2)
@@ -36,14 +40,12 @@ def inspect(_a: A) -> dict:
         pass
 
     try:
-        import subprocess
         ver = subprocess.check_output(["nvidia-smi"], stderr=subprocess.STDOUT, text=True)
         out["nvidia_smi_first_lines"] = "\n".join(ver.split("\n")[:6])
     except Exception as e:
         out["nvidia_smi_error"] = f"{type(e).__name__}: {e}"
 
     try:
-        import importlib
         for mod in ["cv2", "ultralytics", "matplotlib", "seaborn", "pandas",
                     "psutil", "py_cpuinfo", "ultralytics_thop", "thop",
                     "pyparsing", "tqdm", "scipy"]:

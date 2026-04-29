@@ -31,6 +31,12 @@ from ..tasks.image_tasks import (
 )
 
 
+import traceback
+import pandas as pd
+import pyarrow as pa  # noqa: F401
+import pyarrow.parquet as pq
+import os, glob
+
 @dataclass
 class TopKImagesArgs:
     images_cpu_path: str
@@ -40,13 +46,9 @@ class TopKImagesArgs:
 def select_top_k_images(args: TopKImagesArgs) -> dict:
     """Run on Burla. Pick the top-K rows per CLIP axis from the CPU images parquet,
     union and dedupe by (listing_id, image_idx), and return them as a list of dicts."""
-    import traceback
     out = {"ok": False, "rows": [], "per_axis_counts": {},
            "n_total_cpu_rows": 0, "n_selected": 0, "error": None}
     try:
-        import pandas as pd
-        import pyarrow as pa  # noqa: F401
-        import pyarrow.parquet as pq
 
         cols = ["listing_id", "image_idx", "image_url", "download_ok", "city_slug"]
         score_cols = [k for k in args.top_n_per_axis.keys()]
@@ -131,7 +133,6 @@ def main() -> None:
         output_root: str
 
     def _count_gpu_shards(a: _CountGpuShardsArgs) -> int:
-        import os, glob
         return len(glob.glob(os.path.join(a.output_root, "batch_*.parquet")))
 
     [n_existing_shards] = remote_parallel_map(
