@@ -250,6 +250,16 @@
       "section": "pets_in_photos",
       "city": "Oslo",
       "name": "By the sea with breathtaking View – Sunset Magic"
+    },
+    {
+      "section": "pets_in_photos",
+      "city": "Athens",
+      "name": "Centrally located apartment with Acropolis view"
+    },
+    {
+      "section": "pets_in_photos",
+      "city": "Trentino",
+      "name": "El Rocol"
     }
   ],
   "by_listing_id": [
@@ -282,6 +292,7 @@
     24935620,
     29739020,
     31315134,
+    32410299,
     33520950,
     34624525,
     35039182,
@@ -297,6 +308,7 @@
     1039637716292079820,
     1149999062963058463,
     1158368227593729569,
+    1191120702036940316,
     1413144121208834230,
     1441366854805334738,
     1460095022278341930,
