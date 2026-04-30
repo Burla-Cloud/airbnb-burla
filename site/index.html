@@ -16,7 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<link rel="stylesheet" href="style.css?v=31" />
+<link rel="stylesheet" href="style.css?v=32" />
 </head>
 <body>
 
@@ -243,151 +243,136 @@
           <button type="button" class="code-tab" role="tab"
                   aria-selected="false" data-tab="encode">encode_batch.py</button>
           <button type="button" class="code-tab" role="tab"
-                  aria-selected="false" data-tab="reviews">embed_reviews.py</button>
-          <button type="button" class="code-tab" role="tab"
                   aria-selected="false" data-tab="haiku">haiku_validate.py</button>
+          <button type="button" class="code-tab" role="tab"
+                  aria-selected="false" data-tab="reviews">embed_reviews.py</button>
           <button type="button" class="code-tab" role="tab"
                   aria-selected="false" data-tab="correlate">bootstrap_correlate.py</button>
         </div>
       </div>
       <div class="code-card__panes">
-      <pre class="code-block is-active" data-pane="score"><span class="c"># Stage 02b: download every photo URL from Inside Airbnb, run CLIP, write</span>
-<span class="c"># per-batch parquet shards to ./shared. ~1.7M photos, 6,000 batches.</span>
+      <pre class="code-block is-active" data-pane="score"><span class="c"># s02b: download every photo URL, score with CLIP,</span>
+<span class="c"># write parquet shards to ./shared. 6K batches.</span>
 <span class="k">from</span> burla <span class="k">import</span> remote_parallel_map
 
-<span class="k">def</span> <span class="f">score_batch</span>(args: ScoreArgs) -&gt; dict:
-    <span class="k">import</span> torch, open_clip, pyarrow.parquet <span class="k">as</span> pq
+<span class="k">def</span> <span class="f">score_batch</span>(args):
+    <span class="k">import</span> open_clip
     model, _, prep = open_clip.create_model_and_transforms(
-        <span class="s">"ViT-B-32"</span>,
-        pretrained=<span class="s">"laion2b_s34b_b79k"</span>,
-        cache_dir=<span class="s">"./shared/airbnb/clip_weights"</span>,
+        <span class="s">"ViT-B-32"</span>, pretrained=<span class="s">"laion2b_s34b_b79k"</span>,
+        cache_dir=<span class="s">"./shared/clip_weights"</span>,
     )
-    <span class="c"># read row group, download images, encode, score vs PROMPTS,</span>
-    <span class="c"># write parquet shard back to ./shared.</span>
-    <span class="k">return</span> {<span class="s">"shard"</span>: shard_path, <span class="s">"n_ok"</span>: n_ok}
+    <span class="c"># download -&gt; encode -&gt; cosine vs PROMPTS -&gt; parquet</span>
+    <span class="k">return</span> {<span class="s">"shard"</span>: shard, <span class="s">"n_ok"</span>: n_ok}
 
-results = remote_parallel_map(
-    score_batch,
-    batch_args,                  <span class="c"># ~6,000 row-group batches</span>
+remote_parallel_map(
+    score_batch, batch_args,
     func_cpu=<span class="n">2</span>, func_ram=<span class="n">8</span>,
-    max_parallelism=<span class="n">1000</span>,    <span class="c"># 1k concurrent at peak</span>
-    grow=<span class="n">True</span>, spinner=<span class="n">True</span>,
+    max_parallelism=<span class="n">1000</span>,   <span class="c"># 1k concurrent at peak</span>
+    grow=<span class="n">True</span>,
 )</pre>
-      <pre class="code-block" data-pane="encode"><span class="c"># Inside score_batch: actual CLIP image+text encoding loop.</span>
-<span class="k">import</span> io, torch, open_clip
+      <pre class="code-block" data-pane="encode"><span class="c"># Inside score_batch: the actual CLIP encode loop.</span>
+<span class="k">import</span> io, torch
 <span class="k">from</span> PIL <span class="k">import</span> Image
 
 PROMPTS = [
-    <span class="s">"a TV mounted absurdly high above a fireplace"</span>,
-    <span class="s">"a chaotic kitchen with dishes piled in the sink"</span>,
+    <span class="s">"a TV mounted high above a fireplace"</span>,
+    <span class="s">"a chaotic kitchen with dishes piled up"</span>,
     <span class="s">"a real cat or dog visible in the photo"</span>,
-    <span class="s">"a dingy room that gives drug-den vibes"</span>,
+    <span class="s">"a dingy room with drug-den vibes"</span>,
 ]
 
-<span class="k">def</span> <span class="f">encode_batch</span>(image_bytes: list[bytes]) -&gt; dict[str, list[float]]:
-    <span class="c"># model, prep, tokenizer, device pre-loaded once per worker.</span>
-    pixels = torch.stack([prep(Image.open(io.BytesIO(b)).convert(<span class="s">"RGB"</span>))
-                          <span class="k">for</span> b <span class="k">in</span> image_bytes]).to(device)
-
+<span class="k">def</span> <span class="f">encode_batch</span>(image_bytes):
+    pixels = torch.stack([
+        prep(Image.open(io.BytesIO(b)).convert(<span class="s">"RGB"</span>))
+        <span class="k">for</span> b <span class="k">in</span> image_bytes
+    ]).to(device)
     <span class="k">with</span> torch.no_grad(), torch.cuda.amp.autocast():
         img = model.encode_image(pixels)
         img = img / img.norm(dim=-<span class="n">1</span>, keepdim=<span class="n">True</span>)
         txt = model.encode_text(tokenizer(PROMPTS).to(device))
         txt = txt / txt.norm(dim=-<span class="n">1</span>, keepdim=<span class="n">True</span>)
-
-    sims = (img @ txt.T).cpu().numpy()   <span class="c"># (B, P) cosine similarity</span>
-    <span class="k">return</span> {p: sims[:, i].tolist() <span class="k">for</span> i, p <span class="k">in</span> enumerate(PROMPTS)}</pre>
-      <pre class="code-block" data-pane="reviews"><span class="c"># Stage 04 tier-2: embed top-200K heuristic-scored reviews with</span>
-<span class="c"># sentence-transformers, then cluster + rerank for tier-3.</span>
-<span class="k">from</span> burla <span class="k">import</span> remote_parallel_map
-
-<span class="k">def</span> <span class="f">embed_reviews_batch</span>(args: EmbedArgs) -&gt; dict:
-    <span class="k">import</span> pyarrow.parquet <span class="k">as</span> pq
-    <span class="k">from</span> sentence_transformers <span class="k">import</span> SentenceTransformer
-
-    model = SentenceTransformer(
-        <span class="s">"all-MiniLM-L6-v2"</span>,
-        cache_folder=<span class="s">"./shared/airbnb/st_weights"</span>,
-    )
-    rows = pq.read_table(args.input_path,
-                         filters=[(<span class="s">"row_id"</span>, <span class="s">"&gt;="</span>, args.start),
-                                  (<span class="s">"row_id"</span>, <span class="s">"&lt;"</span>, args.end)]).to_pandas()
-    embs = model.encode(rows[<span class="s">"comment"</span>].tolist(),
-                        batch_size=<span class="n">256</span>, normalize_embeddings=<span class="n">True</span>)
-    <span class="c"># Persist this batch's embeddings to ./shared for the merge step.</span>
-    write_shard(args.output_path, rows, embs)
-    <span class="k">return</span> {<span class="s">"shard"</span>: args.output_path, <span class="s">"n"</span>: len(rows)}
-
-results = remote_parallel_map(
-    embed_reviews_batch,
-    embed_batches,               <span class="c"># 200K reviews / 1K per batch = 200 batches</span>
-    func_cpu=<span class="n">2</span>, func_ram=<span class="n">8</span>,
-    max_parallelism=<span class="n">200</span>,
-    grow=<span class="n">True</span>, spinner=<span class="n">False</span>,
-)</pre>
-      <pre class="code-block" data-pane="haiku"><span class="c"># Stage 05c: send shortlisted CLIP candidates to Claude Haiku Vision for</span>
-<span class="c"># strict double-checking. Rate-limited pool of ~64 concurrent workers.</span>
+    <span class="k">return</span> (img @ txt.T).cpu().numpy()  <span class="c"># (B, P) sims</span></pre>
+      <pre class="code-block" data-pane="haiku"><span class="c"># s05c: Haiku Vision double-checks the CLIP shortlists,</span>
+<span class="c"># rate-limited at 64 workers per Anthropic limits.</span>
 <span class="k">from</span> burla <span class="k">import</span> remote_parallel_map
 <span class="k">import</span> anthropic, base64, json
 
-<span class="k">def</span> <span class="f">haiku_validate_pet_batch</span>(args: HaikuPetBatchArgs) -&gt; dict:
+<span class="k">def</span> <span class="f">validate_pet</span>(args):
     client = anthropic.Anthropic()
-    rows, n_ok = [], <span class="n">0</span>
-    <span class="k">for</span> img_url, listing_id <span class="k">in</span> args.batch:
-        b64 = base64.standard_b64encode(fetch(img_url)).decode()
+    rows = []
+    <span class="k">for</span> url, listing_id <span class="k">in</span> args.batch:
+        b64 = base64.b64encode(fetch(url)).decode()
         msg = client.messages.create(
-            model=<span class="s">"claude-haiku-4-5"</span>,
-            max_tokens=<span class="n">200</span>,
+            model=<span class="s">"claude-haiku-4-5"</span>, max_tokens=<span class="n">200</span>,
             messages=[{<span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: [
-                {<span class="s">"type"</span>: <span class="s">"image"</span>,
-                 <span class="s">"source"</span>: {<span class="s">"type"</span>: <span class="s">"base64"</span>,
-                            <span class="s">"media_type"</span>: <span class="s">"image/jpeg"</span>,
-                            <span class="s">"data"</span>: b64}},
+                {<span class="s">"type"</span>: <span class="s">"image"</span>, <span class="s">"source"</span>: image_src(b64)},
                 {<span class="s">"type"</span>: <span class="s">"text"</span>, <span class="s">"text"</span>: PET_PROMPT},
             ]}],
         )
-        verdict = json.loads(msg.content[<span class="n">0</span>].text)
-        rows.append({<span class="s">"listing_id"</span>: listing_id, **verdict})
-        n_ok += <span class="n">1</span>
+        rows.append({<span class="s">"listing_id"</span>: listing_id,
+                     **json.loads(msg.content[<span class="n">0</span>].text)})
     write_shard(args.output_path, rows)
-    <span class="k">return</span> {<span class="s">"shard"</span>: args.output_path, <span class="s">"n_ok"</span>: n_ok}
+    <span class="k">return</span> {<span class="s">"n_ok"</span>: len(rows)}
 
-results = remote_parallel_map(
-    haiku_validate_pet_batch,
-    pet_batches,                 <span class="c"># 1.5K candidates, batches of 6</span>
-    func_cpu=<span class="n">2</span>, func_ram=<span class="n">8</span>,
-    max_parallelism=<span class="n">64</span>,      <span class="c"># cap to respect Anthropic rate limit</span>
-    grow=<span class="n">True</span>, spinner=<span class="n">False</span>,
+remote_parallel_map(
+    validate_pet, pet_batches,
+    func_cpu=<span class="n">2</span>, func_ram=<span class="n">8</span>, max_parallelism=<span class="n">64</span>,
+    grow=<span class="n">True</span>,
 )</pre>
-      <pre class="code-block" data-pane="correlate"><span class="c"># Stage 05: bootstrap 95% CIs for each hypothesis on a single fat worker.</span>
-<span class="c"># All other stages produced parquet on ./shared, this one just reads it.</span>
+      <pre class="code-block" data-pane="reviews"><span class="c"># s04 tier-2: embed top-200K heuristic-scored</span>
+<span class="c"># reviews with sentence-transformers, then cluster.</span>
 <span class="k">from</span> burla <span class="k">import</span> remote_parallel_map
 
-<span class="k">def</span> <span class="f">correlate_all</span>(args: CorrelateArgs) -&gt; dict:
-    <span class="k">import</span> numpy <span class="k">as</span> np, pandas <span class="k">as</span> pd
+<span class="k">def</span> <span class="f">embed_reviews_batch</span>(args):
+    <span class="k">import</span> pyarrow.parquet <span class="k">as</span> pq
+    <span class="k">from</span> sentence_transformers <span class="k">import</span> SentenceTransformer
 
-    listings = pd.read_parquet(args.listings_path,
-                                columns=[<span class="s">"listing_id"</span>, <span class="s">"demand_proxy"</span>])
-    cpu = pd.read_parquet(args.images_cpu_path,
-                           columns=[<span class="s">"listing_id"</span>, <span class="s">"clip_messy_room"</span>])
+    model = SentenceTransformer(<span class="s">"all-MiniLM-L6-v2"</span>)
+    rows = pq.read_table(
+        args.input_path,
+        filters=[(<span class="s">"row_id"</span>, <span class="s">"&gt;="</span>, args.start),
+                 (<span class="s">"row_id"</span>, <span class="s">"&lt;"</span>, args.end)],
+    ).to_pandas()
+    embs = model.encode(
+        rows[<span class="s">"comment"</span>].tolist(),
+        batch_size=<span class="n">256</span>, normalize_embeddings=<span class="n">True</span>,
+    )
+    write_shard(args.output_path, rows, embs)
+    <span class="k">return</span> {<span class="s">"n"</span>: len(rows)}
+
+remote_parallel_map(
+    embed_reviews_batch, embed_batches,
+    func_cpu=<span class="n">2</span>, func_ram=<span class="n">8</span>,
+    max_parallelism=<span class="n">200</span>,
+    grow=<span class="n">True</span>,
+)</pre>
+      <pre class="code-block" data-pane="correlate"><span class="c"># s05: bootstrap 95% CIs on one fat worker that reads</span>
+<span class="c"># every parquet shard the other stages wrote.</span>
+<span class="k">from</span> burla <span class="k">import</span> remote_parallel_map
+
+<span class="k">def</span> <span class="f">correlate_all</span>(args):
+    <span class="k">import</span> numpy <span class="k">as</span> np, pandas <span class="k">as</span> pd
+    listings = pd.read_parquet(args.listings_path)
+    cpu = pd.read_parquet(args.images_cpu_path)
     df = listings.merge(
-        cpu.groupby(<span class="s">"listing_id"</span>)[<span class="s">"clip_messy_room"</span>].max().reset_index(),
+        cpu.groupby(<span class="s">"listing_id"</span>)[<span class="s">"clip_messy_room"</span>]
+           .max().reset_index(),
         on=<span class="s">"listing_id"</span>, how=<span class="s">"left"</span>,
     )
-    df[<span class="s">"messiness_q"</span>] = pd.qcut(df[<span class="s">"clip_messy_room"</span>], q=<span class="n">4</span>,
-                                  labels=[<span class="s">"q1"</span>, <span class="s">"q2"</span>, <span class="s">"q3"</span>, <span class="s">"q4"</span>])
-
+    df[<span class="s">"messiness_q"</span>] = pd.qcut(
+        df[<span class="s">"clip_messy_room"</span>], q=<span class="n">4</span>,
+        labels=[<span class="s">"q1"</span>, <span class="s">"q2"</span>, <span class="s">"q3"</span>, <span class="s">"q4"</span>],
+    )
     rng = np.random.default_rng(<span class="n">42</span>)
-    <span class="k">return</span> {<span class="s">"buckets"</span>: bootstrap_ci(df, <span class="s">"messiness_q"</span>,
-                                     <span class="s">"demand_proxy"</span>, rng,
-                                     n_resamples=<span class="n">2000</span>)}
+    <span class="k">return</span> bootstrap_ci(
+        df, <span class="s">"messiness_q"</span>, <span class="s">"demand_proxy"</span>,
+        rng, n_resamples=<span class="n">2000</span>,
+    )
 
-[result] = remote_parallel_map(
-    correlate_all,
-    [args],
-    func_cpu=<span class="n">16</span>, func_ram=<span class="n">64</span>,    <span class="c"># one big worker reading shared parquet</span>
+remote_parallel_map(
+    correlate_all, [args],
+    func_cpu=<span class="n">16</span>, func_ram=<span class="n">64</span>,   <span class="c"># one big worker</span>
     max_parallelism=<span class="n">1</span>,
-    grow=<span class="n">True</span>, spinner=<span class="n">False</span>,
 )</pre>
       </div>
     </div>
@@ -461,6 +446,6 @@ results = remote_parallel_map(
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="app.js?v=31" defer></script>
+<script src="app.js?v=32" defer></script>
 </body>
 </html>
