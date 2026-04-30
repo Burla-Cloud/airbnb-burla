@@ -1,6 +1,6 @@
 {
   "title": "Every flagged Airbnb in the demo, on a Leaflet map",
-  "n": 148,
+  "n": 123,
   "points": [
     {
       "type": "worst_tv_placements",
@@ -11,38 +11,10 @@
     },
     {
       "type": "worst_tv_placements",
-      "lat": 34.14225,
-      "lng": -118.59785,
-      "listing_id": "1439285180619309824",
-      "listing_url": "https://www.airbnb.com/rooms/1439285180619309824"
-    },
-    {
-      "type": "worst_tv_placements",
-      "lat": 40.6828,
-      "lng": -73.98552,
-      "listing_id": "35497497",
-      "listing_url": "https://www.airbnb.com/rooms/35497497"
-    },
-    {
-      "type": "worst_tv_placements",
-      "lat": 53.2829,
-      "lng": -6.42836,
-      "listing_id": "42279971",
-      "listing_url": "https://www.airbnb.com/rooms/42279971"
-    },
-    {
-      "type": "worst_tv_placements",
       "lat": 48.86934,
       "lng": 2.37031,
       "listing_id": "23165825",
       "listing_url": "https://www.airbnb.com/rooms/23165825"
-    },
-    {
-      "type": "worst_tv_placements",
-      "lat": 35.946795251412254,
-      "lng": 14.41108290106058,
-      "listing_id": "1190013686260460536",
-      "listing_url": "https://www.airbnb.com/rooms/1190013686260460536"
     },
     {
       "type": "worst_tv_placements",
@@ -53,13 +25,6 @@
     },
     {
       "type": "worst_tv_placements",
-      "lat": 48.85274374279564,
-      "lng": 2.268129430688477,
-      "listing_id": "1431993907850301445",
-      "listing_url": "https://www.airbnb.com/rooms/1431993907850301445"
-    },
-    {
-      "type": "worst_tv_placements",
       "lat": 46.21257,
       "lng": 6.14467,
       "listing_id": "1231603820647409624",
@@ -67,31 +32,10 @@
     },
     {
       "type": "worst_tv_placements",
-      "lat": 52.36323,
-      "lng": 4.8444,
-      "listing_id": "50457012",
-      "listing_url": "https://www.airbnb.com/rooms/50457012"
-    },
-    {
-      "type": "worst_tv_placements",
       "lat": 55.6844119,
       "lng": 12.5663967,
       "listing_id": "1255789296887053031",
       "listing_url": "https://www.airbnb.com/rooms/1255789296887053031"
-    },
-    {
-      "type": "worst_tv_placements",
-      "lat": 39.53626,
-      "lng": 2.5713,
-      "listing_id": "53597273",
-      "listing_url": "https://www.airbnb.com/rooms/53597273"
-    },
-    {
-      "type": "worst_tv_placements",
-      "lat": 51.40324,
-      "lng": -0.07272,
-      "listing_id": "18803268",
-      "listing_url": "https://www.airbnb.com/rooms/18803268"
     },
     {
       "type": "worst_tv_placements",
@@ -123,13 +67,6 @@
     },
     {
       "type": "worst_tv_placements",
-      "lat": 34.04754,
-      "lng": -118.34973,
-      "listing_id": "1502658265418960984",
-      "listing_url": "https://www.airbnb.com/rooms/1502658265418960984"
-    },
-    {
-      "type": "worst_tv_placements",
       "lat": 40.66749,
       "lng": -73.8836,
       "listing_id": "41725492",
@@ -151,13 +88,6 @@
     },
     {
       "type": "worst_tv_placements",
-      "lat": 34.09985271449727,
-      "lng": -118.44244711066692,
-      "listing_id": "913925857782908119",
-      "listing_url": "https://www.airbnb.com/rooms/913925857782908119"
-    },
-    {
-      "type": "worst_tv_placements",
       "lat": 45.52426,
       "lng": -122.68787,
       "listing_id": "1576303138511606785",
@@ -169,13 +99,6 @@
       "lng": -87.69109,
       "listing_id": "648680183790580891",
       "listing_url": "https://www.airbnb.com/rooms/648680183790580891"
-    },
-    {
-      "type": "worst_tv_placements",
-      "lat": 53.45094,
-      "lng": -2.24012,
-      "listing_id": "1324582558658696769",
-      "listing_url": "https://www.airbnb.com/rooms/1324582558658696769"
     },
     {
       "type": "worst_tv_placements",
@@ -193,52 +116,10 @@
     },
     {
       "type": "worst_tv_placements",
-      "lat": 36.72161,
-      "lng": -4.41848,
-      "listing_id": "620812697031211627",
-      "listing_url": "https://www.airbnb.com/rooms/620812697031211627"
-    },
-    {
-      "type": "worst_tv_placements",
-      "lat": 47.35172,
-      "lng": 8.56133,
-      "listing_id": "6669104",
-      "listing_url": "https://www.airbnb.com/rooms/6669104"
-    },
-    {
-      "type": "worst_tv_placements",
-      "lat": -33.91272541654571,
-      "lng": 151.1546654687167,
-      "listing_id": "859158280500922950",
-      "listing_url": "https://www.airbnb.com/rooms/859158280500922950"
-    },
-    {
-      "type": "worst_tv_placements",
-      "lat": 51.51338034849704,
-      "lng": -0.1470736846211574,
-      "listing_id": "1255045708808969946",
-      "listing_url": "https://www.airbnb.com/rooms/1255045708808969946"
-    },
-    {
-      "type": "worst_tv_placements",
       "lat": 36.189,
       "lng": -86.7433,
       "listing_id": "54006529",
       "listing_url": "https://www.airbnb.com/rooms/54006529"
-    },
-    {
-      "type": "worst_tv_placements",
-      "lat": -22.931380995616685,
-      "lng": -43.17640901883146,
-      "listing_id": "1315893675405330667",
-      "listing_url": "https://www.airbnb.com/rooms/1315893675405330667"
-    },
-    {
-      "type": "worst_tv_placements",
-      "lat": 36.11251,
-      "lng": -115.1882,
-      "listing_id": "592156952824969700",
-      "listing_url": "https://www.airbnb.com/rooms/592156952824969700"
     },
     {
       "type": "worst_tv_placements",
@@ -256,24 +137,10 @@
     },
     {
       "type": "worst_tv_placements",
-      "lat": 43.37169,
-      "lng": -1.66116,
-      "listing_id": "26510324",
-      "listing_url": "https://www.airbnb.com/rooms/26510324"
-    },
-    {
-      "type": "worst_tv_placements",
       "lat": 32.799016,
       "lng": -117.157922,
       "listing_id": "913298894762219267",
       "listing_url": "https://www.airbnb.com/rooms/913298894762219267"
-    },
-    {
-      "type": "worst_tv_placements",
-      "lat": 36.003797917502595,
-      "lng": -115.14726841885698,
-      "listing_id": "1273187103573510844",
-      "listing_url": "https://www.airbnb.com/rooms/1273187103573510844"
     },
     {
       "type": "worst_tv_placements",
@@ -305,52 +172,10 @@
     },
     {
       "type": "worst_tv_placements",
-      "lat": -41.8610675,
-      "lng": 148.2791961,
-      "listing_id": "861086199122456791",
-      "listing_url": "https://www.airbnb.com/rooms/861086199122456791"
-    },
-    {
-      "type": "worst_tv_placements",
-      "lat": 43.727751067689226,
-      "lng": -79.40487071871758,
-      "listing_id": "679751616948749909",
-      "listing_url": "https://www.airbnb.com/rooms/679751616948749909"
-    },
-    {
-      "type": "worst_tv_placements",
-      "lat": 41.38716593550906,
-      "lng": 2.171187656723978,
-      "listing_id": "867469789437779479",
-      "listing_url": "https://www.airbnb.com/rooms/867469789437779479"
-    },
-    {
-      "type": "worst_tv_placements",
-      "lat": 36.178913,
-      "lng": -86.758896,
-      "listing_id": "31909196",
-      "listing_url": "https://www.airbnb.com/rooms/31909196"
-    },
-    {
-      "type": "worst_tv_placements",
-      "lat": 51.456629490994736,
-      "lng": -0.2313056737695237,
-      "listing_id": "775814099791683499",
-      "listing_url": "https://www.airbnb.com/rooms/775814099791683499"
-    },
-    {
-      "type": "worst_tv_placements",
       "lat": 53.38947370192716,
       "lng": -6.185841638524771,
       "listing_id": "1304838017856573218",
       "listing_url": "https://www.airbnb.com/rooms/1304838017856573218"
-    },
-    {
-      "type": "worst_tv_placements",
-      "lat": 45.47825,
-      "lng": -122.56801,
-      "listing_id": "1492318363192792833",
-      "listing_url": "https://www.airbnb.com/rooms/1492318363192792833"
     },
     {
       "type": "worst_tv_placements",

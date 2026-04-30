@@ -27,6 +27,131 @@
       "name": "Villa next to the sea"
     },
     {
+      "section": "worst_tv_placements",
+      "city": "Los Angeles",
+      "name": "Woodland Hills Heavenly Gateway"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "New York City",
+      "name": "Rossini's Place"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "ireland",
+      "name": "1 Double bed bottom floor apartment,wifi & parking"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "malta",
+      "name": "Imperial Residence St Pauls Bay"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "Paris",
+      "name": "Location appartement Paris"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "Amsterdam",
+      "name": "125m2 fully equipped modern apartment next to park"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "Mallorca",
+      "name": "Sweet home"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "London",
+      "name": "Refurbished South Norwood Cosy Corner"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "Los Angeles",
+      "name": "Modern 5BR Luxury Paradise Villa"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "Los Angeles",
+      "name": "Bel Air Zen Charming House"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "Malaga",
+      "name": "Echegaray Grand Luxe by Living4Malaga"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "Greater Manchester",
+      "name": "5-Bed Near City • Free Parking • Roku • Workspace"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "Zurich",
+      "name": "Exclusive Loft in Seefeld (Mühle)"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "Sydney",
+      "name": "Spacious Trendy Home with Superb Convenience"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "London",
+      "name": "Mayfair Mews Apartment- 2 Bed (1)"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "Rio de Janeiro",
+      "name": "Apartamento Completo - Flamengo"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "Clark County, NV",
+      "name": "Beautiful Remodeled 1BR Condo Great Location!!!"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "Pays Basque",
+      "name": "Appartement T3 à Ciboure"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "Clark County, NV",
+      "name": "Your getaway! 4br w/Pool"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "Tasmania",
+      "name": "Travellers Rest | Bicheno"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "Toronto",
+      "name": "Yonge and Lawrence Village"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "Barcelona",
+      "name": "Hermosa Habitación con balcón!"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "Nashville",
+      "name": "East Nash Walk to Eateries & Bars"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "London",
+      "name": "Modern 3 Bedroom House in London"
+    },
+    {
+      "section": "worst_tv_placements",
+      "city": "Portland",
+      "name": "Calm 2BD unit in SE Portland"
+    },
+    {
       "section": "hectic_kitchens",
       "city": "New York City",
       "name": "Friendly and well located place to get away"
@@ -271,6 +396,7 @@
     5147549,
     5695509,
     5931261,
+    6669104,
     6910875,
     6911965,
     7698619,
@@ -280,6 +406,7 @@
     13240737,
     15257676,
     16914299,
+    18803268,
     19114872,
     19250621,
     19750901,
@@ -290,17 +417,31 @@
     21291783,
     22884053,
     24935620,
+    26510324,
     29739020,
     31315134,
+    31909196,
     32410299,
     33520950,
     34624525,
     35039182,
+    35497497,
     36258404,
     36400986,
     39505719,
+    42279971,
+    50457012,
     53584501,
+    53597273,
+    592156952824969700,
+    620812697031211627,
+    679751616948749909,
+    775814099791683499,
     835607212684713795,
+    859158280500922950,
+    861086199122456791,
+    867469789437779479,
+    913925857782908119,
     931551865890022546,
     935336064341840362,
     945039581908566050,
@@ -308,12 +449,21 @@
     1039637716292079820,
     1149999062963058463,
     1158368227593729569,
+    1190013686260460536,
     1191120702036940316,
+    1255045708808969946,
+    1273187103573510844,
+    1315893675405330667,
+    1324582558658696769,
     1413144121208834230,
+    1431993907850301445,
+    1439285180619309824,
     1441366854805334738,
     1460095022278341930,
     1485734515088976672,
+    1492318363192792833,
     1498481982973554652,
+    1502658265418960984,
     1518987557142845503
   ]
 }
