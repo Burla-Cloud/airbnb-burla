@@ -16,7 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<link rel="stylesheet" href="style.css?v=30" />
+<link rel="stylesheet" href="style.css?v=31" />
 </head>
 <body>
 
@@ -59,9 +59,9 @@
     <div class="stats" id="stats-banner">
       <div class="stat"><span class="num" data-stat="n_listings">--</span><span class="label">Listings</span></div>
       <div class="stat"><span class="num" data-stat="n_photo_manifest_rows">--</span><span class="label">Photos scraped</span></div>
-      <div class="stat"><span class="num" data-stat="n_cpu_images">--</span><span class="label">CLIP-scored</span></div>
       <div class="stat"><span class="num" data-stat="n_reviews">--</span><span class="label">Reviews scored</span></div>
       <div class="stat"><span class="num" data-stat="peak_workers">--</span><span class="label">Peak workers</span></div>
+      <div class="stat"><span class="num" data-stat="n_cpu_images">--</span><span class="label">CLIP-scored</span></div>
       <div class="stat"><span class="num" data-stat="n_gpu_images">--</span><span class="label">GPU detections</span></div>
     </div>
   </div>
@@ -461,6 +461,6 @@ results = remote_parallel_map(
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="app.js?v=30" defer></script>
+<script src="app.js?v=31" defer></script>
 </body>
 </html>
