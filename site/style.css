@@ -412,11 +412,31 @@ section {
   aspect-ratio: 1 / 1;
   border-radius: var(--radius);
   background-color: var(--bg-2);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
   transition: transform 0.18s ease, filter 0.18s ease;
   overflow: hidden;
+}
+.item .thumb__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.22s ease-out;
+}
+.item .thumb.is-loaded .thumb__img { opacity: 1; }
+.item .thumb.is-error::before {
+  content: "image unavailable";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-3);
+  font-size: 12px;
+  font-weight: 500;
 }
 .item .thumb::after {
   /* subtle inner border so very light photos still read as cards */
@@ -666,6 +686,33 @@ section {
   color: var(--ink-2);
   text-align: center;
 }
+.cards-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
+}
+.cards-more__btn {
+  appearance: none;
+  background: var(--bg);
+  border: 1px solid var(--line-2);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 12px 22px;
+  font: 600 14px var(--sans);
+  letter-spacing: 0.005em;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+.cards-more__btn:hover {
+  border-color: var(--ink);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+.cards-more__btn:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
 
 /* ---------------- WTF clusters ---------------- */
 .wtf-section { padding-top: 64px; padding-bottom: 64px; }
@@ -877,8 +924,17 @@ section {
   outline: none;
   box-shadow: 0 0 0 2px var(--accent) inset;
 }
+/* All panes are stacked in the same slot so the dark box never resizes
+   when you switch tabs. The active pane is visible; the others are kept
+   in flow but hidden, so the slot's intrinsic height matches the tallest
+   snippet across all tabs. */
+.code-card__panes {
+  position: relative;
+  flex: 1 1 auto;
+  display: grid;
+}
+.code-card__panes > .code-block { grid-area: 1 / 1; }
 .code-card pre.code-block {
-  display: none;
   margin: 0;
   padding: 22px 24px;
   font-family: var(--mono);
@@ -886,11 +942,20 @@ section {
   line-height: 1.65;
   color: #ECECEE;
   overflow-x: auto;
+  overflow-y: auto;
   white-space: pre;
   background: transparent;
   border: 0;
+  visibility: hidden;
+  pointer-events: none;
+  min-height: 0;
 }
-.code-card pre.code-block.is-active { display: block; }
+.code-card pre.code-block.is-active {
+  visibility: visible;
+  pointer-events: auto;
+  position: relative;
+  z-index: 1;
+}
 .code-card .c { color: rgba(236, 236, 238, 0.45); font-style: italic; }
 .code-card .k { color: #FF7AA0; font-weight: 600; }
 .code-card .s { color: #80E0B0; }
@@ -902,7 +967,7 @@ section {
 .corr-section .section__head,
 .corr-section .corr-key,
 .corr-section #corr-list {
-  max-width: 980px;
+  max-width: 1180px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -1170,6 +1235,17 @@ section {
   color: var(--accent-dark);
   letter-spacing: 0.06em;
 }
+.corr-note {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+.corr-note strong { color: var(--ink); font-weight: 600; }
 @media (max-width: 960px) {
   .corr-axis { grid-template-columns: 110px minmax(0, 1fr) 50px; gap: 10px; }
 }
