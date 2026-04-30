@@ -1,7 +1,7 @@
 {
   "title": "Cats and dogs Claude said are actually real",
   "subtitle": "CLIP found candidates, Haiku Vision said YES this is a real animal",
-  "n": 50,
+  "n": 48,
   "items": [
     {
       "listing_id": 917440706911803962,
@@ -241,22 +241,6 @@
       "lng": -66.91926,
       "animal_type": "dog",
       "one_line": "Poodle mix gazes at ocean from coastal deck.",
-      "haiku_score": 9.0
-    },
-    {
-      "listing_id": 1191120702036940316,
-      "city": "Trentino",
-      "country": "Italy",
-      "name": "El Rocol",
-      "score": 9.0,
-      "image_url": "https://a0.muscache.com/pictures/hosting/Hosting-1191120702036940316/original/054e5670-a874-42b1-b684-d9169177a383.jpeg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/hosting/Hosting-1191120702036940316/original/054e5670-a874-42b1-b684-d9169177a383.jpeg",
-      "listing_url": "https://www.airbnb.com/rooms/1191120702036940316",
-      "demand_proxy": 1.0,
-      "lat": 45.8767198,
-      "lng": 10.739074,
-      "animal_type": "other",
-      "one_line": "Goat grazes peacefully by the alpine lake at sunset.",
       "haiku_score": 9.0
     },
     {
@@ -673,22 +657,6 @@
       "lng": -0.0029071006537488,
       "animal_type": "dog",
       "one_line": "Brown and white dog relaxes on blue couch in cozy living room.",
-      "haiku_score": 9.0
-    },
-    {
-      "listing_id": 32410299,
-      "city": "Athens",
-      "country": "Greece",
-      "name": "Centrally located apartment with Acropolis view",
-      "score": 9.0,
-      "image_url": "https://a0.muscache.com/pictures/a59631da-1eb6-446c-a195-b11b38a7c6cb.jpg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/a59631da-1eb6-446c-a195-b11b38a7c6cb.jpg",
-      "listing_url": "https://www.airbnb.com/rooms/32410299",
-      "demand_proxy": 0.17808219178082196,
-      "lat": 37.98119,
-      "lng": 23.71851,
-      "animal_type": "dog",
-      "one_line": "Black dog sniffs around wooden dining table.",
       "haiku_score": 9.0
     },
     {
