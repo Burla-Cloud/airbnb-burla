@@ -797,8 +797,9 @@ section {
   border-radius: var(--radius-xl);
   padding: 40px 44px 36px;
   display: grid;
-  /* Slightly more weight on the code side so each snippet has room. */
-  grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+  /* Code side stays a touch wider, but the copy column gets extra room
+     too so each paragraph wraps cleaner on a laptop. */
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
   gap: 56px;
   align-items: stretch;
 }
