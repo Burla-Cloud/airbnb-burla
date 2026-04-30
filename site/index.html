@@ -16,7 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<link rel="stylesheet" href="style.css?v=38" />
+<link rel="stylesheet" href="style.css?v=39" />
 </head>
 <body>
 
@@ -252,9 +252,9 @@
       <pre class="code-block is-active" data-pane="score"><span class="c"># s02b: download every photo URL, score with CLIP,</span>
 <span class="c"># write parquet shards to ./shared. 6K batches.</span>
 <span class="k">from</span> burla <span class="k">import</span> remote_parallel_map
+<span class="k">import</span> open_clip
 
 <span class="k">def</span> <span class="f">score_batch</span>(args):
-    <span class="k">import</span> open_clip
     model, _, prep = open_clip.create_model_and_transforms(
         <span class="s">"ViT-B-32"</span>, pretrained=<span class="s">"laion2b_s34b_b79k"</span>,
         cache_dir=<span class="s">"./shared/clip_weights"</span>,
@@ -271,9 +271,9 @@ remote_parallel_map(
       <pre class="code-block" data-pane="encode"><span class="c"># s04 tier 2: embed top 200K reviews with SBERT,</span>
 <span class="c"># one parquet shard per worker on ./shared.</span>
 <span class="k">from</span> burla <span class="k">import</span> remote_parallel_map
+<span class="k">from</span> sentence_transformers <span class="k">import</span> SentenceTransformer
 
 <span class="k">def</span> <span class="f">embed_batch</span>(args):
-    <span class="k">from</span> sentence_transformers <span class="k">import</span> SentenceTransformer
     model = SentenceTransformer(
         <span class="s">"all-MiniLM-L6-v2"</span>,
         cache_folder=<span class="s">"./shared/sbert"</span>,
@@ -387,6 +387,6 @@ remote_parallel_map(
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="app.js?v=37" defer></script>
+<script src="app.js?v=39" defer></script>
 </body>
 </html>
