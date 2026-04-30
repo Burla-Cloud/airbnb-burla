@@ -8,8 +8,9 @@ call, runs Haiku in parallel via ``remote_parallel_map`` with up to
 
 The Haiku call uses a strict JSON schema. We then drop clusters smaller than
 ``WTF_MIN_LABEL_CLUSTER_SIZE``, keep ``WTF_TOP_PHOTOS_PER_CLUSTER`` per cluster
-ranked by Haiku score, and write ``wtf_haiku.parquet`` to shared FS for Stage 6
-to fold into ``data/outputs/wtf_clusters.json``.
+ranked by Haiku score, and write ``wtf_haiku.parquet`` to the shared FS so
+``s05_bootstrap_correlations`` can use the absurd-photo flag as a bucket
+variable in the correlation analysis.
 """
 from __future__ import annotations
 

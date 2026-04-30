@@ -168,13 +168,9 @@ MIN_BUCKET_N = 100
 
 OUTPUT_TOP_K = {
     "worst_tv_placements": 60,
-    "messiest_listings": 50,
-    "plant_maximalists": 30,
     "pets_in_photos": 60,
-    "ugly_bathrooms": 40,
     "hectic_kitchens": 40,
     "drug_den_vibes": 40,
-    "wtf_photos_per_cluster": 24,
     "funniest_reviews": 250,
 }
 

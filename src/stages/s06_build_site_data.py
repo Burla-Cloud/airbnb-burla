@@ -1,14 +1,14 @@
-"""Stage 6: build all data/outputs/*.json and viral_summary.md from shared parquets.
+"""Stage 6: build every data/outputs/*.json the site reads, from shared parquets.
 
-Runs a single Burla worker that reads listings + images_cpu + images_gpu +
-reviews_scored from /workspace/shared, computes per-section top-K, and returns
-everything as small JSON-able dicts. The local stage writes all
-``data/outputs/*.json``, generates ``viral_summary.md`` from those JSON files,
-and merges the runtime log.
+Runs a single Burla worker that reads listings, CLIP scores, Haiku-validated
+TVs / pets / rooms, reviews, and bootstrap correlations from
+``/workspace/shared``, computes per-section top-K, and returns everything as
+small JSON-able dicts. The local stage writes those dicts to
+``data/outputs/*.json``, applies ``data/manual_blocklist.json``, mirrors the
+result into ``site/data/``, and merges the runtime log.
 """
 from __future__ import annotations
 
-import json
 import time
 from dataclasses import dataclass
 
@@ -39,7 +39,6 @@ class ArtifactsArgs:
     reviews_scored_path: str
     correlations_path: str
     photo_manifest_path: str
-    wtf_haiku_path: str
     pets_validated_path: str
     rooms_categories_path: str
     tv_validated_path: str
@@ -80,67 +79,25 @@ def build_artifacts(args: ArtifactsArgs) -> dict:
                 listings["occupancy_365"], errors="coerce"
             ).fillna(listings["demand_proxy"])
 
-        cpu_cols = ["listing_id", "image_idx", "image_url", "download_ok",
-                    "brightness", "edge_density",
-                    "clip_messy_room", "clip_tv_above_fireplace",
-                    "clip_lots_of_plants",
-                    "clip_pet_dog", "clip_pet_cat", "clip_pet_on_furniture"]
-        try:
-            cpu = pd.read_parquet(args.images_cpu_path, columns=cpu_cols)
-        except Exception:
-            # If the CPU parquet predates the pet prompts, drop them and retry.
-            fallback = [c for c in cpu_cols if not c.startswith("clip_pet_")]
-            cpu = pd.read_parquet(args.images_cpu_path, columns=fallback)
-            for c in ("clip_pet_dog", "clip_pet_cat", "clip_pet_on_furniture"):
-                cpu[c] = 0.0
-        cpu = cpu[cpu["download_ok"].astype(bool)]
-        try:
-            gpu = pd.read_parquet(
-                args.images_gpu_path,
-                columns=["listing_id", "image_idx", "image_url",
-                         "tv_detected", "tv_above_50pct", "tv_bbox",
-                         "potted_plant_count",
-                         "cat_detected", "dog_detected", "pet_detected", "pet_count"],
-            )
-        except Exception:
+        # The TV / pets / rooms sections all read pre-validated parquets from
+        # s05c, so we don't need the raw CLIP/YOLO columns anymore. We only
+        # need row counts for the homepage stats, which we get from parquet
+        # metadata to avoid loading 1.7M rows for two counters.
+        def _row_count(path: str) -> int:
             try:
-                gpu = pd.read_parquet(
-                    args.images_gpu_path,
-                    columns=["listing_id", "image_idx", "image_url",
-                             "tv_detected", "tv_above_50pct", "tv_bbox",
-                             "potted_plant_count"],
-                )
-                for c in ("cat_detected", "dog_detected", "pet_detected"):
-                    gpu[c] = False
-                gpu["pet_count"] = 0
+                return int(pq.read_metadata(path).num_rows)
             except Exception:
-                gpu = pd.DataFrame(columns=[
-                    "listing_id", "image_idx", "image_url",
-                    "tv_detected", "tv_above_50pct", "tv_bbox", "potted_plant_count",
-                    "cat_detected", "dog_detected", "pet_detected", "pet_count",
-                ])
+                return 0
 
         out["stats"]["n_listings"] = int(len(listings))
         out["stats"]["n_listings_with_demand"] = int(listings["demand_proxy"].notna().sum())
-        out["stats"]["n_cpu_images"] = int(len(cpu))
-        out["stats"]["n_gpu_images"] = int(len(gpu))
-
-        try:
-            out["stats"]["n_photo_manifest_rows"] = int(
-                pq.read_metadata(args.photo_manifest_path).num_rows
-            )
-        except Exception:
-            out["stats"]["n_photo_manifest_rows"] = 0
-
-        try:
-            reviews_raw_path = args.reviews_scored_path.rsplit("/", 1)[0] + "/reviews_raw.parquet"
-            out["stats"]["n_reviews"] = int(
-                pq.read_metadata(reviews_raw_path).num_rows
-            )
-        except Exception:
-            out["stats"]["n_reviews"] = 0
-
-        listings_idx = listings.set_index("listing_id")
+        out["stats"]["n_cpu_images"] = _row_count(args.images_cpu_path)
+        out["stats"]["n_gpu_images"] = _row_count(args.images_gpu_path)
+        out["stats"]["n_photo_manifest_rows"] = _row_count(args.photo_manifest_path)
+        reviews_raw_path = (
+            args.reviews_scored_path.rsplit("/", 1)[0] + "/reviews_raw.parquet"
+        )
+        out["stats"]["n_reviews"] = _row_count(reviews_raw_path)
 
         def _attach_listing(df, score_col):
             j = df.merge(listings, on="listing_id", how="left").dropna(subset=["picture_url"])
@@ -176,168 +133,71 @@ def build_artifacts(args: ArtifactsArgs) -> dict:
                 rows.append(row)
             return rows
 
-        # Worst TV placements: prefer the Haiku-validated tv_validated.parquet
-        # (only rows where placement is "above_fireplace" or "unusually_high").
-        # Fall back to the legacy YOLO+CLIP join if the validated parquet is missing.
-        tv_section = None
+        # Worst TV placements: read tv_validated.parquet from s05c (only rows
+        # where Haiku Vision confirmed above_fireplace or unusually_high).
+        tv_section = {
+            "title": "Worst TV placements across every public Airbnb",
+            "subtitle": "CLIP shortlisted candidates, Haiku Vision said yes this is mounted absurdly",
+            "n": 0, "items": [],
+        }
         try:
-            if _os.path.exists(args.tv_validated_path):
-                tvv = pd.read_parquet(args.tv_validated_path)
-                if len(tvv):
-                    tvv["tv_score"] = pd.to_numeric(
-                        tvv.get("haiku_score"), errors="coerce"
-                    ).fillna(0)
-                    tvv = tvv.sort_values("tv_score", ascending=False)
-                    tvv = tvv.drop_duplicates(subset=["listing_id"], keep="first")
-                    tv_j = _attach_listing(tvv, "tv_score")
-                    if "image_url" in tv_j.columns:
-                        tv_j = tv_j.drop_duplicates(subset=["image_url"], keep="first")
-                    if "one_line" in tv_j.columns:
-                        tv_j["one_line"] = tv_j["one_line"].fillna("").astype(str)
-                    tv_section = {
-                        "title": "Worst TV placements across every public Airbnb",
-                        "subtitle": "CLIP shortlisted candidates, Haiku Vision said yes this is mounted absurdly",
-                        "n": int(min(len(tv_j), args.top_k["worst_tv_placements"])),
-                        "items": _serialize(tv_j, "tv_score",
-                                            args.top_k["worst_tv_placements"],
-                                            extra=["tv_placement", "one_line",
-                                                   "haiku_score"]),
-                    }
+            tvv = pd.read_parquet(args.tv_validated_path)
+            if len(tvv):
+                tvv["tv_score"] = pd.to_numeric(
+                    tvv.get("haiku_score"), errors="coerce"
+                ).fillna(0)
+                tvv = tvv.sort_values("tv_score", ascending=False)
+                tvv = tvv.drop_duplicates(subset=["listing_id"], keep="first")
+                tv_j = _attach_listing(tvv, "tv_score")
+                if "image_url" in tv_j.columns:
+                    tv_j = tv_j.drop_duplicates(subset=["image_url"], keep="first")
+                if "one_line" in tv_j.columns:
+                    tv_j["one_line"] = tv_j["one_line"].fillna("").astype(str)
+                tv_section["n"] = int(min(len(tv_j), args.top_k["worst_tv_placements"]))
+                tv_section["items"] = _serialize(
+                    tv_j, "tv_score", args.top_k["worst_tv_placements"],
+                    extra=["tv_placement", "one_line", "haiku_score"],
+                )
         except Exception as e:
-            tv_section = {
-                "title": "Worst TV placements",
-                "n": 0, "items": [], "error": str(e)[:200],
-            }
-        if tv_section is None:
-            worst_tv_src = gpu[gpu["tv_above_50pct"].fillna(False).astype(bool)].copy()
-            if len(worst_tv_src):
-                cpu_score = cpu[["listing_id", "image_idx", "clip_tv_above_fireplace"]]
-                worst_tv_src = worst_tv_src.merge(
-                    cpu_score, on=["listing_id", "image_idx"], how="left"
-                )
-                worst_tv_src["clip_tv_above_fireplace"] = worst_tv_src[
-                    "clip_tv_above_fireplace"
-                ].fillna(0)
-                worst_tv_src = worst_tv_src.sort_values(
-                    "clip_tv_above_fireplace", ascending=False
-                )
-                worst_tv_src = worst_tv_src.drop_duplicates(
-                    subset=["listing_id"], keep="first"
-                )
-                j = _attach_listing(worst_tv_src, "clip_tv_above_fireplace")
-                if "image_url" in j.columns:
-                    j = j.drop_duplicates(subset=["image_url"], keep="first")
-                tv_section = {
-                    "title": "Worst TV placements in 1.1M Airbnb listings",
-                    "n": int(min(len(j), args.top_k["worst_tv_placements"])),
-                    "items": _serialize(j, "clip_tv_above_fireplace",
-                                        args.top_k["worst_tv_placements"],
-                                        extra=["tv_bbox"]),
-                }
-            else:
-                tv_section = {
-                    "title": "Worst TV placements", "n": 0, "items": []
-                }
+            tv_section["error"] = str(e)[:200]
         out["sections"]["worst_tv_placements"] = tv_section
 
-        messy = cpu.sort_values("clip_messy_room", ascending=False)
-        messy = messy.drop_duplicates(subset=["listing_id"], keep="first")
-        j = _attach_listing(messy, "clip_messy_room")
-        if "image_url" in j.columns:
-            j = j.drop_duplicates(subset=["image_url"], keep="first")
-        out["sections"]["messiest_listings"] = {
-            "title": "Messiest Airbnb photos in 1.1M listings",
-            "n": int(min(len(j), args.top_k["messiest_listings"])),
-            "items": _serialize(j, "clip_messy_room", args.top_k["messiest_listings"]),
+        # Pets in photos: read pets_validated.parquet from s05c. Each row is
+        # a Haiku-confirmed real cat or dog, ranked by haiku_score.
+        pets_section = {
+            "title": "Cats and dogs Claude said are actually real",
+            "subtitle": "CLIP found candidates, Haiku Vision said YES this is a real animal",
+            "n": 0, "items": [],
         }
-
-        plant_src = cpu.sort_values("clip_lots_of_plants", ascending=False)
-        plant_src = plant_src.drop_duplicates(subset=["listing_id"], keep="first")
-        if len(gpu):
-            plant_counts = gpu.groupby("listing_id")["potted_plant_count"].max().reset_index()
-            plant_src = plant_src.merge(plant_counts, on="listing_id", how="left")
-        j = _attach_listing(plant_src, "clip_lots_of_plants")
-        if "image_url" in j.columns:
-            j = j.drop_duplicates(subset=["image_url"], keep="first")
-        out["sections"]["plant_maximalists"] = {
-            "title": "The most plant-maximalist Airbnbs",
-            "n": int(min(len(j), args.top_k["plant_maximalists"])),
-            "items": _serialize(j, "clip_lots_of_plants", args.top_k["plant_maximalists"],
-                                extra=["potted_plant_count"]),
-        }
-
-        # Pets in photos: read pets_validated.parquet (Haiku Vision said YES,
-        # this is a real animal). Rank by haiku_score and cap at top_k. Fall back
-        # to the old CLIP+YOLO heuristic only if the validated parquet is missing
-        # so the pipeline still produces a section during partial runs.
-        pets_section = None
         try:
-            if _os.path.exists(args.pets_validated_path):
-                petsv = pd.read_parquet(args.pets_validated_path)
-                if len(petsv):
-                    petsv["pet_score"] = pd.to_numeric(
-                        petsv.get("haiku_score"), errors="coerce"
-                    ).fillna(0)
-                    petsv = petsv.sort_values("pet_score", ascending=False)
-                    petsv = petsv.drop_duplicates(subset=["listing_id"], keep="first")
-                    pet_j = _attach_listing(petsv, "pet_score")
-                    if "image_url" in pet_j.columns:
-                        pet_j = pet_j.drop_duplicates(subset=["image_url"], keep="first")
-                    if "one_line" in pet_j.columns:
-                        pet_j["one_line"] = pet_j["one_line"].fillna("").astype(str)
-                    pets_section = {
-                        "title": "Cats and dogs Claude said are actually real",
-                        "subtitle": "CLIP found candidates, Haiku Vision said YES this is a real animal",
-                        "n": int(min(len(pet_j), args.top_k["pets_in_photos"])),
-                        "items": _serialize(pet_j, "pet_score",
-                                            args.top_k["pets_in_photos"],
-                                            extra=["animal_type", "one_line",
-                                                   "haiku_score"]),
-                    }
+            petsv = pd.read_parquet(args.pets_validated_path)
+            if len(petsv):
+                petsv["pet_score"] = pd.to_numeric(
+                    petsv.get("haiku_score"), errors="coerce"
+                ).fillna(0)
+                petsv = petsv.sort_values("pet_score", ascending=False)
+                petsv = petsv.drop_duplicates(subset=["listing_id"], keep="first")
+                pet_j = _attach_listing(petsv, "pet_score")
+                if "image_url" in pet_j.columns:
+                    pet_j = pet_j.drop_duplicates(subset=["image_url"], keep="first")
+                if "one_line" in pet_j.columns:
+                    pet_j["one_line"] = pet_j["one_line"].fillna("").astype(str)
+                pets_section["n"] = int(min(len(pet_j), args.top_k["pets_in_photos"]))
+                pets_section["items"] = _serialize(
+                    pet_j, "pet_score", args.top_k["pets_in_photos"],
+                    extra=["animal_type", "one_line", "haiku_score"],
+                )
         except Exception as e:
-            pets_section = {
-                "title": "Cats and dogs Claude said are actually real",
-                "n": 0, "items": [], "error": str(e)[:200],
-            }
-        if pets_section is None:
-            cpu["clip_pet_max"] = cpu[["clip_pet_dog", "clip_pet_cat",
-                                        "clip_pet_on_furniture"]].max(axis=1)
-            pet_src = cpu.sort_values("clip_pet_max", ascending=False).copy()
-            pet_src = pet_src.drop_duplicates(subset=["listing_id"], keep="first")
-            if len(gpu):
-                pet_yolo = gpu.groupby("listing_id").agg(
-                    yolo_pet_detected=("pet_detected", "any"),
-                    yolo_pet_count_max=("pet_count", "max"),
-                ).reset_index()
-                pet_src = pet_src.merge(pet_yolo, on="listing_id", how="left")
-            else:
-                pet_src["yolo_pet_detected"] = False
-                pet_src["yolo_pet_count_max"] = 0
-            pet_src["yolo_pet_detected"] = pet_src["yolo_pet_detected"].fillna(False).astype(bool)
-            pet_src["pet_score"] = pet_src["clip_pet_max"] + pet_src["yolo_pet_detected"].astype(float) * 0.5
-            pet_src = pet_src.sort_values("pet_score", ascending=False)
-            pet_j = _attach_listing(pet_src, "pet_score")
-            if "image_url" in pet_j.columns:
-                pet_j = pet_j.drop_duplicates(subset=["image_url"], keep="first")
-            pets_section = {
-                "title": "Cats, dogs, and the occasional surprise",
-                "n": int(min(len(pet_j), args.top_k["pets_in_photos"])),
-                "items": _serialize(pet_j, "pet_score", args.top_k["pets_in_photos"],
-                                    extra=["clip_pet_max", "yolo_pet_detected",
-                                           "yolo_pet_count_max"]),
-            }
+            pets_section["error"] = str(e)[:200]
         out["sections"]["pets_in_photos"] = pets_section
 
         room_titles = {
-            "ugly_bathroom": ("Ugly bathrooms a host actually photographed",
-                              "Haiku Vision said this bathroom is genuinely grimy or sad"),
             "hectic_kitchen": ("The most hectic kitchens",
                                "Haiku Vision said this kitchen is genuinely chaotic"),
             "drug_den_vibes": ("Listings with drug-den vibes",
                                "Haiku Vision said this room gives unmistakable did-someone-just-leave energy"),
         }
         room_section_keys = {
-            "ugly_bathroom": "ugly_bathrooms",
             "hectic_kitchen": "hectic_kitchens",
             "drug_den_vibes": "drug_den_vibes",
         }
@@ -376,56 +236,6 @@ def build_artifacts(args: ArtifactsArgs) -> dict:
         except Exception as e:
             for cat_key, section_id in room_section_keys.items():
                 out["sections"][section_id]["error"] = str(e)[:200]
-
-        # WTF clusters: read the wtf_haiku.parquet from Stage 5b. Each row is
-        # a Haiku-confirmed absurd photo with cluster + caption.
-        try:
-            wtf = pd.read_parquet(args.wtf_haiku_path)
-            if len(wtf):
-                wtf = wtf.merge(listings, on="listing_id", how="left")
-                wtf["clip_max"] = pd.to_numeric(wtf.get("clip_max"), errors="coerce")
-                wtf["haiku_score"] = pd.to_numeric(wtf.get("haiku_score"), errors="coerce")
-                clusters = []
-                for cname, sub in wtf.sort_values("haiku_score", ascending=False).groupby("kept_cluster"):
-                    items = []
-                    for _, r in sub.head(args.top_k["wtf_photos_per_cluster"]).iterrows():
-                        items.append({
-                            "listing_id": int(r.get("listing_id", 0)),
-                            "city": str(r.get("city", "")),
-                            "country": str(r.get("country", "")),
-                            "name": str(r.get("name", ""))[:140],
-                            "image_url": str(r.get("image_url", "")),
-                            "thumbnail_url": str(r.get("picture_url", "")),
-                            "listing_url": str(r.get("listing_url", "")),
-                            "one_line": str(r.get("one_line", ""))[:160],
-                            "haiku_score": float(r["haiku_score"]) if pd.notna(r.get("haiku_score")) else 0.0,
-                            "demand_proxy": float(r["demand_proxy"]) if pd.notna(r.get("demand_proxy")) else None,
-                            "lat": float(r["latitude"]) if pd.notna(r.get("latitude")) else None,
-                            "lng": float(r["longitude"]) if pd.notna(r.get("longitude")) else None,
-                        })
-                    clusters.append({
-                        "cluster": str(cname),
-                        "n": len(items),
-                        "items": items,
-                    })
-                clusters.sort(key=lambda c: c["n"], reverse=True)
-                out["sections"]["wtf_clusters"] = {
-                    "title": "Photos that made us go 'wait, what'",
-                    "n_clusters": len(clusters),
-                    "n_photos": int(sum(c["n"] for c in clusters)),
-                    "clusters": clusters,
-                }
-            else:
-                out["sections"]["wtf_clusters"] = {
-                    "title": "Photos that made us go 'wait, what'",
-                    "n_clusters": 0, "n_photos": 0, "clusters": [],
-                }
-        except Exception as e:
-            out["sections"]["wtf_clusters"] = {
-                "title": "Photos that made us go 'wait, what'",
-                "n_clusters": 0, "n_photos": 0, "clusters": [],
-                "error": str(e)[:200],
-            }
 
         try:
             rev = pd.read_parquet(args.reviews_scored_path)
@@ -502,132 +312,24 @@ def build_artifacts(args: ArtifactsArgs) -> dict:
         for section_id, section in out["sections"].items():
             if section_id == "correlations":
                 continue
-            if section_id == "wtf_clusters":
-                for cluster in section.get("clusters", []):
-                    for item in cluster.get("items", []):
-                        if item.get("lat") is not None and item.get("lng") is not None:
-                            lid_str = str(item.get("listing_id", 0))
-                            listing_url = item.get("listing_url") or f"https://www.airbnb.com/rooms/{lid_str}"
-                            world.append({
-                                "type": "wtf_clusters",
-                                "lat": float(item["lat"]),
-                                "lng": float(item["lng"]),
-                                "listing_id": lid_str,
-                                "listing_url": listing_url,
-                            })
-                continue
             for item in section.get("items", []):
-                if item.get("lat") is not None and item.get("lng") is not None:
-                    lid = item.get("listing_id", 0)
-                    lid_str = str(lid)
-                    listing_url = item.get("listing_url") or f"https://www.airbnb.com/rooms/{lid_str}"
-                    world.append({
-                        "type": section_id,
-                        "lat": float(item["lat"]),
-                        "lng": float(item["lng"]),
-                        "listing_id": lid_str,
-                        "listing_url": listing_url,
-                    })
+                if item.get("lat") is None or item.get("lng") is None:
+                    continue
+                lid_str = str(item.get("listing_id", 0))
+                world.append({
+                    "type": section_id,
+                    "lat": float(item["lat"]),
+                    "lng": float(item["lng"]),
+                    "listing_id": lid_str,
+                    "listing_url": item.get("listing_url")
+                        or f"https://www.airbnb.com/rooms/{lid_str}",
+                })
         out["world_map"] = world
         out["ok"] = True
     except Exception as e:
         out["error"] = f"{type(e).__name__}: {str(e)[:200]}"
         out["traceback"] = _tb.format_exc()[:1000]
     return out
-
-
-_VIRAL_TEMPLATE = """# Airbnb x Burla -- viral summary
-
-(All numbers below are computed from data/outputs/*.json. Regenerated every run.)
-
-## Headline numbers
-
-- {n_listings:,} Airbnb listings worldwide (Inside Airbnb, latest snapshot per city)
-- {n_photo_manifest_rows:,} photo URLs scraped from public listing pages
-- {n_cpu_images:,} images CLIP-scored on Burla CPU
-- {n_gpu_images:,} images run through YOLOv8 on Burla A100s
-- {n_reviews:,} reviews heuristic-scored, top {n_tier3:,} sent through Claude
-
-## What we found
-
-### TVs in places no one should mount a TV
-
-Top-{n_tv} listings where YOLO confirmed a TV in the upper half of the photo
-and CLIP rated the image high on "TV mounted above a fireplace."
-
-### Messiest photos a host actually posted
-
-Top-{n_messy} listings, ranked by CLIP score against "a messy cluttered room
-with stuff everywhere."
-
-### Plant-maximalist Airbnbs
-
-Top-{n_plants} listings combining CLIP "room full of houseplants" with YOLO
-potted plant counts.
-
-### Pets in photos
-
-Top-{n_pets} listings where YOLO confirmed a cat or dog and CLIP scored high
-on the pet prompts.
-
-### Photos that made us go "wait, what"
-
-{n_wtf_photos} photos across {n_wtf_clusters} Haiku-named clusters of genuinely
-absurd, unsettling, or out-of-place hosting choices. Top clusters: {wtf_top_clusters}.
-
-### The funniest reviews
-
-Top-{n_funny} reviews surfaced by 3-tier funnel (heuristic -> embedding cluster
--> Claude humor score).
-
-## What held up under bootstrap
-
-{accepted_findings}
-
-## What did not survive
-
-{rejected_findings}
-
-## Replication
-
-Repo: airbnb-burla
-Runtime: {wall_time_hours:.1f} hours wall time, peak {peak_workers} Burla workers.
-"""
-
-
-def _build_viral_summary(sections: dict, stats: dict, runtime: dict) -> str:
-    funny = sections.get("funniest_reviews", {})
-    correlations = sections.get("correlations", {}).get("hypotheses", [])
-    accepted = [c["hypothesis"] for c in correlations if c.get("verdict") == "accepted"]
-    rejected = [c["hypothesis"] for c in correlations if c.get("verdict") == "rejected"]
-
-    wtf_section = sections.get("wtf_clusters", {})
-    wtf_clusters = wtf_section.get("clusters", [])
-    wtf_top_clusters = ", ".join(c["cluster"] for c in wtf_clusters[:5]) or "(none yet)"
-
-    def _bullet(items):
-        return "\n".join(f"- {x}" for x in items) if items else "- (none)"
-
-    return _VIRAL_TEMPLATE.format(
-        n_listings=stats.get("n_listings", 0),
-        n_photo_manifest_rows=stats.get("n_photo_manifest_rows", 0),
-        n_cpu_images=stats.get("n_cpu_images", 0),
-        n_gpu_images=stats.get("n_gpu_images", 0),
-        n_reviews=stats.get("n_reviews", 0),
-        n_tier3=funny.get("n", 0),
-        n_tv=sections.get("worst_tv_placements", {}).get("n", 0),
-        n_messy=sections.get("messiest_listings", {}).get("n", 0),
-        n_plants=sections.get("plant_maximalists", {}).get("n", 0),
-        n_pets=sections.get("pets_in_photos", {}).get("n", 0),
-        n_wtf_clusters=wtf_section.get("n_clusters", 0),
-        n_wtf_photos=wtf_section.get("n_photos", 0),
-        wtf_top_clusters=wtf_top_clusters,
-        n_funny=funny.get("n", 0),
-        accepted_findings=_bullet(accepted),
-        rejected_findings=_bullet(rejected),
-        wall_time_hours=runtime.get("wall_time_hours", 0.0),
-        peak_workers=runtime.get("peak_workers", 0),
-    )
 
 
 def main() -> None:
@@ -644,7 +346,6 @@ def main() -> None:
     reviews_shared = f"{SHARED_ROOT}/reviews_scored.parquet"
     corr_shared = f"{SHARED_ROOT}/correlations.parquet"
     photo_manifest_shared = f"{SHARED_ROOT}/photo_manifest.parquet"
-    wtf_shared = f"{SHARED_ROOT}/wtf_haiku.parquet"
     pets_validated_shared = f"{SHARED_ROOT}/pets_validated.parquet"
     rooms_categories_shared = f"{SHARED_ROOT}/room_categories.parquet"
     tv_validated_shared = f"{SHARED_ROOT}/tv_validated.parquet"
@@ -662,7 +363,6 @@ def main() -> None:
                 reviews_scored_path=reviews_shared,
                 correlations_path=corr_shared,
                 photo_manifest_path=photo_manifest_shared,
-                wtf_haiku_path=wtf_shared,
                 pets_validated_path=pets_validated_shared,
                 rooms_categories_path=rooms_categories_shared,
                 tv_validated_path=tv_validated_shared,
@@ -726,9 +426,6 @@ def main() -> None:
         )
     except Exception as _exc:  # noqa: BLE001 -- best-effort, don't fail the stage
         print(f"[s06] manual blocklist sync failed (non-fatal): {_exc}", flush=True)
-
-    md = _build_viral_summary(sections, stats, runtime_summary)
-    (OUTPUT_DIR / "viral_summary.md").write_text(md, encoding="utf-8")
 
     site_data = REPO_ROOT / "site" / "data"
     site_data.mkdir(parents=True, exist_ok=True)
