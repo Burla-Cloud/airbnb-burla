@@ -31,6 +31,10 @@ const HYPOTHESIS_META = {
   messiness_quartile: {
     title: "Messier photos vs demand",
     buckets: { q1: "Tidiest", q2: "Q2", q3: "Q3", q4: "Messiest" },
+    // The data really does show q4 (CLIP-messiest) at ~55% calendar
+    // unavailable vs q1 (tidiest) at ~39%. But this is more likely a
+    // confound than a "messy = attractive" finding, so we flag it.
+    note: "Caveat: occupancy_365 counts every blocked or booked night. CLIP's \"messy\" score also picks up dense, lived-in stock photos and budget/dorm-style listings, both of which tend to be calendar-blocked or fully booked. So this is more likely a methodology artifact than a real preference signal.",
   },
   plant_count_bucket: {
     title: "More houseplants vs demand",
@@ -174,7 +178,15 @@ function paintGrid(sectionId, payload) {
   if (!grid || !payload) return;
   const items = dedupeItems(payload.items || []);
   grid.innerHTML = "";
-  for (const it of items) {
+  // Sections below the fold keep their thumbs eager-loaded so users don't
+  // hit a flash of empty cards when scrolling fast. The first photo section
+  // is the only one above the fold, so above-the-fold gets eager loading
+  // while everything else lazy-loads.
+  const isFirstSection = grid.closest("section")
+    && grid.closest("section").previousElementSibling
+    && grid.closest("section").previousElementSibling.matches(".map-section");
+  for (let idx = 0; idx < items.length; idx++) {
+    const it = items[idx];
     const card = document.createElement("button");
     card.type = "button";
     card.className = "item";
@@ -182,8 +194,23 @@ function paintGrid(sectionId, payload) {
       `Open ${placeLabel(it) || "listing"} in lightbox`);
     const thumb = document.createElement("div");
     thumb.className = "thumb";
-    const img = it.image_url || it.thumbnail_url;
-    if (img) thumb.style.backgroundImage = `url("${img}")`;
+    const imgUrl = it.image_url || it.thumbnail_url;
+    if (imgUrl) {
+      const img = document.createElement("img");
+      img.className = "thumb__img";
+      img.src = imgUrl;
+      img.alt = "";
+      img.decoding = "async";
+      // Eager-load the first 8 thumbs of the first section (above the fold);
+      // everything else streams in via native lazy-loading as the user
+      // scrolls, dropping the initial connection storm dramatically.
+      img.loading = (isFirstSection && idx < 8) ? "eager" : "lazy";
+      img.fetchPriority = (isFirstSection && idx < 4) ? "high" : "low";
+      img.referrerPolicy = "no-referrer";
+      img.addEventListener("load", () => { thumb.classList.add("is-loaded"); });
+      img.addEventListener("error", () => { thumb.classList.add("is-error"); });
+      thumb.appendChild(img);
+    }
     const overlay = document.createElement("span");
     overlay.className = "thumb__overlay";
     overlay.innerHTML =
@@ -214,9 +241,11 @@ function paintGrid(sectionId, payload) {
 }
 
 // Module-level handle so the filter UI can re-render on input.
+const REVIEWS_PAGE_SIZE = 25;
 const _reviewState = {
   all: [],
   visible: [],
+  visibleCount: REVIEWS_PAGE_SIZE,
   filters: { search: "", city: "", year: "", category: "" },
 };
 
@@ -245,6 +274,9 @@ function applyReviewFilters() {
     }
     return true;
   });
+  // Reset to first page whenever filters change so the user always sees the
+  // most relevant top results before paginating.
+  _reviewState.visibleCount = REVIEWS_PAGE_SIZE;
   renderReviewCards();
 }
 
@@ -252,18 +284,26 @@ function renderReviewCards() {
   const root = document.querySelector('[data-section="funniest_reviews"]');
   const empty = document.getElementById("reviews-empty");
   const counter = document.querySelector('[data-counter="reviews-visible"]');
+  const moreWrap = document.getElementById("reviews-more-wrap");
+  const moreBtn = document.getElementById("reviews-more-btn");
   if (!root) return;
   root.innerHTML = "";
   const items = _reviewState.visible;
+  const cap = Math.min(_reviewState.visibleCount, items.length);
+  const shown = items.slice(0, cap);
   if (counter) {
-    counter.textContent = `${fmt(items.length)} of ${fmt(_reviewState.all.length)}`;
+    // Always show clean integers here, never the .toFixed(1) shape that
+    // fmt() would produce for n<100.
+    counter.textContent =
+      `${shown.length.toLocaleString("en-US")} of ${items.length.toLocaleString("en-US")}`;
   }
   if (!items.length) {
     if (empty) empty.hidden = false;
+    if (moreWrap) moreWrap.hidden = true;
     return;
   }
   if (empty) empty.hidden = true;
-  for (const it of items) {
+  for (const it of shown) {
     const card = document.createElement("button");
     card.type = "button";
     card.className = "card";
@@ -292,14 +332,41 @@ function renderReviewCards() {
     card.addEventListener("click", () => openReviewModal(it));
     root.appendChild(card);
   }
+  if (moreWrap && moreBtn) {
+    const remaining = items.length - shown.length;
+    if (remaining > 0) {
+      moreWrap.hidden = false;
+      const next = Math.min(REVIEWS_PAGE_SIZE, remaining);
+      moreBtn.textContent =
+        `Show ${next} more \u00b7 ${remaining.toLocaleString("en-US")} left`;
+    } else {
+      moreWrap.hidden = true;
+    }
+  }
 }
 
 function paintReviews(payload) {
   const items = (payload && payload.items) ? payload.items.slice() : [];
   _reviewState.all = items;
   _reviewState.visible = items.slice();
+  _reviewState.visibleCount = REVIEWS_PAGE_SIZE;
   setupReviewFilters();
+  setupReviewsLoadMore();
   renderReviewCards();
+}
+
+function setupReviewsLoadMore() {
+  const btn = document.getElementById("reviews-more-btn");
+  if (!btn || btn._wired) return;
+  btn._wired = true;
+  btn.addEventListener("click", () => {
+    _reviewState.visibleCount += REVIEWS_PAGE_SIZE;
+    renderReviewCards();
+    // Keep the button in view after expanding so the user can keep clicking.
+    requestAnimationFrame(() => {
+      btn.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    });
+  });
 }
 
 function setupReviewFilters() {
@@ -498,6 +565,7 @@ function paintCorrelations(payload) {
       `;
     }).join("");
     const verdictLabel = h.verdict === "accepted" ? "Accepted" : "Rejected";
+    const note = meta.note ? `<p class="corr-note"><strong>Caveat.</strong> ${escapeHTML(meta.note).replace(/^Caveat:\s*/, "")}</p>` : "";
     block.innerHTML = `
       <h3>
         <span>${escapeHTML(title)}</span>
@@ -514,6 +582,7 @@ function paintCorrelations(payload) {
         </span>
         <span class="corr-axis__pad-right"></span>
       </div>
+      ${note}
     `;
     root.appendChild(block);
   }
