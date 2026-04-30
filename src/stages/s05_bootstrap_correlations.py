@@ -15,10 +15,14 @@ from dataclasses import dataclass
 
 from dotenv import load_dotenv
 
-# Hoist these so Burla bundles them on workers (correlate_all calls
-# pd.read_parquet which requires pyarrow on the worker side).
-import numpy as _np  # noqa: F401
-import pandas as _pd  # noqa: F401
+# Hoist for cloudpickle bundling on Burla workers. The worker calls
+# pd.read_parquet which needs pyarrow + pandas available at unpickle time.
+import os
+import os as _os
+import traceback as _tb
+
+import numpy as np
+import pandas as pd
 import pyarrow as _pa  # noqa: F401
 import pyarrow.parquet as _pq  # noqa: F401
 
@@ -27,11 +31,6 @@ from ..config import (
 )
 from ..lib.budget import BudgetTracker
 from ..lib.io import ensure_dir, register_src_for_burla, write_json
-
-import os as _os
-import numpy as np
-import os
-import traceback as _tb
 
 @dataclass
 class CorrelateArgs:
@@ -305,7 +304,6 @@ def main() -> None:
         print(f"[s05]   REJECTED {rej['hypothesis']}: {rej['reason']}", flush=True)
 
     ensure_dir(CORRELATIONS_PATH.parent)
-    import pandas as pd
     pd.DataFrame(r["rows"]).to_parquet(CORRELATIONS_PATH, compression="zstd", index=False)
     manifest_path = CORRELATIONS_PATH.with_suffix(".manifest.json")
     write_json(manifest_path, {
