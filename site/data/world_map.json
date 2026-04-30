@@ -1,6 +1,6 @@
 {
   "title": "Every flagged Airbnb in the demo, on a Leaflet map",
-  "n": 123,
+  "n": 120,
   "points": [
     {
       "type": "worst_tv_placements",
@@ -116,13 +116,6 @@
     },
     {
       "type": "worst_tv_placements",
-      "lat": 41.91064,
-      "lng": -87.69109,
-      "listing_id": "648680183790580891",
-      "listing_url": "https://www.airbnb.com/rooms/648680183790580891"
-    },
-    {
-      "type": "worst_tv_placements",
       "lat": 53.38924,
       "lng": -2.26331,
       "listing_id": "1499450610804947479",
@@ -134,13 +127,6 @@
       "lng": -86.7433,
       "listing_id": "54006529",
       "listing_url": "https://www.airbnb.com/rooms/54006529"
-    },
-    {
-      "type": "worst_tv_placements",
-      "lat": 34.03596,
-      "lng": -118.46373,
-      "listing_id": "844949744966672409",
-      "listing_url": "https://www.airbnb.com/rooms/844949744966672409"
     },
     {
       "type": "worst_tv_placements",
@@ -162,13 +148,6 @@
       "lng": -43.30605,
       "listing_id": "1450026660185157591",
       "listing_url": "https://www.airbnb.com/rooms/1450026660185157591"
-    },
-    {
-      "type": "worst_tv_placements",
-      "lat": 39.92791,
-      "lng": -82.98915,
-      "listing_id": "1081286947929287594",
-      "listing_url": "https://www.airbnb.com/rooms/1081286947929287594"
     },
     {
       "type": "worst_tv_placements",
