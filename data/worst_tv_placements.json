@@ -1,7 +1,7 @@
 {
   "title": "Worst TV placements across every public Airbnb",
   "subtitle": "CLIP shortlisted candidates, Haiku Vision said yes this is mounted absurdly",
-  "n": 30,
+  "n": 27,
   "items": [
     {
       "listing_id": 717227307748719708,
@@ -260,22 +260,6 @@
       "haiku_score": 8.0
     },
     {
-      "listing_id": 648680183790580891,
-      "city": "Chicago",
-      "country": "United States",
-      "name": "Luxe SFH Bucktown Retreat with Garage Parking",
-      "score": 8.0,
-      "image_url": "https://a0.muscache.com/pictures/prohost-api/Hosting-648680183790580891/original/5a459c72-9f1f-4d1b-9955-9954d836c066.jpeg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/prohost-api/Hosting-648680183790580891/original/5a459c72-9f1f-4d1b-9955-9954d836c066.jpeg",
-      "listing_url": "https://www.airbnb.com/rooms/648680183790580891",
-      "demand_proxy": 0.16712328767123286,
-      "lat": 41.91064,
-      "lng": -87.69109,
-      "tv_placement": "above_fireplace",
-      "one_line": "TV mounted directly above fireplace mantel.",
-      "haiku_score": 8.0
-    },
-    {
       "listing_id": 1499450610804947479,
       "city": "Greater Manchester",
       "country": "United Kingdom",
@@ -305,22 +289,6 @@
       "lng": -86.7433,
       "tv_placement": "above_fireplace",
       "one_line": "TV mounted above fireplace, requiring upward viewing angle.",
-      "haiku_score": 8.0
-    },
-    {
-      "listing_id": 844949744966672409,
-      "city": "Los Angeles",
-      "country": "United States",
-      "name": "West LA Oasis | Perfect for Families",
-      "score": 8.0,
-      "image_url": "https://a0.muscache.com/pictures/miso/Hosting-844949744966672409/original/dbc60e4e-5aad-48de-b914-b5a2ae1f089f.jpeg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/miso/Hosting-844949744966672409/original/dbc60e4e-5aad-48de-b914-b5a2ae1f089f.jpeg",
-      "listing_url": "https://www.airbnb.com/rooms/844949744966672409",
-      "demand_proxy": 0.002739726027397249,
-      "lat": 34.03596,
-      "lng": -118.46373,
-      "tv_placement": "above_fireplace",
-      "one_line": "TV mounted directly above fireplace mantel.",
       "haiku_score": 8.0
     },
     {
@@ -369,22 +337,6 @@
       "lng": -43.30605,
       "tv_placement": "unusually_high",
       "one_line": "TV mounted very high near ceiling, requires neck craning.",
-      "haiku_score": 8.0
-    },
-    {
-      "listing_id": 1081286947929287594,
-      "city": "Columbus",
-      "country": "United States",
-      "name": "Merion Village House Near Downtown",
-      "score": 8.0,
-      "image_url": "https://a0.muscache.com/pictures/miso/Hosting-1081286947929287594/original/336dcc32-00b0-4112-baf6-eae25388d099.jpeg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/miso/Hosting-1081286947929287594/original/336dcc32-00b0-4112-baf6-eae25388d099.jpeg",
-      "listing_url": "https://www.airbnb.com/rooms/1081286947929287594",
-      "demand_proxy": 0.046575342465753455,
-      "lat": 39.92791,
-      "lng": -82.98915,
-      "tv_placement": "above_fireplace",
-      "one_line": "TV mounted directly above fireplace mantel at high position.",
       "haiku_score": 8.0
     },
     {
