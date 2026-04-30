@@ -572,7 +572,6 @@ function paintCorrelations(payload) {
         <span>${escapeHTML(title)}</span>
         <span class="verdict ${h.verdict}">${verdictLabel}</span>
       </h3>
-      <p class="corr-demand-key">% booked = median calendar occupancy over the next 365 nights for that group. Further right on the bar means more booked.</p>
       <div class="corr-bars">${bars}</div>
       ${note}
     `;
