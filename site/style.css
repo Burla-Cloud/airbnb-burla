@@ -1423,7 +1423,7 @@ footer a:hover { color: var(--accent); text-decoration-color: var(--accent); }
   section { padding: 48px 20px; }
   .alt-bg > .alt-inner { padding: 0 20px; }
   .footer__inner { padding: 24px 20px; }
-  .corr-bar { grid-template-columns: 110px minmax(0, 1fr) 50px; gap: 10px; font-size: 12.5px; }
+  .corr-bar { grid-template-columns: 110px minmax(0, 1fr) 92px; gap: 10px; font-size: 12.5px; }
   .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 22px 14px; }
   .method-section { padding: 40px 20px; }
   .method { padding: 28px 22px; }
@@ -1443,9 +1443,46 @@ footer a:hover { color: var(--accent); text-decoration-color: var(--accent); }
   }
   .filter-bar__row .filter-input { grid-column: 1 / -1; }
   .filter-bar__row .filter-reset { grid-column: 1 / -1; }
+
+  /* Method / How-it-ran-on-Burla section: tabs + code on a phone.
+     The dark IDE box is the main offender on mobile, so we tighten its
+     header (let it scroll horizontally if needed) and shrink the code
+     padding + font so source lines fit without giant scroll overhang. */
+  .method-section { padding: 32px 16px; }
+  .method { padding: 22px 18px 20px; gap: 22px; }
+  .method__copy h2 { font-size: 26px; margin-bottom: 14px; }
+  .method__copy p { font-size: 14px; line-height: 1.6; }
+  .peak-callout { padding: 14px 14px; gap: 12px; }
+  .peak-callout .peak-num { font-size: 26px; }
+  .peak-callout .peak-text { font-size: 12.5px; }
+  .code-card__head {
+    padding: 0 10px 0 12px;
+    gap: 10px;
+    min-height: 36px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+  }
+  .code-card__head::-webkit-scrollbar { display: none; }
+  .code-card__dots { display: none; }
+  .code-tabs { margin-left: 0; }
+  .code-tab { padding: 10px 10px 8px; font-size: 11px; white-space: nowrap; }
+  .code-card pre.code-block { padding: 16px 14px; font-size: 11.5px; line-height: 1.55; }
+
+  /* Findings / correlations: tighten the key card and the bar grids so
+     "% booked" never collides with the bar track on a phone. */
+  .corr-key { padding: 18px 18px 16px; }
+  .corr-key__row { grid-template-columns: 96px 1fr; gap: 12px; font-size: 12.5px; }
+  .corr-section { padding-bottom: 56px; }
+  .corr { padding: 20px 18px 18px; }
+  .corr h3 { font-size: 16px; gap: 8px; }
+  .corr .reason { font-size: 12.5px; }
+  .corr-bar { grid-template-columns: 96px minmax(0, 1fr) 86px; gap: 10px; font-size: 12px; }
+  .corr-bar__pct { font-size: 12px; }
+  .corr-bar__n { font-size: 10.5px; }
 }
 @media (max-width: 560px) {
-  .corr-bar { grid-template-columns: 110px minmax(0, 1fr) 50px; }
+  .corr-bar { grid-template-columns: 92px minmax(0, 1fr) 84px; gap: 8px; }
   .hero h1 { font-size: 36px; }
   .hero .lede { font-size: 17px; }
   .stats-card { padding: 22px; }
@@ -1456,4 +1493,13 @@ footer a:hover { color: var(--accent); text-decoration-color: var(--accent); }
   .modal__panel { max-height: calc(100vh - 24px); }
   .modal__figure { max-height: 50vh; }
   .modal__figure img { max-height: 50vh; }
+}
+@media (max-width: 420px) {
+  .method__copy h2 { font-size: 24px; }
+  .code-tab { padding: 9px 8px 7px; font-size: 10.5px; }
+  .code-card pre.code-block { padding: 14px 12px; font-size: 10.5px; }
+  .corr-bar { grid-template-columns: 84px minmax(0, 1fr) 78px; gap: 8px; font-size: 11.5px; }
+  .corr-bar .label { font-size: 11.5px; }
+  .corr-bar__pct { font-size: 11.5px; }
+  .corr-key__row { grid-template-columns: 84px 1fr; gap: 10px; }
 }
