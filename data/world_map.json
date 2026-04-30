@@ -1,6 +1,6 @@
 {
   "title": "Every flagged Airbnb in the demo, on a Leaflet map",
-  "n": 168,
+  "n": 158,
   "points": [
     {
       "type": "worst_tv_placements",
@@ -592,24 +592,10 @@
     },
     {
       "type": "drug_den_vibes",
-      "lat": 48.86588020000001,
-      "lng": 2.3516334,
-      "listing_id": "947194907630778612",
-      "listing_url": "https://www.airbnb.com/rooms/947194907630778612"
-    },
-    {
-      "type": "drug_den_vibes",
       "lat": 41.0322915,
       "lng": 28.9816115,
       "listing_id": "1027630050827672737",
       "listing_url": "https://www.airbnb.com/rooms/1027630050827672737"
-    },
-    {
-      "type": "drug_den_vibes",
-      "lat": 40.74859,
-      "lng": -73.89214,
-      "listing_id": "4525589",
-      "listing_url": "https://www.airbnb.com/rooms/4525589"
     },
     {
       "type": "drug_den_vibes",
@@ -669,13 +655,6 @@
     },
     {
       "type": "drug_den_vibes",
-      "lat": 40.40761,
-      "lng": -3.73756,
-      "listing_id": "31315134",
-      "listing_url": "https://www.airbnb.com/rooms/31315134"
-    },
-    {
-      "type": "drug_den_vibes",
       "lat": 48.83866,
       "lng": 2.28573,
       "listing_id": "1215884540358188789",
@@ -690,24 +669,10 @@
     },
     {
       "type": "drug_den_vibes",
-      "lat": -34.61389,
-      "lng": -58.49554,
-      "listing_id": "33520950",
-      "listing_url": "https://www.airbnb.com/rooms/33520950"
-    },
-    {
-      "type": "drug_den_vibes",
       "lat": 52.48606,
       "lng": 13.43106,
       "listing_id": "37289543",
       "listing_url": "https://www.airbnb.com/rooms/37289543"
-    },
-    {
-      "type": "drug_den_vibes",
-      "lat": 45.75574,
-      "lng": 4.85,
-      "listing_id": "6910875",
-      "listing_url": "https://www.airbnb.com/rooms/6910875"
     },
     {
       "type": "drug_den_vibes",
@@ -736,13 +701,6 @@
       "lng": 103.84181,
       "listing_id": "18646333",
       "listing_url": "https://www.airbnb.com/rooms/18646333"
-    },
-    {
-      "type": "drug_den_vibes",
-      "lat": 40.78069,
-      "lng": -73.95089,
-      "listing_id": "2127382",
-      "listing_url": "https://www.airbnb.com/rooms/2127382"
     },
     {
       "type": "drug_den_vibes",
@@ -792,34 +750,6 @@
       "lng": -0.04754,
       "listing_id": "21226952",
       "listing_url": "https://www.airbnb.com/rooms/21226952"
-    },
-    {
-      "type": "drug_den_vibes",
-      "lat": 34.10101,
-      "lng": -118.34295,
-      "listing_id": "7987503",
-      "listing_url": "https://www.airbnb.com/rooms/7987503"
-    },
-    {
-      "type": "drug_den_vibes",
-      "lat": 40.72869,
-      "lng": -73.9839,
-      "listing_id": "20651206",
-      "listing_url": "https://www.airbnb.com/rooms/20651206"
-    },
-    {
-      "type": "drug_den_vibes",
-      "lat": 41.00259411992605,
-      "lng": 28.931476213037964,
-      "listing_id": "835607212684713795",
-      "listing_url": "https://www.airbnb.com/rooms/835607212684713795"
-    },
-    {
-      "type": "drug_den_vibes",
-      "lat": 48.86927,
-      "lng": 2.3535,
-      "listing_id": "4335903",
-      "listing_url": "https://www.airbnb.com/rooms/4335903"
     },
     {
       "type": "drug_den_vibes",

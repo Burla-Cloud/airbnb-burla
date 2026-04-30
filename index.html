@@ -16,7 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<link rel="stylesheet" href="style.css?v=35" />
+<link rel="stylesheet" href="style.css?v=37" />
 </head>
 <body>
 
@@ -231,6 +231,7 @@
       <p style="margin-top: 24px;">
         Full writeup is on
         <a href="https://github.com/Burla-Cloud/airbnb-burla/blob/main/WRITEUP.md" target="_blank" rel="noopener">GitHub</a>.
+        <br />
         Burla docs are at <a href="https://docs.burla.dev" target="_blank" rel="noopener">docs.burla.dev</a>.
       </p>
     </div>
@@ -242,7 +243,7 @@
           <button type="button" class="code-tab is-active" role="tab"
                   aria-selected="true" data-tab="score">score_photos.py</button>
           <button type="button" class="code-tab" role="tab"
-                  aria-selected="false" data-tab="encode">encode_batch.py</button>
+                  aria-selected="false" data-tab="encode">embed_reviews.py</button>
           <button type="button" class="code-tab" role="tab"
                   aria-selected="false" data-tab="haiku">haiku_validate.py</button>
         </div>
@@ -267,28 +268,30 @@ remote_parallel_map(
     max_parallelism=<span class="n">1000</span>,   <span class="c"># 1k concurrent at peak</span>
     grow=<span class="n">True</span>,
 )</pre>
-      <pre class="code-block" data-pane="encode"><span class="c"># Inside score_batch: the actual CLIP encode loop.</span>
-<span class="k">import</span> io, torch
-<span class="k">from</span> PIL <span class="k">import</span> Image
+      <pre class="code-block" data-pane="encode"><span class="c"># s04 tier 2: embed top 200K reviews with SBERT,</span>
+<span class="c"># one parquet shard per worker on ./shared.</span>
+<span class="k">from</span> burla <span class="k">import</span> remote_parallel_map
 
-PROMPTS = [
-    <span class="s">"a TV mounted high above a fireplace"</span>,
-    <span class="s">"a chaotic kitchen with dishes piled up"</span>,
-    <span class="s">"a real cat or dog visible in the photo"</span>,
-    <span class="s">"a dingy room with drug-den vibes"</span>,
-]
+<span class="k">def</span> <span class="f">embed_batch</span>(args):
+    <span class="k">from</span> sentence_transformers <span class="k">import</span> SentenceTransformer
+    model = SentenceTransformer(
+        <span class="s">"all-MiniLM-L6-v2"</span>,
+        cache_folder=<span class="s">"./shared/sbert"</span>,
+    )
+    rows = read_slice(
+        args.input_path, args.row_start, args.row_end,
+    )
+    vecs = model.encode(
+        rows[<span class="s">"comments"</span>].tolist(), batch_size=<span class="n">128</span>,
+    )
+    write_shard(args.output_root, rows, vecs)
+    <span class="k">return</span> {<span class="s">"n_ok"</span>: len(rows)}
 
-<span class="k">def</span> <span class="f">encode_batch</span>(image_bytes):
-    pixels = torch.stack([
-        prep(Image.open(io.BytesIO(b)).convert(<span class="s">"RGB"</span>))
-        <span class="k">for</span> b <span class="k">in</span> image_bytes
-    ]).to(device)
-    <span class="k">with</span> torch.no_grad(), torch.cuda.amp.autocast():
-        img = model.encode_image(pixels)
-        img = img / img.norm(dim=-<span class="n">1</span>, keepdim=<span class="n">True</span>)
-        txt = model.encode_text(tokenizer(PROMPTS).to(device))
-        txt = txt / txt.norm(dim=-<span class="n">1</span>, keepdim=<span class="n">True</span>)
-    <span class="k">return</span> (img @ txt.T).cpu().numpy()  <span class="c"># (B, P) sims</span></pre>
+remote_parallel_map(
+    embed_batch, embed_args,
+    func_cpu=<span class="n">2</span>, func_ram=<span class="n">8</span>, max_parallelism=<span class="n">200</span>,
+    grow=<span class="n">True</span>,
+)</pre>
       <pre class="code-block" data-pane="haiku"><span class="c"># s05c: Haiku Vision double-checks the CLIP</span>
 <span class="c"># shortlists. Rate-limited at 64 workers.</span>
 <span class="k">from</span> burla <span class="k">import</span> remote_parallel_map
@@ -384,6 +387,6 @@ remote_parallel_map(
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="app.js?v=35" defer></script>
+<script src="app.js?v=37" defer></script>
 </body>
 </html>
