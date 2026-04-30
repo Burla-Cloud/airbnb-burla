@@ -797,7 +797,8 @@ section {
   border-radius: var(--radius-xl);
   padding: 56px 56px 48px;
   display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  /* Slightly more weight on the code side so each snippet has room. */
+  grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
   gap: 56px;
   align-items: stretch;
 }
