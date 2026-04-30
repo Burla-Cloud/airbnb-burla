@@ -31,10 +31,6 @@ const HYPOTHESIS_META = {
   messiness_quartile: {
     title: "Messier photos vs demand",
     buckets: { q1: "Tidiest", q2: "Q2", q3: "Q3", q4: "Messiest" },
-    // The data really does show q4 (CLIP-messiest) at ~55% calendar
-    // unavailable vs q1 (tidiest) at ~39%. But this is more likely a
-    // confound than a "messy = attractive" finding, so we flag it.
-    note: "Caveat: occupancy_365 counts every blocked or booked night. CLIP's \"messy\" score also picks up dense, lived-in stock photos and budget/dorm-style listings, both of which tend to be calendar-blocked or fully booked. So this is more likely a methodology artifact than a real preference signal.",
   },
   plant_count_bucket: {
     title: "More houseplants vs demand",
