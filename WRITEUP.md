@@ -53,10 +53,12 @@ Each stage is a small script that calls `remote_parallel_map` once or
 twice and merges Parquet shards on `/workspace/shared`.
 
 ```
-00 validate -> 01 listings + calendars -> 02a scrape extra photos ->
-02b CLIP score -> 04 reviews 3-tier -> 05 correlate ->
-05b Haiku review rerank -> 05c Haiku Vision photo validation ->
-06 site artifacts (+ apply manual blocklist) -> 07 calendar
+s00_validate_cities          -> s01_download_listings          ->
+s02a_scrape_photo_urls       -> s02b_clip_score_photos         ->
+s04_score_reviews            -> s05_bootstrap_correlations     ->
+s05b_haiku_validate_wtf      -> s05c_haiku_validate_photos     ->
+s06_build_site_data (+ apply manual blocklist) ->
+s07_calendar_demand
 ```
 
 The unifying pattern is:
@@ -142,9 +144,10 @@ This was an iteratively-debugged run. Things that bit us:
   spread across the 119 cities and 4 snapshots.
 - **GPU image stage was broken** by a missing `libGL.so.1` in the
   worker base image, so YOLOv8 returned all-zero detections. We pivoted
-  to Claude Haiku Vision (`s05c_categories.py`) for the final TV /
-  kitchen / drug-den / pet validation. The original `s03_images_gpu`
-  stage is still wired in but its output is not consumed by the site.
+  to Claude Haiku Vision (`s05c_haiku_validate_photos.py`) for the
+  final TV / kitchen / drug-den / pet validation. The original
+  `s03_yolo_detect_photos.py` stage is still wired in but its output
+  is not consumed by the site.
 - **HuggingFace rate limits** when 200+ workers simultaneously pulled
   the SBERT model. Fixed by pre-staging.
 - **Burla "job not found" 500s** during long jobs. We added stage-level

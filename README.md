@@ -58,19 +58,22 @@ make stage06          # write site/data/*.json
 
 ## Pipeline
 
-| Stage | What | Where it runs |
+Each stage filename starts with its order in the pipeline (`s00`, `s01`,
+`s02a`, ...), followed by what it actually does.
+
+| Stage | File | What |
 |---|---|---|
-| 00 | Validate every Inside Airbnb city | local |
-| 01 | Download + clean per-city listings + calendars | Burla CPU |
-| 02a | Scrape extra photo URLs from `airbnb.com/rooms/<id>` | Burla CPU |
-| 02b | CLIP-score every photo | Burla CPU (~1.7K workers) |
-| 03 | YOLOv8 GPU stage (deprecated, kept for completeness) | Burla GPU |
-| 04 | 3-tier review scoring (heuristic + SBERT + Claude) | Burla CPU + 20 A100s for the embedding tier |
-| 05 | Bootstrap 95% CI correlations | Burla CPU |
-| 05b | Haiku rerank weirdest 12K reviews | Burla CPU (rate-limited) |
-| 05c | Haiku Vision validates CLIP shortlists for TVs / kitchens / drug-den / pets | Burla CPU (rate-limited) |
-| 06 | Build `site/data/*.json` and apply manual blocklist | local |
-| 07 | Derive `occupancy_365` (calendar occupancy demand proxy) | Burla CPU |
+| 00 | `s00_validate_cities.py` | Validate every Inside Airbnb city |
+| 01 | `s01_download_listings.py` | Download + clean per-city listings + calendars |
+| 02a | `s02a_scrape_photo_urls.py` | Scrape extra photo URLs from `airbnb.com/rooms/<id>` |
+| 02b | `s02b_clip_score_photos.py` | CLIP-score every photo (~1.7K CPU workers) |
+| 03 | `s03_yolo_detect_photos.py` | YOLOv8 GPU detection (deprecated, kept for completeness) |
+| 04 | `s04_score_reviews.py` | Score reviews: heuristic + SBERT (20 A100s) + Haiku tier-3 |
+| 05 | `s05_bootstrap_correlations.py` | Bootstrap 95% CI correlations |
+| 05b | `s05b_haiku_validate_wtf.py` | Haiku Vision validates the absurd-photo shortlist |
+| 05c | `s05c_haiku_validate_photos.py` | Haiku Vision validates TV / kitchen / drug-den / pet shortlists |
+| 06 | `s06_build_site_data.py` | Build `site/data/*.json` + apply manual blocklist |
+| 07 | `s07_calendar_demand.py` | Derive `occupancy_365` (calendar demand proxy) |
 
 ## Layout
 
