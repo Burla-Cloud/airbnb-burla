@@ -1,7 +1,7 @@
 {
   "title": "The most hectic kitchens",
   "subtitle": "Haiku Vision said this kitchen is genuinely chaotic",
-  "n": 21,
+  "n": 20,
   "items": [
     {
       "listing_id": 26078663,
@@ -31,21 +31,6 @@
       "lat": 40.60631,
       "lng": -73.99047,
       "one_line": "Kitchen exploded with bottles, clutter, and zero organization anywhere.",
-      "haiku_score": 8.0
-    },
-    {
-      "listing_id": 1252613014752249229,
-      "city": "Los Angeles",
-      "country": "United States",
-      "name": "Vacation Town House.",
-      "score": 8.0,
-      "image_url": "https://a0.muscache.com/im/pictures/hosting/Hosting-1252613014752249229/original/37abd0ca-ef4b-4b7c-8102-3c08e503fac4.jpeg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/hosting/Hosting-1252613014752249229/original/845eb8c3-46ad-4360-8aed-b0ec2618ba5a.jpeg",
-      "listing_url": "https://www.airbnb.com/rooms/1252613014752249229",
-      "demand_proxy": 0.0,
-      "lat": 34.2073350785207,
-      "lng": -118.56165323406458,
-      "one_line": "Overflowing laundry room with stacked items, overcrowded shelves everywhere.",
       "haiku_score": 8.0
     },
     {
