@@ -241,7 +241,9 @@ function paintGrid(sectionId, payload) {
 }
 
 // Module-level handle so the filter UI can re-render on input.
-const REVIEWS_PAGE_SIZE = 25;
+// 24 (8 rows × 3 columns at the wide breakpoint) means the last row is
+// always full and we never leave a single rogue card stranded.
+const REVIEWS_PAGE_SIZE = 24;
 const _reviewState = {
   all: [],
   visible: [],
