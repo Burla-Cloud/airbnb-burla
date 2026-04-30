@@ -550,7 +550,7 @@ function paintCorrelations(payload) {
     const allLow = Math.min(...buckets.map((b) => b.ci_low));
     const allHigh = Math.max(...buckets.map((b) => b.ci_high));
     const span = Math.max(1e-6, allHigh - allLow);
-    const fmtPct = (frac) => `${Math.round(frac * 100)}% booked`;
+    const fmtPct = (frac) => `${Math.round(frac * 100)}%`;
     const bars = buckets.map((b) => {
       const left = ((b.ci_low - allLow) / span) * 100;
       const width = ((b.ci_high - b.ci_low) / span) * 100;
@@ -562,7 +562,10 @@ function paintCorrelations(payload) {
             <span class="ci-fill" style="left:${left}%; width:${Math.max(width, 0.5)}%"></span>
             <span class="ci-median" style="left:${med}%"></span>
           </span>
-          <span class="n">n=${fmt(b.n)}</span>
+          <span class="corr-bar__stats">
+            <span class="corr-bar__pct">${fmtPct(b.median)} booked</span>
+            <span class="corr-bar__n">n=${fmt(b.n)}</span>
+          </span>
         </div>
       `;
     }).join("");
@@ -573,17 +576,8 @@ function paintCorrelations(payload) {
         <span>${escapeHTML(title)}</span>
         <span class="verdict ${h.verdict}">${verdictLabel}</span>
       </h3>
-      <p class="corr-demand-key">Bar position = how booked the next 365 nights are. Further right means more booked.</p>
+      <p class="corr-demand-key">% booked = median calendar occupancy over the next 365 nights for that group. Further right on the bar means more booked.</p>
       <div class="corr-bars">${bars}</div>
-      <div class="corr-axis" aria-hidden="true">
-        <span class="corr-axis__pad"></span>
-        <span class="corr-axis__track">
-          <span class="corr-axis__low">${escapeHTML(fmtPct(allLow))}</span>
-          <span class="corr-axis__arrow">more booked &rarr;</span>
-          <span class="corr-axis__high">${escapeHTML(fmtPct(allHigh))}</span>
-        </span>
-        <span class="corr-axis__pad-right"></span>
-      </div>
       ${note}
     `;
     root.appendChild(block);

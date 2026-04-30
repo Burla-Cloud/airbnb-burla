@@ -1,23 +1,8 @@
 {
   "title": "Listings with drug-den vibes",
   "subtitle": "Haiku Vision said this room gives unmistakable did-someone-just-leave energy",
-  "n": 34,
+  "n": 24,
   "items": [
-    {
-      "listing_id": 947194907630778612,
-      "city": "Paris",
-      "country": "France",
-      "name": "Chambre privée",
-      "score": 8.0,
-      "image_url": "https://a0.muscache.com/pictures/miso/Hosting-947194907630778612/original/5ebf027b-aae4-4aeb-a330-15bf7116be61.jpeg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/miso/Hosting-947194907630778612/original/5ebf027b-aae4-4aeb-a330-15bf7116be61.jpeg",
-      "listing_url": "https://www.airbnb.com/rooms/947194907630778612",
-      "demand_proxy": 0.9972602739726028,
-      "lat": 48.86588020000001,
-      "lng": 2.3516334,
-      "one_line": "Cramped attic room with clothes piles, dim fluorescent lighting, sketchy vibes.",
-      "haiku_score": 8.0
-    },
     {
       "listing_id": 1027630050827672737,
       "city": "Istanbul",
@@ -31,21 +16,6 @@
       "lat": 41.0322915,
       "lng": 28.9816115,
       "one_line": "Dark basement storage room with exposed wiring and grime.",
-      "haiku_score": 8.0
-    },
-    {
-      "listing_id": 4525589,
-      "city": "New York City",
-      "country": "United States",
-      "name": "Spacious studio apt in Jackson Hts",
-      "score": 8.0,
-      "image_url": "https://a0.muscache.com/pictures/56824016/1f1d5f76_original.jpg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/56824016/1f1d5f76_original.jpg",
-      "listing_url": "https://www.airbnb.com/rooms/4525589",
-      "demand_proxy": 1.0,
-      "lat": 40.74859,
-      "lng": -73.89214,
-      "one_line": "Piles of clothes everywhere, bare bulb, chaotic hoarder energy.",
       "haiku_score": 8.0
     },
     {
@@ -169,21 +139,6 @@
       "haiku_score": 8.0
     },
     {
-      "listing_id": 31315134,
-      "city": "Madrid",
-      "country": "Spain",
-      "name": "Habitación privada alto Extremadura",
-      "score": 8.0,
-      "image_url": "https://a0.muscache.com/pictures/bf9f8e88-25b7-42c5-99ca-7a911f181a88.jpg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/bf9f8e88-25b7-42c5-99ca-7a911f181a88.jpg",
-      "listing_url": "https://www.airbnb.com/rooms/31315134",
-      "demand_proxy": 1.0,
-      "lat": 40.40761,
-      "lng": -3.73756,
-      "one_line": "Clothes everywhere, bare bulb, sketchy setup screams chaos.",
-      "haiku_score": 8.0
-    },
-    {
       "listing_id": 1215884540358188789,
       "city": "Paris",
       "country": "France",
@@ -214,21 +169,6 @@
       "haiku_score": 8.0
     },
     {
-      "listing_id": 33520950,
-      "city": "Buenos Aires",
-      "country": "Argentina",
-      "name": "single habitacion en villa del Parque",
-      "score": 8.0,
-      "image_url": "https://a0.muscache.com/pictures/0afdbc1c-8a18-499d-800f-20ef11d88bf6.jpg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/0afdbc1c-8a18-499d-800f-20ef11d88bf6.jpg",
-      "listing_url": "https://www.airbnb.com/rooms/33520950",
-      "demand_proxy": 0.7534246575342466,
-      "lat": -34.61389,
-      "lng": -58.49554,
-      "one_line": "Unsettling bedroom drowning in intense neon pink lighting.",
-      "haiku_score": 8.0
-    },
-    {
       "listing_id": 37289543,
       "city": "Berlin",
       "country": "Germany",
@@ -241,21 +181,6 @@
       "lat": 52.48606,
       "lng": 13.43106,
       "one_line": "Entire apartment bathed in unsettling red neon glow.",
-      "haiku_score": 8.0
-    },
-    {
-      "listing_id": 6910875,
-      "city": "Lyon",
-      "country": "France",
-      "name": "Appartement agréable",
-      "score": 8.0,
-      "image_url": "https://a0.muscache.com/pictures/87509930/96f1a927_original.jpg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/87509930/96f1a927_original.jpg",
-      "listing_url": "https://www.airbnb.com/rooms/6910875",
-      "demand_proxy": 1.0,
-      "lat": 45.75574,
-      "lng": 4.85,
-      "one_line": "Bare walls, exposed wiring, dark wooden floors, minimal decor, sketchy.",
       "haiku_score": 8.0
     },
     {
@@ -316,21 +241,6 @@
       "lat": 1.2746,
       "lng": 103.84181,
       "one_line": "Exposed wiring, bare bulbs, tangled cords, deeply unsettling vibes.",
-      "haiku_score": 8.0
-    },
-    {
-      "listing_id": 2127382,
-      "city": "New York City",
-      "country": "United States",
-      "name": "Upper East Side apt for Super Bowl",
-      "score": 8.0,
-      "image_url": "https://a0.muscache.com/pictures/28961045/64ea4252_original.jpg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/28961045/64ea4252_original.jpg",
-      "listing_url": "https://www.airbnb.com/rooms/2127382",
-      "demand_proxy": 1.0,
-      "lat": 40.78069,
-      "lng": -73.95089,
-      "one_line": "Dim bedroom with scattered clothes and sketchy atmosphere overall.",
       "haiku_score": 8.0
     },
     {
@@ -436,66 +346,6 @@
       "lat": 51.53726,
       "lng": -0.04754,
       "one_line": "Dim room with bare bulbs, sketchy ambiance, unmade bed.",
-      "haiku_score": 7.0
-    },
-    {
-      "listing_id": 7987503,
-      "city": "Los Angeles",
-      "country": "United States",
-      "name": "Hollywood furnished master bedroom",
-      "score": 7.0,
-      "image_url": "https://a0.muscache.com/pictures/101791806/8eaf4ef7_original.jpg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/101791806/8eaf4ef7_original.jpg",
-      "listing_url": "https://www.airbnb.com/rooms/7987503",
-      "demand_proxy": 1.0,
-      "lat": 34.10101,
-      "lng": -118.34295,
-      "one_line": "Dim bedroom with exposed cords, cheap furniture, unsettling atmosphere.",
-      "haiku_score": 7.0
-    },
-    {
-      "listing_id": 20651206,
-      "city": "New York City",
-      "country": "United States",
-      "name": "Private bedroom in East Village",
-      "score": 7.0,
-      "image_url": "https://a0.muscache.com/pictures/1447fe74-bf5b-4d8e-9fbc-5021b3685ebc.jpg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/1447fe74-bf5b-4d8e-9fbc-5021b3685ebc.jpg",
-      "listing_url": "https://www.airbnb.com/rooms/20651206",
-      "demand_proxy": 1.0,
-      "lat": 40.72869,
-      "lng": -73.9839,
-      "one_line": "Bottle on floor, window clutter, unwashed vibes throughout.",
-      "haiku_score": 7.0
-    },
-    {
-      "listing_id": 835607212684713795,
-      "city": "Istanbul",
-      "country": "Turkey",
-      "name": "1 oda 1 salon temiz yüksek giriş",
-      "score": 7.0,
-      "image_url": "https://a0.muscache.com/pictures/8fa8a9f2-df20-4b71-ba7b-fc681bbf3a04.jpg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/8fa8a9f2-df20-4b71-ba7b-fc681bbf3a04.jpg",
-      "listing_url": "https://www.airbnb.com/rooms/835607212684713795",
-      "demand_proxy": 0.0,
-      "lat": 41.00259411992605,
-      "lng": 28.931476213037964,
-      "one_line": "Dark hallway with scattered shoes, dim lighting, sketchy.",
-      "haiku_score": 7.0
-    },
-    {
-      "listing_id": 4335903,
-      "city": "Paris",
-      "country": "France",
-      "name": "Luminus Studio (25m2) in the 10ème",
-      "score": 7.0,
-      "image_url": "https://a0.muscache.com/pictures/54460460/4b5cbc2a_original.jpg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/54460460/4b5cbc2a_original.jpg",
-      "listing_url": "https://www.airbnb.com/rooms/4335903",
-      "demand_proxy": 1.0,
-      "lat": 48.86927,
-      "lng": 2.3535,
-      "one_line": "Sparse room, broken blinds, dim lighting, unsettling vibe.",
       "haiku_score": 7.0
     },
     {

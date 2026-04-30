@@ -112,6 +112,56 @@
       "name": "Room in Williamsburg Duplex"
     },
     {
+      "section": "drug_den_vibes",
+      "city": "Paris",
+      "name": "Chambre privée"
+    },
+    {
+      "section": "drug_den_vibes",
+      "city": "New York City",
+      "name": "Spacious studio apt in Jackson Hts"
+    },
+    {
+      "section": "drug_den_vibes",
+      "city": "Madrid",
+      "name": "Habitación privada alto Extremadura"
+    },
+    {
+      "section": "drug_den_vibes",
+      "city": "Buenos Aires",
+      "name": "single habitacion en villa del Parque"
+    },
+    {
+      "section": "drug_den_vibes",
+      "city": "Lyon",
+      "name": "Appartement agréable"
+    },
+    {
+      "section": "drug_den_vibes",
+      "city": "New York City",
+      "name": "Upper East Side apt for Super Bowl"
+    },
+    {
+      "section": "drug_den_vibes",
+      "city": "Los Angeles",
+      "name": "Hollywood furnished master bedroom"
+    },
+    {
+      "section": "drug_den_vibes",
+      "city": "Paris",
+      "name": "Luminus Studio (25m2) in the 10ème"
+    },
+    {
+      "section": "drug_den_vibes",
+      "city": "Istanbul",
+      "name": "1 oda 1 salon temiz yüksek giriş"
+    },
+    {
+      "section": "drug_den_vibes",
+      "city": "New York City",
+      "name": "Private bedroom in East Village"
+    },
+    {
       "section": "pets_in_photos",
       "city": "London",
       "name": "nice and bright"
@@ -163,17 +213,23 @@
     }
   ],
   "by_listing_id": [
+    2127382,
     2701487,
+    4335903,
+    4525589,
     5147549,
     5695509,
     5931261,
+    6910875,
     6911965,
     7698619,
+    7987503,
     12324428,
     15257676,
     16914299,
     19114872,
     19250621,
+    20651206,
     20880300,
     20921518,
     21230538,
@@ -181,12 +237,16 @@
     22884053,
     24935620,
     29739020,
+    31315134,
+    33520950,
     36258404,
     36400986,
     53584501,
+    835607212684713795,
     931551865890022546,
     935336064341840362,
     945039581908566050,
+    947194907630778612,
     1039637716292079820,
     1158368227593729569,
     1413144121208834230,
