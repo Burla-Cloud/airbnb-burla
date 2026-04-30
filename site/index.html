@@ -51,7 +51,7 @@
     weirdest 12K with Haiku.     Everything was parallelized on
     <a href="https://docs.burla.dev" target="_blank" rel="noopener">Burla</a>,
     on a single dynamic cluster that scaled to ~1.7K CPU workers for photo
-    download and CLIP, with a small GPU pool running embedding clusters in
+    download and CLIP, with 20 A100 GPUs running embedding clusters in
     parallel on the same cluster.
   </p>
 
@@ -214,17 +214,17 @@
       </p>
       <p>
         For this run a single dynamic cluster scaled CPU workers up to ~1.7K
-        for photo download and CLIP scoring, and the same cluster ran a small
-        GPU pool for embedding-cluster work, in parallel with the CPU jobs.
-        Claude Haiku validation ran rate-limited on top.
+        for photo download and CLIP scoring, and the same cluster ran
+        20 A100 GPUs for embedding-cluster work, in parallel with the CPU
+        jobs. Claude Haiku validation ran rate-limited on top.
       </p>
 
       <div class="peak-callout">
         <span class="peak-num" data-stat="peak_workers">--</span>
         <span class="peak-text">
           <strong>concurrent workers</strong> at peak across photo download,
-          CLIP scoring, and review tier-1. GPU work ran on a smaller fleet
-          on the same cluster, while CPU jobs kept going.
+          CLIP scoring, and review tier-1. 20 A100 GPUs ran in parallel on
+          the same cluster, while CPU jobs kept going.
         </span>
       </div>
 
