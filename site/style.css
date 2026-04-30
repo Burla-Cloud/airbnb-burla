@@ -235,7 +235,7 @@ button { font-family: inherit; }
 
 /* ---------------- Sections ---------------- */
 section {
-  padding: 64px 32px;
+  padding: 48px 32px;
   max-width: var(--max);
   margin: 0 auto;
 }
@@ -243,7 +243,7 @@ section {
   background: var(--bg-2);
   margin: 0;
   max-width: none;
-  padding: 64px 0;
+  padding: 48px 0;
 }
 .alt-bg > .alt-inner {
   max-width: var(--max);
@@ -251,7 +251,7 @@ section {
   padding: 0 32px;
 }
 .section__head {
-  margin-bottom: 32px;
+  margin-bottom: 22px;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -378,7 +378,7 @@ section {
 .legend-reset:hover { color: var(--ink); }
 
 /* ---------------- Photo grids (Airbnb listing card feel) ---------------- */
-.grid-section { padding-top: 64px; padding-bottom: 64px; }
+.grid-section { padding-top: 48px; padding-bottom: 48px; }
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -495,7 +495,7 @@ section {
 }
 
 /* ---------------- Reviews ---------------- */
-.cards-section { padding-top: 64px; padding-bottom: 64px; }
+.cards-section { padding-top: 48px; padding-bottom: 48px; }
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
@@ -788,14 +788,14 @@ section {
 
 /* ---------------- Method / "How it ran" ---------------- */
 .method-section {
-  padding-top: 80px;
-  padding-bottom: 80px;
+  padding-top: 56px;
+  padding-bottom: 56px;
 }
 .method {
   background: var(--bg-ink);
   color: #ECECEE;
   border-radius: var(--radius-xl);
-  padding: 56px 56px 48px;
+  padding: 40px 44px 36px;
   display: grid;
   /* Slightly more weight on the code side so each snippet has room. */
   grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
@@ -965,7 +965,7 @@ section {
 .code-card .f { color: #88B6FF; font-weight: 600; }
 
 /* ---------------- Correlations ---------------- */
-.corr-section { padding-bottom: 96px; }
+.corr-section { padding-bottom: 72px; }
 .corr-section .section__head,
 .corr-section .corr-key,
 .corr-section #corr-list {
@@ -1495,8 +1495,8 @@ footer a:hover { color: var(--accent); text-decoration-color: var(--accent); }
   .footer__inner { padding: 24px 20px; }
   .corr-bar { grid-template-columns: 110px minmax(0, 1fr) 50px; gap: 10px; font-size: 12.5px; }
   .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 22px 14px; }
-  .method-section { padding: 56px 20px; }
-  .method { padding: 32px 24px; }
+  .method-section { padding: 40px 20px; }
+  .method { padding: 28px 22px; }
   .modal__caption { padding: 18px 22px; }
   .modal__caption-top { flex-direction: column; align-items: stretch; }
   .modal__cta { width: 100%; justify-content: center; }
