@@ -1,6 +1,6 @@
 {
   "title": "Every flagged Airbnb in the demo, on a Leaflet map",
-  "n": 158,
+  "n": 150,
   "points": [
     {
       "type": "worst_tv_placements",
@@ -389,13 +389,6 @@
     },
     {
       "type": "hectic_kitchens",
-      "lat": 40.7648,
-      "lng": -73.99522,
-      "listing_id": "13240737",
-      "listing_url": "https://www.airbnb.com/rooms/13240737"
-    },
-    {
-      "type": "hectic_kitchens",
       "lat": 52.49771,
       "lng": 13.46385,
       "listing_id": "26078663",
@@ -438,24 +431,10 @@
     },
     {
       "type": "hectic_kitchens",
-      "lat": 52.67276,
-      "lng": -6.29511,
-      "listing_id": "39505719",
-      "listing_url": "https://www.airbnb.com/rooms/39505719"
-    },
-    {
-      "type": "hectic_kitchens",
       "lat": 25.01578216066733,
       "lng": 121.52557927663824,
       "listing_id": "1297828692765091206",
       "listing_url": "https://www.airbnb.com/rooms/1297828692765091206"
-    },
-    {
-      "type": "hectic_kitchens",
-      "lat": 52.47793,
-      "lng": 13.42184,
-      "listing_id": "35039182",
-      "listing_url": "https://www.airbnb.com/rooms/35039182"
     },
     {
       "type": "hectic_kitchens",
@@ -494,13 +473,6 @@
     },
     {
       "type": "hectic_kitchens",
-      "lat": 18.13561,
-      "lng": -88.24701,
-      "listing_id": "34624525",
-      "listing_url": "https://www.airbnb.com/rooms/34624525"
-    },
-    {
-      "type": "hectic_kitchens",
       "lat": 40.75597,
       "lng": -73.99619,
       "listing_id": "5568524",
@@ -536,13 +508,6 @@
     },
     {
       "type": "hectic_kitchens",
-      "lat": 41.03491,
-      "lng": 28.69089,
-      "listing_id": "1149999062963058463",
-      "listing_url": "https://www.airbnb.com/rooms/1149999062963058463"
-    },
-    {
-      "type": "hectic_kitchens",
       "lat": 40.73255,
       "lng": -73.98234,
       "listing_id": "16071397",
@@ -550,24 +515,10 @@
     },
     {
       "type": "hectic_kitchens",
-      "lat": 51.54559,
-      "lng": -0.04478,
-      "listing_id": "19750901",
-      "listing_url": "https://www.airbnb.com/rooms/19750901"
-    },
-    {
-      "type": "hectic_kitchens",
       "lat": -34.60115,
       "lng": -58.39888,
       "listing_id": "11505979",
       "listing_url": "https://www.airbnb.com/rooms/11505979"
-    },
-    {
-      "type": "hectic_kitchens",
-      "lat": 51.47119,
-      "lng": -0.1132,
-      "listing_id": "8026966",
-      "listing_url": "https://www.airbnb.com/rooms/8026966"
     },
     {
       "type": "hectic_kitchens",
@@ -582,13 +533,6 @@
       "lng": -73.99401,
       "listing_id": "189135",
       "listing_url": "https://www.airbnb.com/rooms/189135"
-    },
-    {
-      "type": "hectic_kitchens",
-      "lat": 45.48212,
-      "lng": 9.20569,
-      "listing_id": "786441",
-      "listing_url": "https://www.airbnb.com/rooms/786441"
     },
     {
       "type": "drug_den_vibes",

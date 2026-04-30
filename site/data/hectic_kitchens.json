@@ -1,23 +1,8 @@
 {
   "title": "The most hectic kitchens",
   "subtitle": "Haiku Vision said this kitchen is genuinely chaotic",
-  "n": 29,
+  "n": 21,
   "items": [
-    {
-      "listing_id": 13240737,
-      "city": "New York City",
-      "country": "United States",
-      "name": "Times Square / Broadway Area - Midtown Manhattan",
-      "score": 8.0,
-      "image_url": "https://a0.muscache.com/pictures/02193a83-5af7-4d70-934f-4e275f82efe3.jpg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/02193a83-5af7-4d70-934f-4e275f82efe3.jpg",
-      "listing_url": "https://www.airbnb.com/rooms/13240737",
-      "demand_proxy": 1.0,
-      "lat": 40.7648,
-      "lng": -73.99522,
-      "one_line": "Kitchen covered in pans, sketchy setup, very chaotic vibes",
-      "haiku_score": 8.0
-    },
     {
       "listing_id": 26078663,
       "city": "Berlin",
@@ -109,21 +94,6 @@
       "haiku_score": 8.0
     },
     {
-      "listing_id": 39505719,
-      "city": "ireland",
-      "country": "Ireland",
-      "name": "Superb Ensuite Bedroom IN Gorey",
-      "score": 8.0,
-      "image_url": "https://a0.muscache.com/pictures/e216b520-d48e-4679-8a38-f55eaaab8531.jpg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/e216b520-d48e-4679-8a38-f55eaaab8531.jpg",
-      "listing_url": "https://www.airbnb.com/rooms/39505719",
-      "demand_proxy": 0.9561643835616438,
-      "lat": 52.67276,
-      "lng": -6.29511,
-      "one_line": "Cluttered counters, appliances stacked everywhere, definitely hectic.",
-      "haiku_score": 8.0
-    },
-    {
       "listing_id": 1297828692765091206,
       "city": "Taipei",
       "country": "Taiwan",
@@ -136,21 +106,6 @@
       "lat": 25.01578216066733,
       "lng": 121.52557927663824,
       "one_line": "Kitchen explosion: laundry, TV, clutter everywhere.",
-      "haiku_score": 8.0
-    },
-    {
-      "listing_id": 35039182,
-      "city": "Berlin",
-      "country": "Germany",
-      "name": "Large room with double bed in Neukölln",
-      "score": 8.0,
-      "image_url": "https://a0.muscache.com/pictures/15ba7f8a-d970-4e53-bb30-0eeca2190872.jpg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/15ba7f8a-d970-4e53-bb30-0eeca2190872.jpg",
-      "listing_url": "https://www.airbnb.com/rooms/35039182",
-      "demand_proxy": 1.0,
-      "lat": 52.47793,
-      "lng": 13.42184,
-      "one_line": "Kitchen crammed with clutter, stuff everywhere, genuinely chaotic space.",
       "haiku_score": 8.0
     },
     {
@@ -229,21 +184,6 @@
       "haiku_score": 7.0
     },
     {
-      "listing_id": 34624525,
-      "city": "Belize",
-      "country": "Belize",
-      "name": "es una aldea trankila con jente linda",
-      "score": 7.0,
-      "image_url": "https://a0.muscache.com/pictures/bf86e5a1-1a6a-4b8e-a4c5-78fa86997758.jpg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/bf86e5a1-1a6a-4b8e-a4c5-78fa86997758.jpg",
-      "listing_url": "https://www.airbnb.com/rooms/34624525",
-      "demand_proxy": 1.0,
-      "lat": 18.13561,
-      "lng": -88.24701,
-      "one_line": "Kitchen chaos with clutter everywhere and dishes piled high.",
-      "haiku_score": 7.0
-    },
-    {
       "listing_id": 5568524,
       "city": "New York City",
       "country": "United States",
@@ -319,21 +259,6 @@
       "haiku_score": 7.0
     },
     {
-      "listing_id": 1149999062963058463,
-      "city": "Istanbul",
-      "country": "Turkey",
-      "name": "Evimin bir odasını açıyorum",
-      "score": 7.0,
-      "image_url": "https://a0.muscache.com/pictures/hosting/Hosting-1149999062963058463/original/cbdb1fd6-c25c-46df-a298-1fbd51e95d38.jpeg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/hosting/Hosting-1149999062963058463/original/cbdb1fd6-c25c-46df-a298-1fbd51e95d38.jpeg",
-      "listing_url": "https://www.airbnb.com/rooms/1149999062963058463",
-      "demand_proxy": 0.263013698630137,
-      "lat": 41.03491,
-      "lng": 28.69089,
-      "one_line": "Cluttered kitchen counter with scattered food items and personal effects.",
-      "haiku_score": 7.0
-    },
-    {
       "listing_id": 16071397,
       "city": "New York City",
       "country": "United States",
@@ -349,21 +274,6 @@
       "haiku_score": 7.0
     },
     {
-      "listing_id": 19750901,
-      "city": "London",
-      "country": "United Kingdom",
-      "name": "HACKNEY CENTRAL, HOMERTON & VICTORIA PARK AREAS",
-      "score": 7.0,
-      "image_url": "https://a0.muscache.com/pictures/93dbae95-08fc-49e4-9ce6-3e1b6d98b492.jpg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/93dbae95-08fc-49e4-9ce6-3e1b6d98b492.jpg",
-      "listing_url": "https://www.airbnb.com/rooms/19750901",
-      "demand_proxy": 1.0,
-      "lat": 51.54559,
-      "lng": -0.04478,
-      "one_line": "Kitchen covered in clutter, notes, and disorganized countertops.",
-      "haiku_score": 7.0
-    },
-    {
       "listing_id": 11505979,
       "city": "Buenos Aires",
       "country": "Argentina",
@@ -376,21 +286,6 @@
       "lat": -34.60115,
       "lng": -58.39888,
       "one_line": "Eclectic kitchen covered in papers, art, and visual chaos.",
-      "haiku_score": 7.0
-    },
-    {
-      "listing_id": 8026966,
-      "city": "London",
-      "country": "United Kingdom",
-      "name": "Cozy Single Bedroom in Stockwell",
-      "score": 7.0,
-      "image_url": "https://a0.muscache.com/pictures/102299915/56dd8aae_original.jpg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/102299915/56dd8aae_original.jpg",
-      "listing_url": "https://www.airbnb.com/rooms/8026966",
-      "demand_proxy": 1.0,
-      "lat": 51.47119,
-      "lng": -0.1132,
-      "one_line": "Cluttered counters packed with dishes, bottles, and appliances.",
       "haiku_score": 7.0
     },
     {
@@ -421,21 +316,6 @@
       "lat": 40.76263,
       "lng": -73.99401,
       "one_line": "Narrow hallway kitchen packed with collectibles everywhere.",
-      "haiku_score": 7.0
-    },
-    {
-      "listing_id": 786441,
-      "city": "Milan",
-      "country": "Italy",
-      "name": "WHITE: Center Milan Relax Apartment",
-      "score": 7.0,
-      "image_url": "https://a0.muscache.com/pictures/miso/Hosting-786441/original/52beaa94-9aaf-4ac6-b1dc-9bbbe51cb901.jpeg",
-      "thumbnail_url": "https://a0.muscache.com/pictures/miso/Hosting-786441/original/52beaa94-9aaf-4ac6-b1dc-9bbbe51cb901.jpeg",
-      "listing_url": "https://www.airbnb.com/rooms/786441",
-      "demand_proxy": 0.4,
-      "lat": 45.48212,
-      "lng": 9.20569,
-      "one_line": "Kitchen overflowing with dishes, wires, and cages everywhere.",
       "haiku_score": 7.0
     }
   ]
