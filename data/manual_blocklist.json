@@ -1,5 +1,12 @@
 {
-  "_doc": "Listings (by city + name) the human reviewer flagged as not passing visual review. s06_artifacts and any sync script should drop these from the surfaced top-K. Add new (section, city, name) tuples here; the sync script will resolve them to listing_ids and persist those too.",
+  "_doc": "Listings (by city + name) the human reviewer flagged as not passing visual review. s06_artifacts and any sync script should drop these from the surfaced top-K. Add new (section, city, name) tuples here; the sync script will resolve them to listing_ids and persist those too. `pinned_top` maps section -> ordered list of listing_ids to surface first in that section.",
+  "pinned_top": {
+    "worst_tv_placements": [
+      717227307748719708,
+      502235608092478513,
+      1229981912555665475
+    ]
+  },
   "by_city_name": [
     {
       "section": "worst_tv_placements",

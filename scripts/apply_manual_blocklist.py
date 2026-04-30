@@ -83,6 +83,41 @@ def _remove_from_section(section_id: str, entries):
     return sorted(set(removed_ids))
 
 
+def _apply_pin_top(pinned: dict[str, list[int]]) -> None:
+    """For each section, reorder items so that any listing_id present in the
+    pin list appears first, in the order given. Items not in the pin list keep
+    their existing relative order. Idempotent."""
+    for section_id, raw_ids in (pinned or {}).items():
+        ordered_ids = [int(x) for x in (raw_ids or [])]
+        if not ordered_ids:
+            continue
+        rank = {lid: i for i, lid in enumerate(ordered_ids)}
+        for path in (SITE_DATA / f"{section_id}.json",
+                      OUT_DATA / f"{section_id}.json"):
+            if not path.exists():
+                continue
+            payload = _load(path)
+            items = payload.get("items", [])
+            pinned_items = [None] * len(ordered_ids)
+            tail: list[dict] = []
+            for it in items:
+                lid = it.get("listing_id")
+                try:
+                    lid_i = int(lid) if lid is not None else None
+                except (TypeError, ValueError):
+                    lid_i = None
+                if lid_i is not None and lid_i in rank:
+                    pinned_items[rank[lid_i]] = it
+                else:
+                    tail.append(it)
+            head = [it for it in pinned_items if it is not None]
+            n_pinned = len(head)
+            payload["items"] = head + tail
+            payload["n"] = len(payload["items"])
+            _dump(path, payload)
+            print(f"[blocklist] {path.name}: pinned {n_pinned} listing(s) to top")
+
+
 def _rebuild_world_map():
     points = []
     for stype in PHOTO_SECTIONS:
@@ -158,6 +193,10 @@ def main() -> int:
     # Persist resolved ids back into the blocklist file.
     blocklist["by_listing_id"] = sorted(by_listing_id)
     _dump(BLOCKLIST_PATH, blocklist)
+
+    # Apply pinned-top reordering after we've stripped blocked items so we
+    # don't pin something we're also trying to drop.
+    _apply_pin_top(blocklist.get("pinned_top") or {})
 
     n_points = _rebuild_world_map()
     print(f"[blocklist] world_map.json rebuilt with {n_points} points")
