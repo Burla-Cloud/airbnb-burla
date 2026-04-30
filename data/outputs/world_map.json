@@ -1,6 +1,6 @@
 {
   "title": "Every flagged Airbnb in the demo, on a Leaflet map",
-  "n": 120,
+  "n": 119,
   "points": [
     {
       "type": "worst_tv_placements",
@@ -204,13 +204,6 @@
       "lng": -73.99047,
       "listing_id": "14743469",
       "listing_url": "https://www.airbnb.com/rooms/14743469"
-    },
-    {
-      "type": "hectic_kitchens",
-      "lat": 34.2073350785207,
-      "lng": -118.56165323406458,
-      "listing_id": "1252613014752249229",
-      "listing_url": "https://www.airbnb.com/rooms/1252613014752249229"
     },
     {
       "type": "hectic_kitchens",
