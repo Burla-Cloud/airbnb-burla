@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "airbnb-burla"
 version = "0.1.0"
-description = "Analyzing 3M Airbnb listings worldwide on Burla."
+description = "Every public Airbnb listing in Inside Airbnb's open dump (119 cities, 4 quarterly snapshots, 1.7M photos, 50.7M reviews), parallelized on Burla."
 requires-python = ">=3.12"
 dependencies = [
     "burla>=1.5.7",
