@@ -196,7 +196,8 @@ button { font-family: inherit; }
 }
 .stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  /* 3 per row, two rows: top row = ingested data, bottom row = compute. */
+  grid-template-columns: repeat(3, 1fr);
   gap: 28px 36px;
 }
 .stat {
