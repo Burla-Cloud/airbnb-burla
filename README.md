@@ -1,23 +1,38 @@
 # airbnb-burla
 
-Looking at every public Airbnb listing in Inside Airbnb's open data dump, all
-at once, on Burla.
-
-- 1,097,241 listings across 116 cities
-- 1,406,718 photo URLs scraped from public listing pages
-- 1,243,339 images CLIP-scored on CPU
-- 48,122 images sent through YOLOv8 for object detection
-- 50,686,612 reviews put through a 3-tier funnel ending in Claude Haiku on the
-  top 10k
-- 5 hypotheses tested with bootstrap 95% CIs
-
-10.8 hours of wall time, ~$361 of compute, 1,000 peak concurrent Burla
-workers. The whole thing is a single Python project that runs on Burla via
-`remote_parallel_map`.
+Looking at every public Airbnb listing in Inside Airbnb's open data dump,
+all at once, on Burla.
 
 Live site: https://burla-cloud.github.io/airbnb-burla/
 
-Writeup: [WRITEUP.md](./WRITEUP.md)
+## What we did
+
+Every public listing in Inside Airbnb's open dump, **119 cities, 4
+quarterly snapshots**. We CLIP-scored **1.7M photos**, took the most
+suspicious shortlists, and had **Claude Haiku Vision** double-check each
+one. We also heuristic-scored every review and reranked the weirdest 12K
+through Haiku.
+
+Everything was parallelized on **Burla** on a single dynamic cluster:
+
+- ~1.7K CPU workers for photo download and CLIP scoring
+- 20 A100 GPUs running embedding clusters in parallel on the same cluster
+- Claude Haiku validation rate-limited on top
+
+## What's on the site
+
+- **Listings with drug-den vibes** - CLIP shortlist, Haiku Vision picks
+  the photos that look less like an Airbnb and more like an opium den.
+- **Most hectic kitchens** - same funnel, kitchen edition.
+- **Real cats and dogs** - CLIP finds pet-shaped pixels, Haiku Vision
+  rejects throw pillows and rugs that just looked vaguely animal.
+- **Worst TV placements** - TVs mounted way too high, validated by Haiku.
+- **Funniest reviews** - 50.7M reviews -> regex shortlist -> 200K SBERT
+  embeddings clustered for diversity -> Haiku scores the top 12K.
+- **Findings** - four hypotheses (TV height, brightness, pet visible,
+  absurd photo) tested against 365-night calendar occupancy with
+  bootstrap 95% CIs.
+- **World map** - every flagged listing on a Leaflet map.
 
 ## Quickstart
 
@@ -30,81 +45,112 @@ cp .env.example .env
 make all
 ```
 
-Each stage is independently runnable and resume-aware (checkpoints to a shared
-`/workspace/shared` filesystem):
+Each stage is independently runnable and resume-aware (checkpointed to
+`/workspace/shared` on Burla):
 
 ```bash
-make stage00          # validate cities (Inside Airbnb has 116 cities live)
-make stage02a_sample  # 1k-listing scrape sanity check
-make stage02b_sample  # 1k-image CLIP sanity check
-make stage04          # 3-tier review scoring (50M -> 200k -> 10k)
+make stage00          # validate every Inside Airbnb city
+make stage02b_sample  # 10K-image CLIP sanity check
+make stage04          # 3-tier review scoring (50.7M -> 200K -> 12K)
+make stage05c         # Haiku Vision validates CLIP shortlists
+make stage06          # write site/data/*.json
 ```
 
 ## Pipeline
 
-| Stage | What | In | Out |
-|---|---|---|---|
-| 00 | Validate every Inside Airbnb city | (none) | `data/outputs/validation_report.json` |
-| 01 | Download + clean per-city listings | `validation_report.json` | `listings_clean.parquet` |
-| 02a | Scrape photo manifests from `airbnb.com/rooms/<id>` | `listings_clean.parquet` | `photo_manifest.parquet` |
-| 02b | CLIP-score every image (CPU) | `photo_manifest.parquet` | `images_cpu.parquet` |
-| 03 | YOLOv8 on top weird candidates (GPU) | `images_cpu.parquet` | `images_gpu.parquet` |
-| 04 | 3-tier review scoring (heuristic + embed + Claude) | per-city `reviews.csv.gz` | `reviews_scored.parquet` |
-| 05 | Correlations with bootstrap 95% CIs | all parquets | `correlations.parquet` |
-| 06 | Write site JSON artifacts | all parquets | `data/outputs/*.json` |
+| Stage | What | Where it runs |
+|---|---|---|
+| 00 | Validate every Inside Airbnb city | local |
+| 01 | Download + clean per-city listings + calendars | Burla CPU |
+| 02a | Scrape extra photo URLs from `airbnb.com/rooms/<id>` | Burla CPU |
+| 02b | CLIP-score every photo | Burla CPU (~1.7K workers) |
+| 03 | YOLOv8 GPU stage (deprecated, kept for completeness) | Burla GPU |
+| 04 | 3-tier review scoring (heuristic + SBERT + Claude) | Burla CPU + 20 A100s for the embedding tier |
+| 05 | Bootstrap 95% CI correlations | Burla CPU |
+| 05b | Haiku rerank weirdest 12K reviews | Burla CPU (rate-limited) |
+| 05c | Haiku Vision validates CLIP shortlists for TVs / kitchens / drug-den / pets | Burla CPU (rate-limited) |
+| 06 | Build `site/data/*.json` and apply manual blocklist | local |
+| 07 | Derive `occupancy_365` (calendar occupancy demand proxy) | Burla CPU |
 
 ## Layout
 
 ```
 src/
-  config.py          # cities, top-N, hypotheses, budgets
-  stages/            # each: read parquet, write parquet
-  tasks/             # Burla-serializable worker functions
-  lib/               # io, budget, http retries, shared FS helpers
-site/                # static HTML/CSS/JS, no build step, fed by data/outputs
+  config.py          # cities, top-N, prompts, budgets
+  stages/            # one orchestrator per pipeline stage
+  tasks/             # Burla-serialized worker functions
+  lib/               # io, budget, retries, Inside Airbnb client
+site/                # static HTML/CSS/JS, fed by data/outputs
 data/
-  raw/               # gitignored
-  interim/           # parquet checkpoints between stages
-  outputs/           # final JSON the site reads (committed)
+  manual_blocklist.json   # human review: dropped IDs + pinned-top order
+  outputs/                # final JSON the site reads (committed)
+  raw/, interim/          # gitignored
+scripts/
+  apply_manual_blocklist.py   # post-process s06 outputs against the blocklist
+  preload_clip_weights.py     # pre-stage CLIP weights to /workspace/shared
+  preload_st_weights.py       # pre-stage SBERT weights to /workspace/shared
 ```
 
 ## How it talks to Burla
 
-Every stage looks roughly like this:
+Every stage is a small script that calls `remote_parallel_map` once or
+twice. The three biggest fan-outs:
 
 ```python
 from burla import remote_parallel_map
 
-results = remote_parallel_map(
-    worker_fn,                  # Burla pickles this and ships it to workers
-    list_of_dataclass_inputs,
-    func_cpu=1,
-    func_ram=8,
-    max_parallelism=1000,
-    grow=True,                  # let the cluster scale up to fit the queue
-    spinner=True,
+# s02b: CLIP-score every photo on CPU (1K parallelism at peak)
+remote_parallel_map(
+    score_batch, batch_args,
+    func_cpu=2, func_ram=8,
+    max_parallelism=1000, grow=True,
+)
+
+# s04 tier 2: SBERT-embed top 200K reviews on GPU (20 A100s)
+remote_parallel_map(
+    embed_batch, embed_args,
+    func_cpu=2, func_ram=8, max_parallelism=200,
+    grow=True,
+)
+
+# s05c: Haiku Vision validates CLIP shortlists (rate-limited)
+remote_parallel_map(
+    validate_pet, pet_batches,
+    func_cpu=2, func_ram=8, max_parallelism=64,
+    grow=True,
 )
 ```
 
-Each worker writes its slice of output to a shared GCS-backed
-`/workspace/shared` filesystem as a Parquet file, and the orchestrator merges
-slices at the end of each stage. Stage 4 in particular fans out to 1000
-concurrent workers reading row-group-aligned slices of a 50.7M-row reviews
-parquet.
+Burla pickles each worker, ships it to the cluster, and runs N copies in
+parallel against a shared `/workspace/shared` filesystem. No Docker, no
+Kubernetes, no orchestration glue.
+
+## Manual review
+
+`data/manual_blocklist.json` is the human override layer. Two parts:
+
+- **`by_city_name`** - listings flagged as not passing visual review.
+  `scripts/apply_manual_blocklist.py` resolves them to listing IDs,
+  removes them from `site/data/*.json` and `data/outputs/*.json`,
+  rebuilds `world_map.json`, and persists the IDs so re-runs stay clean.
+- **`pinned_top`** - per-section ordered listing IDs that should appear
+  first in the grid (e.g. the three best TV-too-high listings).
+
+The s06 stage runs the apply script as a final post-process, so a fresh
+`make all` always reflects the latest manual review.
 
 ## Caveats
 
-- `reviews_per_month` from Inside Airbnb is a public demand proxy, not actual
-  bookings. The site repeats this caveat under every chart.
-- Scrape coverage is whatever public listing pages returned without anti-bot
-  blocking. We hit Datadome on a chunk of cities and used the listing-data
-  primary photos as fallback (1.4M photo URLs covering 1.1M listings).
-- Inside Airbnb anonymizes locations within ~150m; the world map shows
-  neighborhoods, not exact addresses.
-- Stage 3 GPU success rate landed at 27% because we were paying the YOLO model
-  weight download cost on every worker spin-up before pre-staging fixed it
-  late in the run. The TV / mirror / plant findings still hold because Stage
-  2b CLIP scoring covered all 1.4M photos.
+- The demand proxy is `occupancy_365` (median calendar occupancy over
+  the next 365 nights). It counts blocked nights as well as booked
+  ones, which is the standard Inside Airbnb caveat.
+- Inside Airbnb anonymizes locations within ~150m, so the world map
+  shows neighborhoods, not exact addresses.
+- The original GPU stage (`s03_images_gpu`, YOLOv8) discovered a
+  `libGL.so.1` packaging issue mid-run. We pivoted to Claude Haiku
+  Vision (`s05c_categories`) for the final TV / kitchen / drug-den /
+  pet validation. The s03 stage is still wired in `make all` but its
+  output is not consumed by the live site.
 
 ## License
 
